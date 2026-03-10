@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(antigravity .)",
+      "Read(//c/Users/dannk/code/**)",
+      "Bash(mkdir -p temp-nextapp)",
+      "Bash(npx create-next-app@14 temp-nextapp --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(cp -r C:/Users/dannk/code/temp-nextapp/. C:/Users/dannk/code/personal-website/ 2>&1 && ls C:/Users/dannk/code/personal-website/)"
+    ]
+  }
+}

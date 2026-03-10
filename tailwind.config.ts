@@ -8,9 +8,25 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "monospace"],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        accent: "var(--accent)",
+        muted: "var(--muted)",
+        border: "var(--border)",
+      },
+      keyframes: {
+        fadeUp: {
+          "0%": { opacity: "0", transform: "translateY(16px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        fadeUp: "fadeUp 0.5s ease forwards",
       },
     },
   },
