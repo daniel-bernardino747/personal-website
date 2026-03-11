@@ -111,12 +111,12 @@ export function AIInput() {
         className="relative group mb-10"
       >
         <div className="absolute -inset-1 bg-linear-to-r from-accent/50 to-violet-500/50 blur rounded-full opacity-25 group-focus-within:opacity-50 transition duration-1000 group-focus-within:duration-200" />
-        <div className="relative flex items-center bg-[#000805]/80 border border-white/10 rounded-full px-6 py-4 backdrop-blur-xl focus-within:border-accent/50 transition-all">
+        <div className="relative flex items-center bg-background/80 border border-border rounded-full px-6 py-4 backdrop-blur-xl focus-within:border-accent/50 transition-all">
           <Search size={20} className="text-accent/70 mr-4" />
           <input
             type="text"
             placeholder={placeholder}
-            className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-foreground placeholder:text-white/60 text-lg selection:bg-accent/30"
+            className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground text-lg selection:bg-accent/30"
           />
           <button className="ml-4 p-2.5 rounded-full bg-accent text-white hover:bg-accent/80 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-accent/20">
             <ArrowRight size={20} />

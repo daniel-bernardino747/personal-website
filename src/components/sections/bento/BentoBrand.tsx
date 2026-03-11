@@ -10,7 +10,7 @@ export function BentoBrand() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="col-span-1 row-span-1 bg-zinc-900/50 rounded-3xl border border-white/10 p-6 flex flex-col justify-center items-center text-center shadow-2xl relative overflow-hidden group order-1 transition-colors duration-300"
+      className="col-span-1 row-span-1 bg-surface rounded-3xl border border-border p-6 flex flex-col justify-center items-center text-center shadow-2xl relative overflow-hidden group order-1 transition-colors duration-300"
     >
       <div className="absolute inset-0 bg-linear-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-1" />
       
@@ -41,10 +41,10 @@ export function BentoBrand() {
         >
           <h2 className="text-2xl md:text-3xl font-bold tracking-tighter uppercase leading-[0.9]">
             {profile.name.split(" ")[0]} <br />
-            <span className="text-white/90">{profile.name.split(" ")[1]}</span>
+            <span className="text-foreground/90">{profile.name.split(" ")[1]}</span>
           </h2>
-          <div className="h-px w-10 bg-white/20 my-3" />
-          <p className="text-[9px] md:text-[10px] tracking-[0.2em] text-white/40 font-bold uppercase">
+          <div className="h-px w-10 bg-border my-3" />
+          <p className="text-[9px] md:text-[10px] tracking-[0.2em] text-muted-foreground font-bold uppercase">
             {profile.role[0]}
           </p>
         </motion.div>

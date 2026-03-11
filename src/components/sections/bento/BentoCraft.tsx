@@ -20,7 +20,7 @@ export function BentoCraft() {
       onMouseLeave={() => setIsHovered(false)}
       viewport={{ once: true }}
       transition={{ delay: 0.5 }}
-      className="col-span-1 row-span-2 bg-zinc-900/50 rounded-3xl border border-white/10 p-6 flex flex-col shadow-2xl group order-6 lg:col-start-3 lg:row-start-2 overflow-hidden"
+      className="col-span-1 row-span-2 bg-surface rounded-3xl border border-border p-6 flex flex-col shadow-2xl group order-6 lg:col-start-3 lg:row-start-2 overflow-hidden"
     >
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
@@ -28,13 +28,13 @@ export function BentoCraft() {
            <CircuitBoard animate={isHovered} size={20} className="text-accent/60" />
         </div>
         <div className="h-1 w-10 bg-accent/60 rounded-full mb-3" />
-        <p className="text-white/50 text-sm leading-snug">
-          Building scalable <span className="text-white font-semibold">apps, websites, and automations.</span>
+        <p className="text-muted-foreground text-sm leading-snug">
+          Building scalable <span className="text-foreground font-semibold">apps, websites, and automations.</span>
         </p>
       </div>
       
       <div className="mb-4">
-        <p className="text-white/40 text-[13px] leading-relaxed">
+        <p className="text-muted-foreground text-[13px] leading-relaxed">
           I understand what advantages modern tech can provide, helping me advise on the solutions a business actually needs.
         </p>
       </div>
@@ -57,7 +57,7 @@ export function BentoCraft() {
               {item.related.map((tech, techIndex) => (
                 <div 
                   key={techIndex} 
-                  className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm hover:border-accent/40 transition-colors group cursor-default"
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-surface backdrop-blur-sm hover:border-accent/40 transition-colors group cursor-default"
                 >
                   <div className="relative w-4 h-4 grayscale group-hover:grayscale-0 transition-all duration-300">
                     <Image
@@ -67,7 +67,7 @@ export function BentoCraft() {
                       className="object-contain"
                     />
                   </div>
-                  <span className="text-[10px] font-medium text-white/60 group-hover:text-white transition-colors">
+                  <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                     {tech.name}
                   </span>
                 </div>
