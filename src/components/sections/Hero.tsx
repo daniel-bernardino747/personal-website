@@ -1,13 +1,30 @@
 "use client";
 
-import { useReducedMotion, motion } from "framer-motion";
 import { profile } from "@/data/profile";
-import { ChevronDown } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+
+import { AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AIInput } from "../AIInput";
+import { ScrollMessage } from "./ScrollMessage";
 
 export function Hero() {
   const prefersReducedMotion = useReducedMotion();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  const items = [profile.name, ...profile.role];
 
-  const nameLetters = profile.name.split("");
+  useEffect(() => {
+    const delay = currentIndex === 0 ? 6000 : 2000;
+    const timer = setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % items.length);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [currentIndex, items.length]);
+
+  const gradientClass = currentIndex === 0 
+    ? "from-emerald-400 to-teal-500" 
+    : "from-violet-400 to-indigo-500";
 
   const containerVariants = {
     hidden: {},
@@ -18,88 +35,71 @@ export function Hero() {
     },
   };
 
-  const letterVariants = {
-    hidden: { opacity: 0, y: prefersReducedMotion ? 0 : 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.4 },
-    },
-  };
-
   return (
     <section
       id="hero"
-      className="min-h-[90vh] flex flex-col justify-center py-24"
+      className="min-h-[80vh] flex flex-col justify-center items-center py-32 text-center relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-6 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <p className="font-mono text-sm text-muted mb-6 tracking-widest uppercase">
-              Portfolio
-            </p>
-            <h1
-              aria-label={profile.name}
-              className="text-5xl md:text-7xl font-bold tracking-tight leading-none mb-6"
-            >
-              <motion.span
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                aria-hidden="true"
-                className="inline-block"
-              >
-                {nameLetters.map((letter, i) => (
-                  <motion.span
-                    key={i}
-                    variants={letterVariants}
-                    className="inline-block"
-                    style={{ whiteSpace: letter === " " ? "pre" : "normal" }}
-                  >
-                    {letter === " " ? "\u00A0" : letter}
-                  </motion.span>
-                ))}
-              </motion.span>
-            </h1>
-            <motion.p
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: prefersReducedMotion ? 0 : 0.6, duration: 0.5 }}
-              className="text-2xl text-muted mb-8"
-            >
-              {profile.role}
-            </motion.p>
-            <motion.p
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: prefersReducedMotion ? 0 : 0.8, duration: 0.5 }}
-              className="text-base text-muted max-w-md leading-relaxed"
-            >
-              {profile.bio}
-            </motion.p>
-          </div>
-
-          {/* Portrait placeholder */}
-          <div className="flex justify-center md:justify-end">
-            <div
-              className="w-64 h-64 md:w-80 md:h-80 rounded-3xl bg-gray-100 flex items-center justify-center text-muted font-mono text-sm"
-              role="img"
-              aria-label="Profile portrait placeholder"
-            >
-              portrait
-            </div>
-          </div>
-        </div>
+      <ScrollMessage />
+      <div className="max-w-5xl mx-auto px-6 w-full flex flex-col items-center">
+        {/* Avatar */}
+        <motion.div
+          initial={{ 
+            opacity: 0, 
+            scale: prefersReducedMotion ? 0.9 : 0.5, 
+            y: prefersReducedMotion ? 0 : -100 
+          }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ 
+            type: "spring",
+            stiffness: 260,
+            damping: 20,
+            delay: 1
+          }}
+          className="mb-10 relative"
+        >
+          <video
+            src="/avatar-animation.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="relative w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-2 border-accent/20"
+          />
+        </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: prefersReducedMotion ? 0 : 1.2, duration: 0.5 }}
-          className="mt-16 flex items-center gap-2 text-sm text-muted font-mono"
-          aria-hidden="true"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col items-center"
         >
-          <ChevronDown size={16} strokeWidth={2} className="animate-bounce" />
-          Scroll to explore
+          <motion.h1 
+            layout
+            transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
+            className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6 min-h-[1.2em] flex items-center justify-center"
+          >
+            <span className="text-foreground mr-3">Hi, I&apos;m </span>
+            <div className="relative h-[1.2em] flex items-center justify-center overflow-visible">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={currentIndex}
+                  initial={{ rotateX: -90, opacity: 0 }}
+                  animate={{ rotateX: 0, opacity: 1 }}
+                  exit={{ rotateX: 90, opacity: 0 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    ease: "easeInOut", 
+                    delay: 0.1 
+                  }}
+                  className={`bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent inline-block`}
+                >
+                  {items[currentIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+          </motion.h1>
+          <AIInput />
         </motion.div>
       </div>
     </section>

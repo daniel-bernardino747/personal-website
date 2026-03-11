@@ -1,9 +1,14 @@
+import { Footer } from "@/components/layout/Footer";
+import { MouseTracker } from "@/components/layout/MouseTracker";
+import { Navbar } from "@/components/layout/Navbar";
+import { profile } from "@/data/profile";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { profile } from "@/data/profile";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,8 +22,12 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: `${profile.name} — ${profile.role}`,
+  title: `${profile.name} — ${profile.role[0]}`,
   description: profile.bio,
+  icons: {
+    icon: "/images/avatar.png",
+    apple: "/images/avatar.png",
+  },
 };
 
 export default function RootLayout({
@@ -27,8 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={cn(geistSans.variable, geistMono.variable, "font-sans", geist.variable, "dark")}>
       <body className="antialiased">
+        <MouseTracker />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium"

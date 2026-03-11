@@ -10,7 +10,7 @@ export function Projects() {
 
   return (
     <section id="projects" className="py-24 md:py-32 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6">
         <h2 className="text-3xl font-bold mb-4">Projects</h2>
         <p className="text-muted max-w-2xl mb-12 text-lg">
           A selection of things I&apos;ve built — side projects, open source
