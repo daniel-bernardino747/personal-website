@@ -1,6 +1,7 @@
 import { Footer } from "@/components/layout/Footer";
 import { MouseTracker } from "@/components/layout/MouseTracker";
 import { Navbar } from "@/components/layout/Navbar";
+import { PageTransitionLayout } from "@/components/layout/PageTransitionLayout";
 import { profile } from "@/data/profile";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
@@ -8,6 +9,8 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Providers } from "@/components/Providers";
+
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -45,16 +48,22 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <MouseTracker />
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium"
-          >
-            Skip to main content
-          </a>
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <Providers>
+            <MouseTracker />
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium"
+            >
+              Skip to main content
+            </a>
+            <Navbar />
+            <main id="main-content">
+              <PageTransitionLayout>
+                {children}
+              </PageTransitionLayout>
+            </main>
+            <Footer />
+          </Providers>
         </ThemeProvider>
       </body>
     </html>

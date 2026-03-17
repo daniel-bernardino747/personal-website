@@ -1,7 +1,13 @@
+"use client";
+
 import { Github, Linkedin, Mail } from "lucide-react";
 import { profile } from "@/data/profile";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname === "/chat") return null;
+
   return (
     <footer className="border-t border-border py-10">
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">

@@ -1,5 +1,6 @@
 "use client";
 
+import { AvatarVideo } from "@/components/AvatarVideo";
 import { profile } from "@/data/profile";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -42,29 +43,16 @@ export function Hero() {
     >
       <ScrollMessage />
       <div className="max-w-5xl mx-auto px-6 w-full flex flex-col items-center">
-        {/* Avatar */}
+        {/* Avatar — sem transforms no wrapper para não conflitar com layoutId */}
         <motion.div
-          initial={{ 
-            opacity: 0, 
-            scale: prefersReducedMotion ? 0.9 : 0.5, 
-            y: prefersReducedMotion ? 0 : -100 
-          }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ 
-            type: "spring",
-            stiffness: 260,
-            damping: 20,
-            delay: 1
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
           className="mb-10 relative"
         >
-          <video
-            src="/avatar-animation.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="relative w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-2 border-accent/20"
+          <AvatarVideo
+            containerClassName="relative"
+            className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-2 border-accent/20"
           />
         </motion.div>
 
@@ -92,7 +80,7 @@ export function Hero() {
                     ease: "easeInOut", 
                     delay: 0.1 
                   }}
-                  className={`bg-gradient-to-r ${gradientClass} bg-clip-text text-transparent inline-block`}
+                  className={`bg-linear-to-r ${gradientClass} bg-clip-text text-transparent inline-block`}
                 >
                   {items[currentIndex]}
                 </motion.span>

@@ -106,6 +106,30 @@
   html {
     @apply font-sans;
   }
+
+  /* Custom Scrollbar for Light Mode */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent); /* Light mode background */
+    border: 1px solid var(--accent);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.6 0.17 162.48); /* Slightly darker accent */
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: oklch(0.5 0.17 162.48); /* Even darker accent */
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -149,6 +173,17 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.696 0.17 162.48);
   --shadow-navbar: none;
+
+  /* Custom Scrollbar for Dark Mode */
+  ::-webkit-scrollbar-thumb {
+    background: #064e3b;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(0, 102, 78);
+  }
+  ::-webkit-scrollbar-thumb:active {
+    background: #064e3b;
+  }
 }
 
 @theme inline {

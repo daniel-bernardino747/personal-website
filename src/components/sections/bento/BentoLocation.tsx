@@ -25,8 +25,8 @@ export function BentoLocation() {
           <span className="block text-muted-foreground text-base font-medium tracking-normal mt-0.5">{profile.location.split(",")[1]}</span>
         </h3>
         <div className="flex items-center gap-2 mt-2">
-           <span className="text-[8px] font-mono text-muted-foreground/40 uppercase tracking-widest">50.06° N, 19.94° E</span>
-           <span className="text-[8px] font-mono text-accent/60 font-bold">- GMT+1</span>
+           <span className="text-[8px] font-mono text-muted-foreground/40 uppercase tracking-widest">28°40&apos;39&quot; S, 49°22&apos;11&quot; W</span>
+           <span className="text-[8px] font-mono text-accent/60 font-bold">- GMT-3</span>
         </div>
       </div>
     </motion.div>
