@@ -1,0 +1,22 @@
+# 01 — Loader and schema, proven by Vitest
+
+**What to build:** the one module that stands between the `content/` directory and every consumer of the Corpus. It reads markdown-with-frontmatter files, validates them against the schema for Affiliation and Accomplishment, resolves each Accomplishment's Affiliation reference, and exposes typed Affiliations and Accomplishments plus the queries consumers need. No consumer ever parses frontmatter itself — this is the single seam the whole feature is built on, and the place a schema change is expected to land as real content accumulates. Vitest is introduced here as the project's first test runner.
+
+The schema follows the domain model in `CONTEXT.md` and the field list in the spec: an Affiliation holds organisation, role, period and stack, referenced by a stable identifier; an Accomplishment holds an optional Affiliation reference, a date, a `kind` (engineering, talk, open-source, project, education, writing), the Metric, the prose statement, and a `featured` flag. An Accomplishment with no Metric is valid but marked a draft and excluded from Selections by default.
+
+Tests point a fixture Corpus at the loader and assert on what comes out — never on how files are walked or parsed. Renaming an internal helper must not break a test.
+
+**Blocked by:** None — can start immediately.
+
+**Status:** ready-for-agent
+
+- [ ] Vitest is added to the project and runs via an npm script
+- [ ] A well-formed fixture Corpus parses into the expected typed Affiliations and Accomplishments
+- [ ] A missing required field fails loudly rather than yielding a partial record
+- [ ] An Accomplishment referencing a nonexistent Affiliation is rejected
+- [ ] An Accomplishment may have no Affiliation and still loads (talks, personal projects)
+- [ ] Featured filtering returns exactly the marked subset
+- [ ] Drafts (no Metric) are excluded by default and retrievable on request
+- [ ] Queries by kind and by Affiliation return the correct subsets
+- [ ] An empty Corpus is handled as a legitimate state, not a crash
+- [ ] The loader is safe to call at build time in a Server Component and is not pulled into any client bundle
