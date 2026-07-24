@@ -1,10 +1,11 @@
 "use client";
 
 import { Github, Linkedin, Mail } from "lucide-react";
-import { profile } from "@/data/profile";
+import { useIdentity } from "@/components/IdentityProvider";
 import { usePathname } from "next/navigation";
 
 export function Footer() {
+  const identity = useIdentity();
   const pathname = usePathname();
   if (pathname === "/chat") return null;
 
@@ -12,7 +13,7 @@ export function Footer() {
     <footer className="border-t border-border py-10">
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="font-mono font-bold text-sm">{profile.initials}•</span>
+          <span className="font-mono font-bold text-sm">{identity.initials}•</span>
           <span className="text-sm text-muted">
             Built with Next.js &amp; Tailwind CSS
           </span>
@@ -20,7 +21,7 @@ export function Footer() {
 
         <div className="flex items-center gap-4">
           <a
-            href={profile.social.github}
+            href={identity.social.github}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub profile"
@@ -29,7 +30,7 @@ export function Footer() {
             <Github size={18} strokeWidth={2} aria-hidden="true" />
           </a>
           <a
-            href={profile.social.linkedin}
+            href={identity.social.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn profile"
@@ -38,7 +39,7 @@ export function Footer() {
             <Linkedin size={18} strokeWidth={2} aria-hidden="true" />
           </a>
           <a
-            href={`mailto:${profile.social.email}`}
+            href={`mailto:${identity.social.email}`}
             aria-label="Send email"
             className="text-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
           >

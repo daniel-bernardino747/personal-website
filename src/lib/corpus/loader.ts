@@ -11,6 +11,8 @@ import {
   type Affiliation,
   accomplishmentFrontmatterSchema,
   affiliationFrontmatterSchema,
+  type Identity,
+  identityFrontmatterSchema,
   type Kind,
 } from './schema';
 
@@ -33,6 +35,12 @@ export class CorpusError extends Error {
  * itself.
  */
 export interface Corpus {
+  /**
+   * The site header and resume header, loaded from `content/identity.md`.
+   * Undefined when the file is absent — a legitimate empty state for the loader,
+   * though the site itself requires one (see `site.ts`).
+   */
+  identity?: Identity;
   affiliations: Affiliation[];
   /** Records — Accomplishments with a Metric. Drafts are excluded by default. */
   accomplishments: Accomplishment[];
@@ -78,6 +86,21 @@ function readMarkdownFiles(dir: string): ParsedFile[] {
     });
 }
 
+/**
+ * Reads a single markdown file, using `id` as its stable id. A missing file is a
+ * legitimate absent state, not an error.
+ */
+function readMarkdownFile(path: string, id: string): ParsedFile | null {
+  let raw: string;
+  try {
+    raw = readFileSync(path, 'utf8');
+  } catch {
+    return null;
+  }
+  const parsed = matter(raw);
+  return { id, data: parsed.data, body: parsed.content.trim() };
+}
+
 function formatIssues(error: ZodError): string {
   return error.issues
     .map((issue) => {
@@ -90,7 +113,7 @@ function formatIssues(error: ZodError): string {
 /** Validate frontmatter against `schema`, or throw a labelled `CorpusError`. */
 function validateFrontmatter<T>(
   schema: ZodType<T>,
-  entity: 'Affiliation' | 'Accomplishment',
+  entity: 'Affiliation' | 'Accomplishment' | 'Identity',
   id: string,
   data: unknown,
 ): T {
@@ -112,6 +135,21 @@ function parseAffiliation({ id, data }: ParsedFile): Affiliation {
     data,
   );
   return { id, ...frontmatter };
+}
+
+function parseIdentity({ id, data, body }: ParsedFile): Identity {
+  const frontmatter = validateFrontmatter(
+    identityFrontmatterSchema,
+    'Identity',
+    id,
+    data,
+  );
+  if (body.length === 0) {
+    throw new CorpusError(
+      `Invalid Identity "${id}" — the bio (file body) is empty.`,
+    );
+  }
+  return { ...frontmatter, bio: body };
 }
 
 function parseAccomplishment(
@@ -161,6 +199,9 @@ function parseAccomplishment(
  * `server-only` import keeps it out of client bundles.
  */
 export function loadCorpus(rootDir: string = defaultContentDir()): Corpus {
+  const identityFile = readMarkdownFile(join(rootDir, 'identity.md'), 'identity');
+  const identity = identityFile ? parseIdentity(identityFile) : undefined;
+
   const affiliations = readMarkdownFiles(join(rootDir, 'affiliations')).map(
     parseAffiliation,
   );
@@ -174,6 +215,7 @@ export function loadCorpus(rootDir: string = defaultContentDir()): Corpus {
   const drafts = allAccomplishments.filter((a) => a.isDraft);
 
   return {
+    identity,
     affiliations,
     accomplishments: records,
     drafts,

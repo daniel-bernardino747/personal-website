@@ -17,6 +17,19 @@ export const KINDS = [
 export type Kind = (typeof KINDS)[number];
 
 /**
+ * Human-readable label per Kind. Keyed by `Kind` so adding a Kind to `KINDS`
+ * forces a label here rather than silently rendering a raw enum value.
+ */
+export const KIND_LABELS: Record<Kind, string> = {
+  engineering: 'Engineering',
+  talk: 'Talk',
+  'open-source': 'Open Source',
+  project: 'Project',
+  education: 'Education',
+  writing: 'Writing',
+};
+
+/**
  * YAML timestamps like `2024-03-15` are parsed into `Date` objects by the
  * frontmatter parser, while partial dates like `2022-01` stay strings. Normalise
  * both to a stable `YYYY-MM-DD` (or `YYYY-MM`) string so consumers never see a
@@ -32,10 +45,16 @@ const dateLike = z
 export const affiliationFrontmatterSchema = z.object({
   organisation: z.string().min(1),
   role: z.string().min(1),
-  period: z.object({
-    start: dateLike,
-    end: dateLike.optional(),
-  }),
+  // A background Affiliation (a club, an ongoing course of study) may be recorded
+  // before its exact dates are known. Rather than fabricate a period, the loader
+  // accepts its absence — the seam absorbing schema evolution as real content
+  // arrives, per the spec.
+  period: z
+    .object({
+      start: dateLike,
+      end: dateLike.optional(),
+    })
+    .optional(),
   stack: z.array(z.string()).default([]),
 });
 
@@ -48,10 +67,31 @@ export const accomplishmentFrontmatterSchema = z.object({
   featured: z.boolean().default(false),
 });
 
+/**
+ * Frontmatter shape of the Identity file. Identity is the resume header — legal
+ * name, contact and profile URLs, plus the site-facing role, headline and
+ * initials — and belongs to the Corpus so the site and every generated resume
+ * agree. The bio prose is the file body, not frontmatter.
+ */
+export const identityFrontmatterSchema = z.object({
+  name: z.string().min(1),
+  initials: z.string().min(1),
+  role: z.array(z.string().min(1)).min(1),
+  location: z.string().min(1),
+  headline: z.string().min(1).optional(),
+  bookingUrl: z.string().min(1),
+  social: z.object({
+    github: z.string().min(1),
+    linkedin: z.string().min(1),
+    email: z.string().min(1),
+  }),
+});
+
 export type AffiliationFrontmatter = z.infer<typeof affiliationFrontmatterSchema>;
 export type AccomplishmentFrontmatter = z.infer<
   typeof accomplishmentFrontmatterSchema
 >;
+export type IdentityFrontmatter = z.infer<typeof identityFrontmatterSchema>;
 
 /**
  * The organisation or institution an Accomplishment happened inside. Holds where
@@ -62,7 +102,8 @@ export interface Affiliation {
   id: string;
   organisation: string;
   role: string;
-  period: { start: string; end?: string };
+  /** When the Affiliation ran. Absent when not yet recorded. */
+  period?: { start: string; end?: string };
   stack: string[];
 }
 
@@ -85,4 +126,22 @@ export interface Accomplishment {
   featured: boolean;
   /** True when the Accomplishment has no Metric. */
   isDraft: boolean;
+}
+
+/**
+ * Who Daniel is, as the site header and the resume header both read it. Lives in
+ * the Corpus — not in site configuration — so the two can never disagree. There
+ * is exactly one, loaded from `content/identity.md`.
+ */
+export interface Identity {
+  name: string;
+  initials: string;
+  role: string[];
+  location: string;
+  /** A one-line professional summary, if recorded. */
+  headline?: string;
+  bookingUrl: string;
+  social: { github: string; linkedin: string; email: string };
+  /** The bio prose — the markdown body of `identity.md`. */
+  bio: string;
 }

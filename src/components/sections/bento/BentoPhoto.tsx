@@ -1,10 +1,12 @@
 "use client";
 
-import { profile } from "@/data/profile";
+import { useIdentity } from "@/components/IdentityProvider";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
 export function BentoPhoto() {
+  const identity = useIdentity();
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
@@ -15,7 +17,7 @@ export function BentoPhoto() {
     >
       <Image 
         src="/images/avatar.png"
-        alt={profile.name}
+        alt={identity.name}
         fill
         className="object-cover transition-transform duration-700 group-hover:scale-110"
       />

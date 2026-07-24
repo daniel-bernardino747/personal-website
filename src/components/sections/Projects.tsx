@@ -1,11 +1,15 @@
 "use client";
 
 import { useReducedMotion, motion } from "framer-motion";
-import { ExternalLink, Github } from "lucide-react";
-import { projects } from "@/data/projects";
-import { TechBadge } from "@/components/ui/TechBadge";
+import type { Accomplishment } from "@/lib/corpus/schema";
 
-export function Projects() {
+/**
+ * The Projects section renders project-kind Accomplishments from the Corpus.
+ * Drafts (no Metric) are already excluded by the loader. Until real project
+ * Accomplishments are captured, this shows an empty state rather than the
+ * placeholder projects it used to carry.
+ */
+export function Projects({ projects }: { projects: Accomplishment[] }) {
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -17,67 +21,53 @@ export function Projects() {
           contributions, and professional work.
         </p>
 
-        <div className="space-y-8">
-          {projects.map((project, index) => (
-            <motion.article
-              key={project.id}
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{
-                duration: 0.5,
-                delay: prefersReducedMotion ? 0 : index * 0.1,
-              }}
-              className="group flex flex-col md:flex-row gap-6 p-6 rounded-2xl border border-border bg-white hover:shadow-md transition-shadow"
-            >
-              {/* Number */}
-              <div
-                className="font-mono text-6xl font-bold text-gray-100 select-none leading-none shrink-0 group-hover:text-gray-200 transition-colors"
-                aria-hidden="true"
+        {projects.length === 0 ? (
+          <p className="text-muted text-sm">
+            Projects are being written up — check back soon.
+          </p>
+        ) : (
+          <div className="space-y-8">
+            {projects.map((project, index) => (
+              <motion.article
+                key={project.id}
+                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{
+                  duration: 0.5,
+                  delay: prefersReducedMotion ? 0 : index * 0.1,
+                }}
+                className="group flex flex-col md:flex-row gap-6 p-6 rounded-2xl border border-border bg-white hover:shadow-md transition-shadow"
               >
-                {project.id}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-4 mb-2">
-                  <h3 className="text-xl font-semibold">{project.title}</h3>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${project.title} on GitHub`}
-                      className="text-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-                    >
-                      <Github size={18} strokeWidth={2} aria-hidden="true" />
-                    </a>
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`${project.title} live demo`}
-                        className="text-muted hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
-                      >
-                        <ExternalLink size={18} strokeWidth={2} aria-hidden="true" />
-                      </a>
-                    )}
-                  </div>
+                {/* Number */}
+                <div
+                  className="font-mono text-6xl font-bold text-gray-100 select-none leading-none shrink-0 group-hover:text-gray-200 transition-colors"
+                  aria-hidden="true"
+                >
+                  {String(index + 1).padStart(2, "0")}
                 </div>
 
-                <p className="text-muted text-sm leading-relaxed mb-4">
-                  {project.description}
-                </p>
+                <div className="flex-1 min-w-0">
+                  {project.affiliation && (
+                    <h3 className="text-xl font-semibold mb-2">
+                      {project.affiliation.organisation}
+                    </h3>
+                  )}
 
-                <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech) => (
-                    <TechBadge key={tech} label={tech} />
-                  ))}
+                  <p className="text-muted text-sm leading-relaxed mb-4">
+                    {project.statement}
+                  </p>
+
+                  {project.metric && (
+                    <p className="inline-flex items-center rounded-full bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+                      {project.metric}
+                    </p>
+                  )}
                 </div>
-              </div>
-            </motion.article>
-          ))}
-        </div>
+              </motion.article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

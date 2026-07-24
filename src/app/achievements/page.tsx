@@ -1,14 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, Trophy } from "lucide-react";
-import { achievements } from "@/data/achievements";
+import { getCorpus } from "@/lib/corpus/site";
+import { KIND_LABELS } from "@/lib/corpus/schema";
 
 export const metadata = {
-  title: "Achievements",
-  description: "A track record of milestones, recognition, and notable work.",
+  title: "Featured Accomplishments",
+  description: "The accomplishments Daniel considers most significant.",
 };
 
 export default function AchievementsPage() {
+  const { featured } = getCorpus();
+
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
       <Link
@@ -19,34 +21,31 @@ export default function AchievementsPage() {
         Back to home
       </Link>
 
-      <h1 className="text-4xl font-bold mb-4">Achievements</h1>
+      <h1 className="text-4xl font-bold mb-4">Featured Accomplishments</h1>
       <p className="text-muted text-lg mb-16 max-w-xl">
-        A track record of milestones, recognition, and work I&apos;m proud of.
+        The work I consider most significant — the highlights, without reading
+        everything.
       </p>
 
-      <div className="space-y-16">
-        {achievements.map((achievement, index) => (
-          <article
-            key={achievement.title}
-            className={`flex flex-col ${
-              index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-            } gap-8 items-center`}
-          >
-            {/* Image / icon block */}
-            <div className="w-full md:w-2/5 shrink-0">
-              {achievement.imageUrl ? (
-                <Image
-                  src={achievement.imageUrl}
-                  alt={achievement.title}
-                  width={480}
-                  height={320}
-                  className="rounded-2xl object-cover w-full aspect-video"
-                />
-              ) : (
+      {featured.length === 0 ? (
+        <p className="text-muted">
+          Featured accomplishments will appear here as they are captured.
+        </p>
+      ) : (
+        <div className="space-y-16">
+          {featured.map((accomplishment, index) => (
+            <article
+              key={accomplishment.id}
+              className={`flex flex-col ${
+                index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+              } gap-8 items-center`}
+            >
+              {/* Icon block */}
+              <div className="w-full md:w-2/5 shrink-0">
                 <div
                   className="rounded-2xl bg-gray-100 w-full aspect-video flex items-center justify-center"
                   role="img"
-                  aria-label={`${achievement.title} image placeholder`}
+                  aria-label={`${accomplishment.id} illustration`}
                 >
                   <Trophy
                     size={40}
@@ -55,25 +54,30 @@ export default function AchievementsPage() {
                     aria-hidden="true"
                   />
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Text block */}
-            <div className="flex-1">
-              <p className="font-mono text-sm text-muted mb-2">
-                {achievement.date}
-              </p>
-              <h2 className="text-2xl font-bold mb-1">{achievement.title}</h2>
-              <p className="text-accent font-medium text-sm mb-4">
-                {achievement.subtitle}
-              </p>
-              <p className="text-muted leading-relaxed">
-                {achievement.description}
-              </p>
-            </div>
-          </article>
-        ))}
-      </div>
+              {/* Text block */}
+              <div className="flex-1">
+                <p className="font-mono text-sm text-muted mb-2">
+                  {accomplishment.date}
+                </p>
+                <h2 className="text-2xl font-bold mb-1">
+                  {accomplishment.affiliation?.organisation ??
+                    KIND_LABELS[accomplishment.kind]}
+                </h2>
+                {accomplishment.metric && (
+                  <p className="text-accent font-medium text-sm mb-4">
+                    {accomplishment.metric}
+                  </p>
+                )}
+                <p className="text-muted leading-relaxed">
+                  {accomplishment.statement}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

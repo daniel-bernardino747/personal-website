@@ -109,6 +109,55 @@ describe('loadCorpus', () => {
     });
   });
 
+  describe('Identity', () => {
+    it('loads the Identity from content/identity.md, bio from the body', () => {
+      const corpus = loadCorpus(fixture('with-identity'));
+      expect(corpus.identity).toEqual({
+        name: 'Ada Lovelace',
+        initials: 'AL',
+        role: ['Software Engineer', 'Mathematician'],
+        location: 'London, United Kingdom',
+        headline: 'Building provable systems.',
+        bookingUrl: 'https://cal.com/ada',
+        social: {
+          github: 'https://github.com/ada',
+          linkedin: 'https://linkedin.com/in/ada',
+          email: 'ada@example.com',
+        },
+        bio: 'I write programs and prove they are correct.',
+      });
+    });
+
+    it('treats a missing identity.md as a legitimate absent Identity', () => {
+      const corpus = loadCorpus(fixture('well-formed'));
+      expect(corpus.identity).toBeUndefined();
+    });
+
+    it('rejects an Identity missing a required field', () => {
+      expect(() => loadCorpus(fixture('identity-malformed'))).toThrow(CorpusError);
+      expect(() => loadCorpus(fixture('identity-malformed'))).toThrow(/name/);
+    });
+
+    it('rejects an Identity with an empty bio', () => {
+      expect(() => loadCorpus(fixture('identity-empty-body'))).toThrow(CorpusError);
+      expect(() => loadCorpus(fixture('identity-empty-body'))).toThrow(/bio/);
+    });
+  });
+
+  describe('an Affiliation without a period', () => {
+    it('loads with its period absent rather than being rejected', () => {
+      const corpus = loadCorpus(fixture('with-identity'));
+      const club = corpus.affiliations.find((a) => a.id === 'open-club');
+      expect(club).toEqual({
+        id: 'open-club',
+        organisation: 'Analytical Society',
+        role: 'Founding member',
+        stack: ['Difference Engine'],
+      });
+      expect(club?.period).toBeUndefined();
+    });
+  });
+
   describe('an empty Corpus', () => {
     it('is a legitimate state rather than a crash', () => {
       const corpus = loadCorpus(fixture('empty'));

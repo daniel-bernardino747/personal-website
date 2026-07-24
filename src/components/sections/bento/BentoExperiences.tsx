@@ -1,10 +1,33 @@
 "use client";
 
+import { useIdentity } from "@/components/IdentityProvider";
+import type { Affiliation } from "@/lib/corpus/schema";
 import { motion } from "framer-motion";
 
-export function BentoExperiences() {
+/**
+ * Background facts — where Daniel studies and the club he belongs to — read from
+ * the Corpus rather than written into this markup, plus the Identity headline.
+ * Editing what this cell says is now a `content/` edit, not a code change.
+ */
+export function BentoExperiences({
+  affiliations,
+}: {
+  affiliations: Affiliation[];
+}) {
+  const identity = useIdentity();
+
+  const cards: { heading: string; body: string }[] = [
+    ...affiliations.map((affiliation) => ({
+      heading: affiliation.organisation,
+      body: affiliation.role,
+    })),
+    ...(identity.headline
+      ? [{ heading: "Focus", body: identity.headline }]
+      : []),
+  ];
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -16,18 +39,26 @@ export function BentoExperiences() {
          <span className="text-[10px] font-bold uppercase tracking-widest text-white/20 group-hover:text-accent/40 transition-colors">Hover to read more</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 h-full items-end mt-4 z-10">
-        <div className="flex flex-col gap-2">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/90">Science Club</h3>
-          <p className="text-[11px] text-white/40 leading-relaxed line-clamp-2">Active member of the GenAI Science Club. Training CV models.</p>
-        </div>
-        <div className="flex flex-col gap-2 border-y sm:border-y-0 sm:border-x border-border py-4 sm:py-0 sm:px-6">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground/90">University</h3>
-          <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">Pursuing Computer Science at UFSC.</p>
-        </div>
-        <div className="flex flex-col gap-2 sm:col-span-2 md:col-span-1">
-          <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground/90">Experience</h3>
-          <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">Building high-performance web systems.</p>
-        </div>
+        {cards.map((card, index) => (
+          <div
+            key={card.heading}
+            className={
+              // A divider before every card but the first — a top border when the
+              // grid stacks, a left border once it is side by side. Robust to any
+              // number of cards, unlike keying off a fixed index.
+              index === 0
+                ? "flex flex-col gap-2"
+                : "flex flex-col gap-2 border-t sm:border-t-0 sm:border-l border-border pt-4 sm:pt-0 sm:pl-6"
+            }
+          >
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground/90">
+              {card.heading}
+            </h3>
+            <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
+              {card.body}
+            </p>
+          </div>
+        ))}
       </div>
     </motion.div>
   );

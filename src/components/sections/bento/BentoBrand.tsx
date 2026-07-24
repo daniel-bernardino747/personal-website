@@ -1,10 +1,12 @@
 "use client";
 
-import { profile } from "@/data/profile";
+import { useIdentity } from "@/components/IdentityProvider";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
 export function BentoBrand() {
+  const identity = useIdentity();
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -26,10 +28,10 @@ export function BentoBrand() {
           ease: "easeInOut"
         }}
       >
-        <Image 
-          src="/images/me-1.jpg" 
-          alt={profile.name}
-          fill 
+        <Image
+          src="/images/me-1.jpg"
+          alt={identity.name}
+          fill
           className="object-cover"
         />
       </motion.div>
@@ -40,12 +42,12 @@ export function BentoBrand() {
           className="flex flex-col items-center group-hover:-translate-y-6 transition-transform duration-500"
         >
           <h2 className="text-2xl md:text-3xl font-bold tracking-tighter uppercase leading-[0.9]">
-            {profile.name.split(" ")[0]} <br />
-            <span className="text-foreground/90">{profile.name.split(" ")[1]}</span>
+            {identity.name.split(" ")[0]} <br />
+            <span className="text-foreground/90">{identity.name.split(" ")[1]}</span>
           </h2>
           <div className="h-px w-10 bg-border my-3" />
           <p className="text-[9px] md:text-[10px] tracking-[0.2em] text-muted-foreground font-bold uppercase">
-            {profile.role[0]}
+            {identity.role[0]}
           </p>
         </motion.div>
         

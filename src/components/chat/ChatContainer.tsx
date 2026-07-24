@@ -1,10 +1,11 @@
 'use client';
 
-import { INITIAL_RESPONSES } from '@/data/responses';
+import { useIdentity } from '@/components/IdentityProvider';
+import { buildInitialResponses } from '@/data/responses';
 import { useChatMutation } from '@/hooks/useChatMutation';
 import { useChatStore } from '@/store/useChatStore';
 import { ArrowRight, Briefcase, Layers, PartyPopper, Search, Smile, Trash2, UserSearch } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Typewriter } from './Typewriter';
 
 const quickActions = [
@@ -24,6 +25,8 @@ const chipColorMap: Record<string, { bg: string; text: string }> = {
 };
 
 export function ChatContainer() {
+  const identity = useIdentity();
+  const responses = useMemo(() => buildInitialResponses(identity), [identity]);
   const { messages, addMessage, clearHistory } = useChatStore();
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -71,7 +74,7 @@ export function ChatContainer() {
   const handleQuickAction = (label: string) => {
     if (mutation.isPending) return;
     
-    const entry = INITIAL_RESPONSES[label];
+    const entry = responses[label];
     const phrase = entry ? entry.phrase : label;
     
     autoScrollRef.current = true;

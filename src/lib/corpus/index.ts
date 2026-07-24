@@ -1,4 +1,5 @@
 export { CorpusError, loadCorpus } from './loader';
 export type { Corpus } from './loader';
-export { KINDS } from './schema';
-export type { Accomplishment, Affiliation, Kind } from './schema';
+export { getCorpus, getIdentity } from './site';
+export { KINDS, KIND_LABELS } from './schema';
+export type { Accomplishment, Affiliation, Identity, Kind } from './schema';

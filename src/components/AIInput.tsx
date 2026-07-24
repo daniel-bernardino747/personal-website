@@ -1,6 +1,7 @@
 "use client";
 
-import { INITIAL_RESPONSES } from "@/data/responses";
+import { useIdentity } from "@/components/IdentityProvider";
+import { buildInitialResponses } from "@/data/responses";
 import { useChatStore } from "@/store/useChatStore";
 import { useChatMutation } from '@/hooks/useChatMutation';
 import { motion } from "framer-motion";
@@ -56,13 +57,14 @@ function QuickAction({ icon, label, color, delay, onClick }: QuickActionProps) {
 }
 
 export function AIInput() {
+  const identity = useIdentity();
   const router = useRouter();
   const { addMessage, setInitialQuery } = useChatStore();
 
   const [placeholder, setPlaceholder] = useState("");
 
-  
-  const phrases = useMemo(() => Object.values(INITIAL_RESPONSES).map(r => r.phrase), []);
+  const responses = useMemo(() => buildInitialResponses(identity), [identity]);
+  const phrases = useMemo(() => Object.values(responses).map(r => r.phrase), [responses]);
   
   const [phraseIndex, setPhraseIndex] = useState(0);
 
@@ -103,7 +105,7 @@ export function AIInput() {
   const mutation = useChatMutation();
 
   const handleAction = (query: string) => {
-    const entry = INITIAL_RESPONSES[query];
+    const entry = responses[query];
     const phrase = entry ? entry.phrase : query;
     
     addMessage({ role: 'user', text: phrase });

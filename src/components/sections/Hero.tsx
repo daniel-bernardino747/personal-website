@@ -1,7 +1,7 @@
 "use client";
 
 import { AvatarVideo } from "@/components/AvatarVideo";
-import { profile } from "@/data/profile";
+import { useIdentity } from "@/components/IdentityProvider";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { AnimatePresence } from "framer-motion";
@@ -10,10 +10,11 @@ import { AIInput } from "../AIInput";
 import { ScrollMessage } from "./ScrollMessage";
 
 export function Hero() {
+  const identity = useIdentity();
   const prefersReducedMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
-  
-  const items = [profile.name, ...profile.role];
+
+  const items = [identity.name, ...identity.role];
 
   useEffect(() => {
     const delay = currentIndex === 0 ? 6000 : 2000;

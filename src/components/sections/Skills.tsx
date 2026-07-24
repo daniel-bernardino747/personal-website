@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react";
 import { TechBadge } from "@/components/ui/TechBadge";
-import { profile } from "@/data/profile";
+import { getIdentity } from "@/lib/corpus/site";
 
 const techStack = [
   "TypeScript",
@@ -18,6 +18,8 @@ const techStack = [
 ];
 
 export function Skills() {
+  const identity = getIdentity();
+
   return (
     <section id="skills" className="py-24 md:py-32 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
@@ -35,7 +37,7 @@ export function Skills() {
 
         <div className="font-mono text-sm text-muted flex items-center gap-2">
           <MapPin size={14} strokeWidth={2} aria-hidden="true" />
-          <span>{profile.location}</span>
+          <span>{identity.location}</span>
         </div>
       </div>
     </section>

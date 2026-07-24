@@ -1,10 +1,12 @@
 "use client";
 
-import { profile } from "@/data/profile";
+import { useIdentity } from "@/components/IdentityProvider";
 import { motion } from "framer-motion";
 import { Globe } from "lucide-react";
 
 export function BentoLocation() {
+  const identity = useIdentity();
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -21,8 +23,8 @@ export function BentoLocation() {
       </div>
       <div className="relative z-10">
         <h3 className="text-xl md:text-2xl font-bold uppercase tracking-tighter leading-none mb-1">
-          {profile.location.split(",")[0]}
-          <span className="block text-muted-foreground text-base font-medium tracking-normal mt-0.5">{profile.location.split(",")[1]}</span>
+          {identity.location.split(",")[0]}
+          <span className="block text-muted-foreground text-base font-medium tracking-normal mt-0.5">{identity.location.split(",")[1]}</span>
         </h3>
         <div className="flex items-center gap-2 mt-2">
            <span className="text-[8px] font-mono text-muted-foreground/40 uppercase tracking-widest">28°40&apos;39&quot; S, 49°22&apos;11&quot; W</span>

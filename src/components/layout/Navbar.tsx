@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { profile } from "@/data/profile";
+import { useIdentity } from "@/components/IdentityProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Moon, Sun } from "lucide-react";
 import Link from "next/link";
@@ -39,6 +39,7 @@ const itemVariants = {
 };
 
 export function Navbar() {
+  const identity = useIdentity();
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -108,7 +109,7 @@ export function Navbar() {
         <motion.div variants={itemVariants} className="h-4 w-px bg-border mx-1 hidden md:block" />
 
         <motion.div variants={itemVariants}>
-          <a href={profile.bookingUrl} target="_blank" rel="noopener noreferrer">
+          <a href={identity.bookingUrl} target="_blank" rel="noopener noreferrer">
             <Button
               size="sm"
               className="rounded-full bg-accent text-white border border-accent/20 hover:bg-accent/80 flex gap-2 items-center shadow-lg shadow-accent/20 transition-all active:scale-95"
