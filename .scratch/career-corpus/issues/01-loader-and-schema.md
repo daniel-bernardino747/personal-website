@@ -8,15 +8,19 @@ Tests point a fixture Corpus at the loader and assert on what comes out — neve
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Vitest is added to the project and runs via an npm script
-- [ ] A well-formed fixture Corpus parses into the expected typed Affiliations and Accomplishments
-- [ ] A missing required field fails loudly rather than yielding a partial record
-- [ ] An Accomplishment referencing a nonexistent Affiliation is rejected
-- [ ] An Accomplishment may have no Affiliation and still loads (talks, personal projects)
-- [ ] Featured filtering returns exactly the marked subset
-- [ ] Drafts (no Metric) are excluded by default and retrievable on request
-- [ ] Queries by kind and by Affiliation return the correct subsets
-- [ ] An empty Corpus is handled as a legitimate state, not a crash
-- [ ] The loader is safe to call at build time in a Server Component and is not pulled into any client bundle
+- [x] Vitest is added to the project and runs via an npm script
+- [x] A well-formed fixture Corpus parses into the expected typed Affiliations and Accomplishments
+- [x] A missing required field fails loudly rather than yielding a partial record
+- [x] An Accomplishment referencing a nonexistent Affiliation is rejected
+- [x] An Accomplishment may have no Affiliation and still loads (talks, personal projects)
+- [x] Featured filtering returns exactly the marked subset
+- [x] Drafts (no Metric) are excluded by default and retrievable on request
+- [x] Queries by kind and by Affiliation return the correct subsets
+- [x] An empty Corpus is handled as a legitimate state, not a crash
+- [x] The loader is safe to call at build time in a Server Component and is not pulled into any client bundle
+
+## Comments
+
+Implemented in `src/lib/corpus/` — `schema.ts` (zod schemas + `Affiliation`/`Accomplishment` types), `loader.ts` (`loadCorpus`, `CorpusError`), `index.ts` (public API). Frontmatter is read with `gray-matter`, validated with `zod`, and the file basename is the stable id. The `server-only` import keeps the loader out of client bundles; Vitest aliases it to its shipped no-op stub. Tests live in `loader.test.ts` against fixture Corpus directories under `__fixtures__/`. `npm test` runs the suite (15 tests). Content lives under `content/{affiliations,accomplishments}/*.md`; a missing/empty `content/` is a legitimate empty state.
