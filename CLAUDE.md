@@ -15,3 +15,7 @@ Os cinco papéis canônicos, sem renomeações. See `docs/agents/triage-labels.m
 ### Domain docs
 
 Single-context — `CONTEXT.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/domain.md`.
+
+### Capture
+
+Interview que grava um Accomplishment ou Affiliation no Corpus (`content/`), sem inventar número. See `.claude/skills/capture/SKILL.md`.
