@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "language": "en",
+  "targetRole": "Senior Backend Engineer",
+  "header": {
+    "name": "Ada Fixture",
+    "role": "Senior Backend Engineer",
+    "location": "Florianópolis, Brazil",
+    "email": "ada@example.com",
+    "links": [
+      { "label": "github.com/ada", "url": "https://github.com/ada" },
+      { "label": "linkedin.com/in/ada", "url": "https://linkedin.com/in/ada" }
+    ]
+  },
+  "summary": "Backend engineer who ships measurable performance wins and defends every number.",
+  "sections": [
+    {
+      "title": "Experience",
+      "entries": [
+        {
+          "source": "caching-layer",
+          "text": "Rebuilt the read path around a cache, cutting p95 latency from 800ms to 120ms.",
+          "detail": "Acme Corp · Senior Software Engineer · 2022–2024"
+        },
+        {
+          "source": "api-migration",
+          "text": "Led the migration of 40 endpoints to a typed API contract with zero downtime."
+        }
+      ]
+    },
+    {
+      "title": "Talks",
+      "entries": [
+        {
+          "source": "react-talk",
+          "text": "Spoke on rendering performance to an audience of 300 at a regional React meetup."
+        }
+      ]
+    }
+  ]
+}

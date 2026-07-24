@@ -8,15 +8,35 @@ Tectonic is the engine — a single binary that fetches only the packages the do
 
 **Blocked by:** 01 — loader and schema (generation reads the Corpus through it).
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
-- [ ] Tectonic is installed and documented as a prerequisite
-- [ ] Pasting a job posting into the generation skill produces a Selection naming the role, sections, and chosen Accomplishments in order
-- [ ] Every entry in a Selection carries a reference to the source file it came from
-- [ ] The model emits only the Selection — it never writes LaTeX
-- [ ] A versioned LaTeX template renders a Selection to PDF via Tectonic
-- [ ] A Selection that does not match the expected shape fails to render rather than producing a malformed document
-- [ ] Paste-ready LinkedIn and GitHub blocks are produced from the same Corpus
-- [ ] A Portuguese resume can be produced by translating the English Corpus at render time
-- [ ] Selections and PDFs are written to a gitignored directory outside the static export
-- [ ] A render smoke check asserts a non-trivial PDF is produced from a fixture Selection
+- [x] Tectonic is installed and documented as a prerequisite
+- [x] Pasting a job posting into the generation skill produces a Selection naming the role, sections, and chosen Accomplishments in order
+- [x] Every entry in a Selection carries a reference to the source file it came from
+- [x] The model emits only the Selection — it never writes LaTeX
+- [x] A versioned LaTeX template renders a Selection to PDF via Tectonic
+- [x] A Selection that does not match the expected shape fails to render rather than producing a malformed document
+- [x] Paste-ready LinkedIn and GitHub blocks are produced from the same Corpus
+- [x] A Portuguese resume can be produced by translating the English Corpus at render time
+- [x] Selections and PDFs are written to a gitignored directory outside the static export
+- [x] A render smoke check asserts a non-trivial PDF is produced from a fixture Selection
+
+## Comments
+
+**Implementation (`/implement 04`).** Render pipeline in `src/lib/render/resume.ts`
+(self-contained, Corpus-free so it stays fixture-testable): a strict, versioned
+zod `selectionSchema`, LaTeX escaping, a minimal versioned template, and
+`renderSelectionToTex` / `renderSelectionToPdf` / `isTectonicAvailable`. A
+malformed Selection throws `RenderError` before any file is written — the
+structural standardisation of ADR-0004. `source` is validated on every entry but
+kept out of the rendered PDF (it is the ADR-0003 audit field, not résumé content).
+
+The `generate` skill (`.claude/skills/generate/SKILL.md`) governs Selection
+production, Portuguese-at-render-time, and the LinkedIn/GitHub blocks; the model
+emits only the Selection JSON. `scripts/render-resume.mjs` (`npm run render`) is
+the one mechanical step that touches LaTeX; it cross-checks every `source` against
+`content/accomplishments/` and fails loudly on a stale reference (story 23).
+Output lands in the gitignored `generated/`. Tectonic 0.16.9 installed via scoop.
+
+Smoke + unit coverage in `src/lib/render/resume.test.ts`; the Tectonic smoke test
+`skipIf`s when the binary is absent so the suite stays green without it.

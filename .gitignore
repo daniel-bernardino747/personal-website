@@ -16,6 +16,11 @@
 # production
 /build
 
+# generated career output — Selections, résumé PDFs, LinkedIn/GitHub blocks.
+# Kept out of the repo and outside the static export so a résumé naming a target
+# employer is never committed or published (spec stories 24, 25).
+/generated
+
 # misc
 .DS_Store
 *.pem
