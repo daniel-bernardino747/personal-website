@@ -115,6 +115,7 @@ date: "2024-03-15"              # quote the date so YAML keeps it a string
 kind: engineering
 metric: "p95 latency 800ms to 120ms"
 featured: false
+title: "Read-path cache"        # omit unless the thing has a real name
 ---
 
 Rebuilt the read path around a cache, cutting p95 latency from 800ms to 120ms.
@@ -126,13 +127,32 @@ Field notes:
 - Always quote the `date` value so a full date isn't reparsed as a YAML
   timestamp.
 - The body must not be empty — an Accomplishment with no statement is rejected.
+- `title` is the **display name** of a named thing — "BaixarMusica", "PetriCar".
+  The project gallery headlines a card with it, falling back to the Affiliation
+  and then to no heading, so a `kind: project` file should almost always carry
+  one. Ask Daniel for the name; never title-case the filename into a name he
+  never used. Omit it for an Accomplishment that is a claim rather than a
+  product.
+- For a project, close the body with the stack — `Built with Next.js, Prisma,
+  Zod.` — plus the public links, written as `Live: https://…` for a deployed URL
+  and `Repo: https://…` for a public source repository. Record either, both, or
+  neither; the site reads that convention back out to render stack chips and
+  clickable links, so following it is what makes a card rich rather than plain.
+  Only record a repository Daniel confirms is **public** — a private URL renders
+  as a link that 404s for every visitor.
 
 ### When it can't be quantified yet — the draft
 
 If step 2 produced no real number, write the file **without a `metric` field**.
 The loader marks any Accomplishment lacking a metric as a draft, excludes it from
-the site and from resume Selections, and keeps it retrievable so Daniel can
-strengthen it later. Keep the body honest about what's missing:
+resume Selections, and keeps it retrievable so Daniel can strengthen it later.
+Keep the body honest about what's missing:
+
+The metric gate is a **résumé** rule, not a blanket one: a Selection must never
+imply a result it cannot back. The site's project gallery opts back in with
+`byKind('project', { includeDrafts: true })`, because a shipped project whose
+numbers aren't recovered yet is still real, and its card claims nothing numeric
+by appearing. Anything that *asserts* a result still needs the metric.
 
 ```markdown
 ---

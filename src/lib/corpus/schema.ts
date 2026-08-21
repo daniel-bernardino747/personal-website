@@ -65,6 +65,10 @@ export const accomplishmentFrontmatterSchema = z.object({
   kind: z.enum(KINDS),
   metric: z.string().min(1).optional(),
   featured: z.boolean().default(false),
+  // The display name — "BaixarMusica", not the `baixarmusica` filename. Optional
+  // because most Accomplishments are a claim rather than a named thing; a project
+  // gallery needs it, a résumé bullet does not.
+  title: z.string().min(1).optional(),
 });
 
 /**
@@ -121,6 +125,12 @@ export interface Accomplishment {
   date: string;
   kind: Kind;
   metric?: string;
+  /**
+   * The display name, when the Accomplishment is a named thing. Absent for the
+   * many that are a claim rather than a product — consumers fall back to the
+   * Affiliation or render no heading.
+   */
+  title?: string;
   /** The prose statement — the markdown body of the file. */
   statement: string;
   featured: boolean;

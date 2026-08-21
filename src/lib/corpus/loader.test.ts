@@ -36,6 +36,13 @@ describe('loadCorpus', () => {
       expect(caching?.affiliation?.organisation).toBe('Acme Corp');
     });
 
+    it('reads the display title when one is recorded, and leaves it absent otherwise', () => {
+      const project = corpus.accomplishments.find((a) => a.id === 'side-project');
+      expect(project?.title).toBe('Open Toolkit');
+      const caching = corpus.accomplishments.find((a) => a.id === 'caching-layer');
+      expect(caching?.title).toBeUndefined();
+    });
+
     it('loads an Accomplishment that has no Affiliation', () => {
       const talk = corpus.accomplishments.find((a) => a.id === 'react-talk');
       expect(talk).toBeDefined();
@@ -76,6 +83,22 @@ describe('loadCorpus', () => {
       const ids = corpus.byKind('engineering').map((a) => a.id).sort();
       expect(ids).toEqual(['api-migration', 'caching-layer']);
       expect(corpus.byKind('talk').map((a) => a.id)).toEqual(['react-talk']);
+    });
+
+    it('includes drafts of a kind only when the caller opts in', () => {
+      const ids = corpus
+        .byKind('engineering', { includeDrafts: true })
+        .map((a) => a.id)
+        .sort();
+      expect(ids).toEqual(['api-migration', 'caching-layer', 'draft-idea']);
+    });
+
+    it('includes drafts of an Affiliation only when the caller opts in', () => {
+      const ids = corpus
+        .byAffiliation('acme-corp', { includeDrafts: true })
+        .map((a) => a.id)
+        .sort();
+      expect(ids).toEqual(['api-migration', 'caching-layer', 'draft-idea']);
     });
 
     it('returns records belonging to an Affiliation, excluding drafts', () => {

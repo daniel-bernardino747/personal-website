@@ -48,8 +48,19 @@ export interface Corpus {
   drafts: Accomplishment[];
   /** Records marked Featured, for the public site. */
   featured: Accomplishment[];
-  byKind(kind: Kind): Accomplishment[];
-  byAffiliation(affiliationId: string): Accomplishment[];
+  byKind(kind: Kind, options?: QueryOptions): Accomplishment[];
+  byAffiliation(affiliationId: string, options?: QueryOptions): Accomplishment[];
+}
+
+/** Options accepted by the Corpus's filtering queries. */
+export interface QueryOptions {
+  /**
+   * Include Accomplishments that carry no Metric. Off by default: a résumé must
+   * never claim an unmeasured result. The public site's project gallery opts in
+   * — a shipped project whose numbers aren't recovered yet is still a real
+   * project, and its card makes no numeric claim by showing it.
+   */
+  includeDrafts?: boolean;
 }
 
 interface ParsedFile {
@@ -156,7 +167,7 @@ function parseAccomplishment(
   { id, data, body }: ParsedFile,
   affiliationsById: Map<string, Affiliation>,
 ): Accomplishment {
-  const { affiliation: affiliationId, date, kind, metric, featured } =
+  const { affiliation: affiliationId, date, kind, metric, featured, title } =
     validateFrontmatter(
       accomplishmentFrontmatterSchema,
       'Accomplishment',
@@ -187,6 +198,7 @@ function parseAccomplishment(
     date,
     kind,
     metric,
+    title,
     statement: body,
     featured,
     isDraft: metric === undefined,
@@ -214,14 +226,17 @@ export function loadCorpus(rootDir: string = defaultContentDir()): Corpus {
   const records = allAccomplishments.filter((a) => !a.isDraft);
   const drafts = allAccomplishments.filter((a) => a.isDraft);
 
+  const pool = (options?: QueryOptions) =>
+    options?.includeDrafts ? allAccomplishments : records;
+
   return {
     identity,
     affiliations,
     accomplishments: records,
     drafts,
     featured: records.filter((a) => a.featured),
-    byKind: (kind) => records.filter((a) => a.kind === kind),
-    byAffiliation: (affiliationId) =>
-      records.filter((a) => a.affiliationId === affiliationId),
+    byKind: (kind, options) => pool(options).filter((a) => a.kind === kind),
+    byAffiliation: (affiliationId, options) =>
+      pool(options).filter((a) => a.affiliationId === affiliationId),
   };
 }
