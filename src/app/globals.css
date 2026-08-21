@@ -20,6 +20,10 @@
   --muted-foreground: oklch(0.4 0 0);
   --accent: oklch(0.696 0.17 162.48);
   --accent-foreground: oklch(0.985 0 0);
+  /* The brand green reads at only 1.96:1 as text on a light surface. This is the
+     same hue darkened to clear 4.5:1, for accent-coloured *text* and icons —
+     `--accent` stays the fill colour so the brand is unchanged. */
+  --accent-text: oklch(0.47 0.14 162.48);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.141 0.005 285.823 / 15%);
   --input: oklch(0.141 0.005 285.823 / 15%);
@@ -103,6 +107,41 @@
       transparent 100%
     );
   }
+
+  /* Malha viária de Criciúma. O PNG é opaco (linhas claras sobre carvão), então
+     entra como máscara de luminância sobre um preenchimento chapado — assim as
+     ruas herdam a cor do tema em vez de arrastar o fundo escuro da imagem para
+     o tema claro. Sem `mask-mode: luminance` o retângulo inteiro pintaria, daí
+     o @supports. */
+  .map-stencil {
+    background-color: currentColor;
+  }
+  @supports (mask-mode: luminance) or (-webkit-mask-source-type: luminance) {
+    .map-stencil {
+      mask-image: url("/criciuma-city-roads.png");
+      -webkit-mask-image: url("/criciuma-city-roads.png");
+      mask-mode: luminance;
+      -webkit-mask-source-type: luminance;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+      /* Zoom no centro denso da cidade — a imagem original é muito larga. */
+      mask-size: 220%;
+      -webkit-mask-size: 220%;
+      mask-position: 53% 45%;
+      -webkit-mask-position: 53% 45%;
+    }
+  }
+  @supports not ((mask-mode: luminance) or (-webkit-mask-source-type: luminance)) {
+    .map-stencil {
+      background-color: transparent;
+      background-image: url("/criciuma-city-roads.png");
+      background-repeat: no-repeat;
+      background-size: 220%;
+      background-position: 53% 45%;
+      mix-blend-mode: screen;
+    }
+  }
+
   html {
     @apply font-sans;
   }
@@ -153,6 +192,9 @@
   --muted-foreground: oklch(0.75 0 0);
   --accent: oklch(0.696 0.17 162.48);
   --accent-foreground: oklch(0.985 0 0);
+  /* On a dark surface the brand green already clears 7:1, so accent text is the
+     brand colour itself. */
+  --accent-text: oklch(0.696 0.17 162.48);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -188,6 +230,13 @@
 
 @theme inline {
   --shadow-navbar: var(--shadow-navbar);
+  /* `--surface` was defined but never registered as a colour, so every
+     `bg-surface` in the bento and the navbar resolved to nothing and the cards
+     rendered fully transparent over the page background. Registering it here is
+     what makes card text sit on a card instead of on the dotted backdrop. */
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-accent-text: var(--accent-text);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

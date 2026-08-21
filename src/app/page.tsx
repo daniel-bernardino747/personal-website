@@ -10,7 +10,9 @@ export default function Home() {
     <>
       <Hero />
       <BentoAbout affiliations={corpus.affiliations} />
-      <Projects projects={corpus.byKind("project")} />
+      {/* The gallery shows projects without a Metric too — that gate exists so a
+          résumé never implies an unmeasured result, not to hide shipped work. */}
+      <Projects projects={corpus.byKind("project", { includeDrafts: true })} />
     </>
   );
 }

@@ -36,14 +36,14 @@ export default function GuestbookPage() {
     <div className="max-w-2xl mx-auto px-6 py-16">
       <Link
         href="/"
-        className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
       >
         <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
         Back to home
       </Link>
 
       <h1 className="text-4xl font-bold mb-4">Guestbook</h1>
-      <p className="text-muted text-lg mb-12">
+      <p className="text-muted-foreground text-lg mb-12">
         Leave a note — say hello, share feedback, or just drop a wave.
       </p>
 

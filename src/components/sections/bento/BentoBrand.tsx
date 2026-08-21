@@ -52,9 +52,14 @@ export function BentoBrand() {
         </motion.div>
         
         {/* Absolute "Let's Connect" Button (does not affect centering) */}
-        <motion.a 
-          href="#contact"
-          className="absolute bottom-4 px-4 py-2 bg-accent/10 border border-accent/20 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] text-accent/80 hover:bg-accent/20 hover:border-accent/40 hover:text-accent transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto"
+        <motion.a
+          href={identity.social.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Connect with ${identity.name} on LinkedIn (opens in a new tab)`}
+          // Revealed on hover, but a keyboard user never hovers — without the
+          // focus-visible pair this link is focusable and invisible.
+          className="absolute bottom-4 px-4 py-2 bg-accent/10 border border-accent/20 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] text-accent-text hover:bg-accent/20 hover:border-accent/40 transition-all duration-300 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 translate-y-4 group-hover:translate-y-0 focus-visible:translate-y-0 pointer-events-none group-hover:pointer-events-auto focus-visible:pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           Let&apos;s Connect
         </motion.a>

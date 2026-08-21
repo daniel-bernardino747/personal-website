@@ -15,20 +15,20 @@ export default function AchievementsPage() {
     <div className="max-w-4xl mx-auto px-6 py-16">
       <Link
         href="/"
-        className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
       >
         <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
         Back to home
       </Link>
 
       <h1 className="text-4xl font-bold mb-4">Featured Accomplishments</h1>
-      <p className="text-muted text-lg mb-16 max-w-xl">
+      <p className="text-muted-foreground text-lg mb-16 max-w-xl">
         The work I consider most significant — the highlights, without reading
         everything.
       </p>
 
       {featured.length === 0 ? (
-        <p className="text-muted">
+        <p className="text-muted-foreground">
           Featured accomplishments will appear here as they are captured.
         </p>
       ) : (
@@ -50,7 +50,7 @@ export default function AchievementsPage() {
                   <Trophy
                     size={40}
                     strokeWidth={1.5}
-                    className="text-muted"
+                    className="text-muted-foreground"
                     aria-hidden="true"
                   />
                 </div>
@@ -58,7 +58,7 @@ export default function AchievementsPage() {
 
               {/* Text block */}
               <div className="flex-1">
-                <p className="font-mono text-sm text-muted mb-2">
+                <p className="font-mono text-sm text-muted-foreground mb-2">
                   {accomplishment.date}
                 </p>
                 <h2 className="text-2xl font-bold mb-1">
@@ -70,7 +70,7 @@ export default function AchievementsPage() {
                     {accomplishment.metric}
                   </p>
                 )}
-                <p className="text-muted leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed">
                   {accomplishment.statement}
                 </p>
               </div>
