@@ -21,9 +21,17 @@
 # employer is never committed or published (spec stories 24, 25).
 /generated
 
+# the career Corpus — the real Accomplishments and Affiliations behind every
+# résumé. The repo is public; the career record is not, so it lives only on disk
+# and in the deploy. `content.example/` is the committed template — see README.
+/content
+
 # misc
 .DS_Store
 *.pem
+
+# agent-local settings — machine-specific paths, not shared configuration
+.claude/settings.local.json
 
 # debug
 npm-debug.log*
