@@ -25,6 +25,14 @@ Featured, draft). The Selection's field-level authority is
 `src/lib/render/resume.ts` (`selectionSchema`) — if this document and the schema
 ever disagree, the schema wins; update this skill to match.
 
+The layout that module emits is derived from
+[celiobjunior/resume-template](https://github.com/celiobjunior/resume-template)
+(Apache-2.0): 1cm margins, ruled section headings, and a two-line context block
+per group — organisation left with location flush right, role left with period
+flush right. The licence notice travels in every generated `.tex`. Changing the
+layout means editing `resume.ts` and bumping `SELECTION_VERSION`, never hand-
+writing a `.tex`.
+
 ## The one rule that overrides everything
 
 **Never state a fact, a number, or an outcome that is not in the Corpus.**
@@ -86,12 +94,12 @@ generated output anywhere else.
 
    ```jsonc
    {
-     "version": 1,                       // must equal SELECTION_VERSION in resume.ts
+     "version": 3,                       // must equal SELECTION_VERSION in resume.ts
      "language": "en",                   // "en" or "pt"
      "targetRole": "Senior Backend Engineer",
      "header": {
        "name": "Daniel Bernardino",      // from identity.md
-       "role": "Senior Backend Engineer",// the headline — tailored to the posting
+       "role": "Senior Backend Engineer",// optional headline — tailored to the posting
        "location": "Santa Catarina, Brazil",
        "email": "daniel@example.com",    // from identity.md social.email
        "links": [
@@ -102,11 +110,46 @@ generated output anywhere else.
      "sections": [
        {
          "title": "Experience",
-         "entries": [
+         "groups": [
            {
-             "source": "caching-layer",  // == content/accomplishments/caching-layer.md
-             "text": "Rebuilt the read path around a cache, cutting p95 latency 800ms to 120ms.",
-             "detail": "Acme Corp · Senior Software Engineer · 2022–2024"  // optional context line
+             // One employer, client, or project — written once, bullets beneath it.
+             // The four parts are set apart: organisation left / location right,
+             // then role left / period right. Only `organisation` is required.
+             "heading": {
+               "organisation": "Acme Corp",
+               "location": "Berlin (Remote)",
+               "role": "Senior Software Engineer",
+               "period": "2022 - 2024"
+             },
+             "entries": [
+               {
+                 "source": "caching-layer",  // == content/accomplishments/caching-layer.md
+                 "text": "Rebuilt the read path around a cache, cutting p95 latency 800ms to 120ms."
+               },
+               {
+                 "source": "api-migration",
+                 "text": "Migrated 40 endpoints to a typed API contract with zero downtime."
+               },
+               {
+                 "source": "api-migration",
+                 "label": "Techs & frameworks",  // optional bold lead-in
+                 "text": "Node.js, PostgreSQL, Redis, TypeScript."
+               }
+             ]
+           }
+         ]
+       },
+       {
+         "title": "Education",
+         "groups": [
+           // A heading with no entries — a context line standing on its own.
+           {
+             "heading": {
+               "organisation": "Driven Education",
+               "location": "Remote",
+               "role": "Web Fullstack Development",
+               "period": "2022 - 2023"
+             }
            }
          ]
        }
@@ -114,12 +157,31 @@ generated output anywhere else.
    }
    ```
 
+   **Group by Affiliation, always.** The Corpus stores each Accomplishment on its
+   own, carrying its own `affiliation`, so three things done at one employer
+   arrive as three unrelated records. Putting each in its own group renders them
+   as three separate-looking jobs — a real defect on the page. Every
+   Accomplishment sharing an `affiliation` belongs in one group, whose `heading`
+   comes from `content/affiliations/<id>.md`: `organisation` and `role` from the
+   frontmatter of the same name, `period` written from `period.start`/`period.end`
+   (an ongoing Affiliation reads "2025 - Present"). Order the groups most recent
+   first, and the bullets inside a group by relevance to the posting. A group with
+   no `heading` is a bare list — right only for a section whose lines need no
+   attribution.
+
    Rules the schema enforces — a Selection that breaks them **fails to render**,
    which is by design, not a bug to work around:
    - `version` must equal the template's `SELECTION_VERSION`.
-   - Every entry needs a non-empty `source` and `text`. `detail` is optional.
-   - At least one section, each with at least one entry.
-   - Unknown fields are rejected. Do not invent keys the schema does not name.
+   - Every entry needs a non-empty `source` and `text`; `label` is its only other
+     allowed field.
+   - `heading` is an **object**, never a pre-joined string — a version-2 string
+     heading is refused. `organisation` is required inside it; `location`, `role`
+     and `period` are optional.
+   - At least one section, each with at least one group. A group needs a
+     `heading`, `entries`, or both — a group with neither renders nothing and is
+     refused.
+   - Unknown fields are rejected. Do not invent keys the schema does not name —
+     in particular there is no per-entry `detail`; context lives on the group.
    - `source` is an audit field and is **not printed** on the résumé — never put
      an id into `text`.
 
@@ -149,10 +211,11 @@ The Corpus is English ([ADR-0005](../../../docs/adr/0005-english-as-the-corpus-l
 Portuguese is produced at render time by **translating the Selection**, not by
 keeping a second Corpus. Build the Selection exactly as above, then:
 
-- Translate `text`, `summary`, `detail`, `header.role`, and the section `title`s
-  into Portuguese.
+- Translate `text`, `summary`, entry `label`s, the section `title`s, `header.role`,
+  and each heading's `role`, `location` and `period` into Portuguese.
 - Set `"language": "pt"` (the template switches hyphenation to Portuguese).
-- Leave `source`, `version`, and the header's `name`/`email`/`links` as they are.
+- Leave `source`, `version`, the heading's `organisation` (an organisation's name
+  is not translated), and the header's `name`/`email`/`links` as they are.
 
 Translation restates facts that are already in the Corpus, so it stays inside the
 non-fabrication rule — a translated Selection is still reviewed before it ships.

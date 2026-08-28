@@ -76,8 +76,10 @@ function knownSourceIds() {
 function checkSources(selection) {
   const cited = [];
   for (const section of selection?.sections ?? []) {
-    for (const entry of section?.entries ?? []) {
-      if (typeof entry?.source === 'string') cited.push(entry.source);
+    for (const group of section?.groups ?? []) {
+      for (const entry of group?.entries ?? []) {
+        if (typeof entry?.source === 'string') cited.push(entry.source);
+      }
     }
   }
 

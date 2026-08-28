@@ -11,6 +11,11 @@ import { z } from 'zod';
  * standardisation is structural, so a Selection that departs from the expected
  * shape fails to render here rather than producing a subtly different document.
  *
+ * The layout is derived from Celio B Junior's resume-template
+ * (https://github.com/celiobjunior/resume-template), Apache-2.0. Its notice is
+ * reproduced in every document this module emits, which is what that licence
+ * asks of a derivative work.
+ *
  * This module is deliberately self-contained — it depends on the Selection alone,
  * never on the Corpus loader — so it stays testable with a fixture Selection and
  * runnable from a plain Node script (see `scripts/render-resume.mjs`).
@@ -21,8 +26,14 @@ import { z } from 'zod';
  * refused rather than rendered, so a Selection authored against an old template
  * cannot silently produce a malformed résumé. Bump this whenever the template's
  * expectations of the Selection change.
+ *
+ * 3 — the group heading became structured (`organisation` / `location` / `role` /
+ * `period`) so the template can set organisation and location on one line and
+ * role and period on the next, each pair pushed apart with `\hfill`. A version-2
+ * Selection carried all of that as one pre-joined string, which cannot be split
+ * back apart, so it is refused rather than guessed at.
  */
-export const SELECTION_VERSION = 1;
+export const SELECTION_VERSION = 3;
 
 const linkSchema = z.strictObject({
   label: z.string().min(1),
@@ -33,23 +44,74 @@ const linkSchema = z.strictObject({
  * One résumé line: the model-compressed statement plus `source` — the id of the
  * Corpus file it came from. `source` is the audit trail ([ADR-0003](../../../docs/adr/0003-no-fabrication-with-source-traceability.md)):
  * it ties every claim back to what Daniel actually wrote and is never printed on
- * the résumé itself. `detail` is an optional context line (organisation · role ·
- * period).
+ * the résumé itself.
+ *
+ * `label` is an optional bold lead-in for a line that is a labelled list rather
+ * than a claim — "Techs & frameworks: Next.js, Prisma, Zod." It renders as
+ * `\textbf{label:}` ahead of the text.
  */
 const entrySchema = z.strictObject({
   source: z.string().min(1),
+  label: z.string().min(1).optional(),
   text: z.string().min(1),
-  detail: z.string().min(1).optional(),
 });
+
+/**
+ * A group's context line, kept in parts rather than pre-joined. The template sets
+ * `organisation` bold on the left of its line with `location` flush right, then
+ * `role` and `period` the same way on the line beneath — a layout that needs the
+ * four values separately. A single pre-joined string could not be split back into
+ * them, which is why version 3 refuses one.
+ *
+ * Only `organisation` is required: a personal project has no location, and a
+ * degree may have no role.
+ */
+const headingSchema = z.strictObject({
+  organisation: z.string().min(1),
+  location: z.string().min(1).optional(),
+  role: z.string().min(1).optional(),
+  period: z.string().min(1).optional(),
+});
+
+type Heading = z.infer<typeof headingSchema>;
+
+/**
+ * The bullets that share one context line — an employer, a client, a project.
+ * The Corpus stores each Accomplishment on its own, carrying its own affiliation,
+ * so three things done at one employer arrive as three unrelated records; without
+ * this level they render as three separate-looking jobs. The group is where the
+ * Selection states that they belong together: `heading` is written once and its
+ * `entries` sit beneath it.
+ *
+ * A group with no `heading` is a bare list of bullets — right for a section whose
+ * lines need no attribution. A group with a `heading` and no `entries` is a
+ * context line standing alone — how a degree appears under Education. A group
+ * with neither says nothing at all, and is refused.
+ */
+const groupSchema = z
+  .strictObject({
+    heading: headingSchema.optional(),
+    entries: z.array(entrySchema).default([]),
+  })
+  .refine((group) => group.heading !== undefined || group.entries.length > 0, {
+    message:
+      'a group needs a heading, entries, or both — an empty group renders nothing',
+  });
 
 const sectionSchema = z.strictObject({
   title: z.string().min(1),
-  entries: z.array(entrySchema).min(1),
+  groups: z.array(groupSchema).min(1),
 });
 
+/**
+ * The résumé header. `role` is optional: the reference template names the person
+ * and their contact details only, but a Selection tailored to one posting often
+ * wants a headline under the name, so it renders when present and is omitted
+ * otherwise.
+ */
 const headerSchema = z.strictObject({
   name: z.string().min(1),
-  role: z.string().min(1),
+  role: z.string().min(1).optional(),
   location: z.string().min(1),
   email: z.string().min(1),
   links: z.array(linkSchema).default([]),
@@ -95,6 +157,19 @@ const LANGUAGE_BABEL: Record<Selection['language'], string> = {
   pt: 'portuguese',
 };
 
+/**
+ * The upstream template's licence notice, carried into every generated document.
+ * Apache-2.0 asks a derivative work to retain the copyright notice and a pointer
+ * to the licence; the `.tex` is where a reader of the output can see it.
+ */
+const TEMPLATE_NOTICE = [
+  '% Resume layout derived from https://github.com/celiobjunior/resume-template',
+  '% Copyright (c) 2025 Celio B Junior. Licensed under the Apache License, Version 2.0.',
+  '% You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0',
+  '%',
+  '% Generated by src/lib/render/resume.ts from a Selection - do not edit by hand.',
+];
+
 /** LaTeX's special characters, mapped to their escaped forms. */
 const LATEX_ESCAPES: Record<string, string> = {
   '\\': '\\textbackslash{}',
@@ -110,12 +185,53 @@ const LATEX_ESCAPES: Record<string, string> = {
 };
 
 /**
- * Escape LaTeX special characters in authored prose. A single pass over the
- * original string — the replacements themselves contain braces and backslashes,
- * but those are never rescanned — so no character is double-escaped.
+ * Typographic punctuation, mapped to a form the template's fonts can actually
+ * set. Tectonic runs XeTeX, which reads the source as Unicode, but `fontenc` T1
+ * binds the document to the legacy `ec-*` fonts. Those cover accented Latin — so
+ * "Criciúma" is fine — and nothing beyond it: an em dash, a curly quote or an
+ * ellipsis is dropped from the output with a warning and no error, leaving a
+ * silent hole in the résumé. Rewriting them to LaTeX's own forms is what keeps
+ * the reference template's fonts and still prints the character.
+ */
+const UNICODE_PUNCTUATION: Record<string, string> = {
+  '—': '---', // em dash
+  '–': '--', // en dash
+  '−': '-', // minus sign
+  '‑': '-', // non-breaking hyphen
+  '“': '``', // left double quote
+  '”': "''", // right double quote
+  '‘': '`', // left single quote
+  '’': "'", // right single quote
+  '…': '\\ldots{}',
+  ' ': '~', // no-break space
+  ' ': '~', // narrow no-break space
+  '·': '$\\cdot$',
+  '•': '$\\bullet$',
+  '→': '$\\rightarrow$',
+  '×': '$\\times$',
+  '≤': '$\\leq$',
+  '≥': '$\\geq$',
+};
+
+const UNICODE_PUNCTUATION_PATTERN = new RegExp(
+  `[${Object.keys(UNICODE_PUNCTUATION).join('')}]`,
+  'g',
+);
+
+/**
+ * Escape LaTeX special characters in authored prose, then rewrite typographic
+ * punctuation the template's fonts cannot set.
+ *
+ * Two passes, in this order. The first is a single pass over the original string
+ * — the replacements themselves contain braces and backslashes, but those are
+ * never rescanned — so no character is double-escaped. The second matches only
+ * the Unicode punctuation above, which the first pass never emits, so the
+ * backslashes it introduces are left alone.
  */
 function escapeLatex(text: string): string {
-  return text.replace(/[\\{}$&#%_~^]/g, (char) => LATEX_ESCAPES[char]);
+  return text
+    .replace(/[\\{}$&#%_~^]/g, (char) => LATEX_ESCAPES[char])
+    .replace(UNICODE_PUNCTUATION_PATTERN, (char) => UNICODE_PUNCTUATION[char]);
 }
 
 /**
@@ -127,6 +243,15 @@ function escapeLatex(text: string): string {
  */
 function escapeUrl(url: string): string {
   return url.replace(/[%#\\]/g, (char) => (char === '\\' ? '/' : `\\${char}`));
+}
+
+/**
+ * Strip the characters that would break a `\hypersetup` value. Those fields are
+ * brace-delimited, so an unbalanced brace in a name derails the preamble before
+ * any content is typeset.
+ */
+function escapePdfString(text: string): string {
+  return text.replace(/[\\{}]/g, '');
 }
 
 function formatIssues(error: z.ZodError): string {
@@ -150,49 +275,155 @@ function parseSelection(input: unknown): Selection {
   return result.data;
 }
 
-/** Assemble the LaTeX document for a validated Selection. */
-function buildTex(selection: Selection): string {
-  const { header, language, summary, sections } = selection;
-  const lines: string[] = [
-    '\\documentclass[11pt,a4paper]{article}',
+/** The preamble: page setup, PDF metadata, and the ruled section heading. */
+function buildPreamble(selection: Selection): string[] {
+  const { header, language } = selection;
+  const pdfName = escapePdfString(header.name);
+
+  return [
+    ...TEMPLATE_NOTICE,
+    '',
+    '\\documentclass[a4paper,10pt]{article}',
+    '',
+    '\\usepackage[utf8]{inputenc}',
+    '\\usepackage[T1]{fontenc}',
     `\\usepackage[${LANGUAGE_BABEL[language]}]{babel}`,
-    '\\usepackage[margin=2cm]{geometry}',
-    '\\usepackage{enumitem}',
-    '\\usepackage[hidelinks]{hyperref}',
-    '\\setlist[itemize]{leftmargin=1.2em,itemsep=2pt,topsep=2pt}',
-    '\\renewcommand{\\familydefault}{\\sfdefault}',
+    '\\usepackage{geometry}',
+    '\\usepackage{parskip}',
+    '\\usepackage{hyperref}',
+    '\\usepackage{titlesec}',
+    '',
+    '\\geometry{top=1.0cm, bottom=1.0cm, left=1.0cm, right=1.0cm}',
     '\\pagestyle{empty}',
-    '\\begin{document}',
+    '',
+    '\\hypersetup{',
+    `    pdftitle={CV - ${pdfName}},`,
+    `    pdfauthor={${pdfName}},`,
+    '    colorlinks=true,',
+    '    linkcolor=black,',
+    '    urlcolor=black,',
+    '    citecolor=black,',
+    '    bookmarksdepth=1',
+    '}',
+    '',
+    '\\setcounter{secnumdepth}{0}',
+    '',
+    '\\titleformat{\\section}',
+    '{\\Large\\bfseries}',
+    '{}',
+    '{0em}',
+    '{}',
+    '[\\titlerule\\vspace{0.5ex}]',
+    '',
+  ];
+}
+
+/** The centred identity block: name, optional headline, then the contact line. */
+function buildHeader(selection: Selection): string[] {
+  const { header } = selection;
+  const lines = [
     '\\begin{center}',
-    `{\\LARGE \\textbf{${escapeLatex(header.name)}}}\\\\[2pt]`,
-    `{\\large ${escapeLatex(header.role)}}\\\\[4pt]`,
+    `    {\\LARGE \\textbf{${escapeLatex(header.name)}}}`,
+    '    \\\\ [0.1cm]',
   ];
 
-  const contact = [escapeLatex(header.location), escapeLatex(header.email)];
-  for (const link of header.links) {
-    contact.push(`\\href{${escapeUrl(link.url)}}{${escapeLatex(link.label)}}`);
+  if (header.role !== undefined) {
+    lines.push(`    {\\large ${escapeLatex(header.role)}}`, '    \\\\ [0.1cm]');
   }
-  lines.push(contact.join(' \\quad '));
+
+  // Location, email and each profile link, separated by bullets. The email is a
+  // mailto link so the address is clickable in the PDF, not merely legible.
+  const contact = [
+    `    ${escapeLatex(header.location)}`,
+    `    Email: \\href{mailto:${escapeUrl(header.email)}}{${escapeLatex(header.email)}}`,
+    ...header.links.map(
+      (link) => `    \\href{${escapeUrl(link.url)}}{${escapeLatex(link.label)}}`,
+    ),
+  ];
+  lines.push(contact.join('\n    {\\textbullet}\n'));
   lines.push('\\end{center}');
+  return lines;
+}
+
+/**
+ * A group's context line. `organisation` sits bold on the left with `location`
+ * pushed flush right, and `role` and `period` do the same on the line beneath.
+ *
+ * `\hfill` and `\textbf` mean nothing in a PDF bookmark, so `\texorpdfstring`
+ * supplies a plain-text alternative — without it hyperref warns and the outline
+ * entry comes out mangled.
+ */
+function buildHeading(heading: Heading): string[] {
+  const organisation = escapeLatex(heading.organisation);
+  const location =
+    heading.location !== undefined ? escapeLatex(heading.location) : undefined;
+
+  const typeset =
+    location !== undefined
+      ? `\\textbf{${organisation}} \\hfill ${location}`
+      : `\\textbf{${organisation}}`;
+  const bookmark =
+    location !== undefined ? `${organisation} -- ${location}` : organisation;
+
+  const lines = [
+    '    \\subsection*{\\texorpdfstring{',
+    `            ${typeset}`,
+    '        }{',
+    `            ${bookmark}`,
+    '        }}',
+  ];
+
+  const role = heading.role !== undefined ? escapeLatex(heading.role) : undefined;
+  const period =
+    heading.period !== undefined ? escapeLatex(heading.period) : undefined;
+  if (role !== undefined && period !== undefined) {
+    lines.push(`    \\textit{${role} \\hfill ${period}}`);
+  } else if (role !== undefined) {
+    lines.push(`    \\textit{${role}}`);
+  } else if (period !== undefined) {
+    lines.push(`    \\textit{\\hfill ${period}}`);
+  }
+
+  return lines;
+}
+
+/** Assemble the LaTeX document for a validated Selection. */
+function buildTex(selection: Selection): string {
+  const { summary, sections } = selection;
+  const lines: string[] = [
+    ...buildPreamble(selection),
+    '\\begin{document}',
+    '',
+    ...buildHeader(selection),
+    '',
+  ];
 
   if (summary !== undefined) {
-    lines.push('\\vspace{6pt}');
-    lines.push(escapeLatex(summary));
+    lines.push(escapeLatex(summary), '');
   }
 
   for (const section of sections) {
-    lines.push(`\\section*{${escapeLatex(section.title)}}`);
-    lines.push('\\begin{itemize}');
-    for (const entry of section.entries) {
-      if (entry.detail !== undefined) {
-        lines.push(
-          `\\item {\\small\\itshape ${escapeLatex(entry.detail)}}\\\\ ${escapeLatex(entry.text)}`,
-        );
-      } else {
-        lines.push(`\\item ${escapeLatex(entry.text)}`);
+    lines.push(`\\section{${escapeLatex(section.title)}}`);
+    for (const group of section.groups) {
+      if (group.heading !== undefined) {
+        lines.push(...buildHeading(group.heading));
+      }
+      // A heading-only group — a degree with no bullets — emits no list at all:
+      // an empty itemize is a LaTeX error, not an empty space.
+      if (group.entries.length > 0) {
+        lines.push('        \\begin{itemize}');
+        for (const entry of group.entries) {
+          const text = escapeLatex(entry.text);
+          const body =
+            entry.label !== undefined
+              ? `\\textbf{${escapeLatex(entry.label)}:} ${text}`
+              : text;
+          lines.push(`            \\item ${body}`);
+        }
+        lines.push('        \\end{itemize}');
       }
     }
-    lines.push('\\end{itemize}');
+    lines.push('');
   }
 
   lines.push('\\end{document}');

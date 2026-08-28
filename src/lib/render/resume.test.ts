@@ -19,7 +19,8 @@ import sampleSelection from './__fixtures__/sample-selection.json';
  * a PDF through a fixed LaTeX template ([ADR-0004](../../../docs/adr/0004-structured-selection-with-a-fixed-template.md)).
  * These tests fix the pipeline's external behaviour: what a valid Selection
  * produces, and that a malformed one fails loudly rather than yielding a subtly
- * different document. They say nothing about how the `.tex` is assembled.
+ * different document. They say nothing about how the `.tex` is assembled, beyond
+ * the few structural choices the layout depends on.
  */
 describe('renderSelectionToTex', () => {
   it('renders a valid Selection into a LaTeX document carrying its content', () => {
@@ -33,6 +34,66 @@ describe('renderSelectionToTex', () => {
     expect(tex).toContain('Experience');
     expect(tex).toContain('Talks');
     expect(tex).toContain('cutting p95 latency from 800ms to 120ms');
+  });
+
+  it("retains the upstream template's Apache-2.0 notice in the generated document", () => {
+    // The layout is a derivative of celiobjunior/resume-template; the licence
+    // asks that the copyright notice travel with the work, and the `.tex` is
+    // where a reader of the output can see it.
+    const tex = renderSelectionToTex(sampleSelection);
+
+    expect(tex).toContain('celiobjunior/resume-template');
+    expect(tex).toContain('Apache License, Version 2.0');
+  });
+
+  it('makes the contact line clickable — a mailto for the address, an href per link', () => {
+    const tex = renderSelectionToTex(sampleSelection);
+
+    expect(tex).toContain('\\href{mailto:ada@example.com}{ada@example.com}');
+    expect(tex).toContain('\\href{https://github.com/ada}{github.com/ada}');
+    expect(tex).toContain('{\\textbullet}');
+  });
+
+  it('writes a group heading once, however many entries hang under it', () => {
+    // The defect this level exists to prevent: three Accomplishments from one
+    // employer, each carrying its own context line, rendered as three separate
+    // jobs. Grouped, the employer is stated once and the bullets sit beneath it.
+    const tex = renderSelectionToTex(sampleSelection);
+
+    expect(tex.split('\\textbf{Acme Corp}')).toHaveLength(2); // one occurrence
+    expect(tex).toContain('cutting p95 latency from 800ms to 120ms');
+    expect(tex).toContain('migration of 40 endpoints');
+    // One list per group with entries — Experience and Talks. Education's
+    // heading-only group contributes none.
+    expect(tex.split('begin{itemize}')).toHaveLength(3);
+  });
+
+  it('sets the heading in two lines, each pushed apart with \\hfill', () => {
+    // Organisation left / location right, then role left / period right. This is
+    // the layout the structured heading exists to make possible — a pre-joined
+    // string could not be split across the two lines.
+    const tex = renderSelectionToTex(sampleSelection);
+
+    expect(tex).toContain('\\textbf{Acme Corp} \\hfill Berlin (Remote)');
+    expect(tex).toContain('\\textit{Senior Software Engineer \\hfill 2022 - 2024}');
+    // hyperref needs a plain-text alternative for the PDF outline.
+    expect(tex).toContain('\\texorpdfstring{');
+    expect(tex).toContain('Acme Corp -- Berlin (Remote)');
+  });
+
+  it('renders a heading-only group as a context line with no list', () => {
+    // A degree under Education has no bullets. An empty `itemize` is a LaTeX
+    // error, so the list must be omitted entirely rather than left empty.
+    const tex = renderSelectionToTex(sampleSelection);
+
+    expect(tex).toContain('\\textbf{Driven Education} \\hfill Remote');
+    expect(tex).not.toContain('\\begin{itemize}\n        \\end{itemize}');
+  });
+
+  it('renders an entry label as a bold lead-in', () => {
+    const tex = renderSelectionToTex(sampleSelection);
+
+    expect(tex).toContain('\\textbf{Techs \\& frameworks:} Node.js, PostgreSQL');
   });
 
   it('keeps the source reference out of the rendered document — it is an audit field, not resume content', () => {
@@ -49,10 +110,14 @@ describe('renderSelectionToTex', () => {
       sections: [
         {
           title: 'R&D',
-          entries: [
+          groups: [
             {
-              source: 'specials',
-              text: 'Cut cost by 50% & saved $3k; tuned a_b tests #1 with ~10% lift ^2 {scope}.',
+              entries: [
+                {
+                  source: 'specials',
+                  text: 'Cut cost by 50% & saved $3k; tuned a_b tests #1 with ~10% lift ^2 {scope}.',
+                },
+              ],
             },
           ],
         },
@@ -72,6 +137,58 @@ describe('renderSelectionToTex', () => {
     expect(body).not.toMatch(/[^\\]&/); // no unescaped ampersand
     expect(body).not.toMatch(/[^\\]%[^\s]/); // no unescaped percent starting a comment
   });
+
+  it('rewrites typographic punctuation the template fonts cannot set', () => {
+    // The silent failure this guards against: XeTeX reads the em dash fine, but
+    // the T1 `ec-*` fonts have no glyph for it, so it vanishes from the PDF with
+    // a warning and no error — a hole in the middle of a sentence nobody sees
+    // until the résumé is already sent.
+    const withPunctuation = {
+      ...sampleSelection,
+      summary: 'Shipped 9 of 10 modules — “on time” — and the rest… 1 → 2.',
+      sections: [
+        {
+          title: 'Experience',
+          groups: [
+            {
+              heading: { organisation: 'Acme Corp', period: '2022–2024' },
+              entries: [{ source: 'x', text: 'Cut latency — by half.' }],
+            },
+          ],
+        },
+      ],
+    };
+
+    const tex = renderSelectionToTex(withPunctuation);
+
+    expect(tex).toContain('Shipped 9 of 10 modules --- ``on time\'\' --- and the rest\\ldots{}');
+    expect(tex).toContain('1 $\\rightarrow$ 2');
+    expect(tex).toContain('Cut latency --- by half.');
+    expect(tex).toContain('2022--2024');
+    // No raw typographic punctuation survives into the document.
+    expect(tex).not.toMatch(/[—–“”‘’…·•→×]/);
+  });
+
+  it('escapes a heading, which is authored prose like any other', () => {
+    const withSpecials = {
+      ...sampleSelection,
+      sections: [
+        {
+          title: 'Experience',
+          groups: [
+            {
+              heading: { organisation: 'Ben & Co', role: 'R&D Lead' },
+              entries: [{ source: 'x', text: 'Did a thing.' }],
+            },
+          ],
+        },
+      ],
+    };
+
+    const tex = renderSelectionToTex(withSpecials);
+    expect(tex).toContain('\\textbf{Ben \\& Co}');
+    expect(tex).toContain('\\textit{R\\&D Lead}');
+  });
 });
 
 describe('a Selection that departs from the expected shape', () => {
@@ -90,10 +207,80 @@ describe('a Selection that departs from the expected shape', () => {
     const noSource = {
       ...sampleSelection,
       sections: [
-        { title: 'Experience', entries: [{ text: 'Did a thing.' }] },
+        {
+          title: 'Experience',
+          groups: [{ entries: [{ text: 'Did a thing.' }] }],
+        },
       ],
     };
     expect(() => renderSelectionToTex(noSource)).toThrow(RenderError);
+  });
+
+  it('throws when a group has neither a heading nor entries', () => {
+    // Such a group renders nothing at all — a silently dropped section is worse
+    // than a refused Selection.
+    expect(() =>
+      renderSelectionToTex({
+        ...sampleSelection,
+        sections: [{ title: 'Experience', groups: [{}] }],
+      }),
+    ).toThrow(RenderError);
+  });
+
+  it('throws when a heading is a pre-joined string instead of its parts', () => {
+    // The version-2 shape. It cannot be split back into organisation, location,
+    // role and period, so it is refused rather than guessed at.
+    expect(() =>
+      renderSelectionToTex({
+        ...sampleSelection,
+        sections: [
+          {
+            title: 'Experience',
+            groups: [
+              {
+                heading: 'Acme Corp · Senior Software Engineer · 2022–2024',
+                entries: [{ source: 'x', text: 'Did a thing.' }],
+              },
+            ],
+          },
+        ],
+      }),
+    ).toThrow(RenderError);
+  });
+
+  it('throws when a heading names no organisation', () => {
+    expect(() =>
+      renderSelectionToTex({
+        ...sampleSelection,
+        sections: [
+          {
+            title: 'Experience',
+            groups: [
+              {
+                heading: { role: 'Engineer', period: '2024' },
+                entries: [{ source: 'x', text: 'Did a thing.' }],
+              },
+            ],
+          },
+        ],
+      }),
+    ).toThrow(RenderError);
+  });
+
+  it('throws when a section carries entries directly instead of groups', () => {
+    // The pre-grouping shape: bullets hanging off the section with no group to
+    // share a context line. It rendered one employer as several separate jobs,
+    // so it is refused rather than silently rendered.
+    const ungrouped = {
+      ...sampleSelection,
+      sections: [
+        {
+          title: 'Experience',
+          entries: [{ source: 'caching-layer', text: 'Did a thing.' }],
+        },
+      ],
+    };
+    expect(() => renderSelectionToTex(ungrouped)).toThrow(RenderError);
   });
 
   it('throws when the Selection version does not match the template version', () => {

@@ -8,7 +8,7 @@ Tectonic is the engine — a single binary that fetches only the packages the do
 
 **Blocked by:** 01 — loader and schema (generation reads the Corpus through it).
 
-**Status:** ready-for-human
+**Status:** done
 
 - [x] Tectonic is installed and documented as a prerequisite
 - [x] Pasting a job posting into the generation skill produces a Selection naming the role, sections, and chosen Accomplishments in order
@@ -40,3 +40,39 @@ Output lands in the gitignored `generated/`. Tectonic 0.16.9 installed via scoop
 
 Smoke + unit coverage in `src/lib/render/resume.test.ts`; the Tectonic smoke test
 `skipIf`s when the binary is absent so the suite stays green without it.
+
+**Closed by use, and the Selection schema moved to v3.** The ticket sat at
+`ready-for-human` waiting for the one thing fixtures cannot prove: a real posting
+rendered end to end. Two have now shipped — `innova-senior-pt` and
+`agrosys-erp-pt`, both Portuguese, each with its Selection, `.tex` and PDF in
+`generated/`.
+
+That first real use exposed a defect fixtures had hidden. The Corpus stores each
+Accomplishment on its own, carrying its own `affiliation`, so three things done
+at one employer arrived as three unrelated entries and rendered as three
+separate-looking jobs. The v1 shape had no way to say otherwise — context was a
+free-text `detail` string repeated per entry.
+
+The Selection is now **v3**: a section holds `groups`, and a group holds a
+structured `heading` (`organisation` required; `location`, `role`, `period`
+optional) above its bullets. `heading` is an object, never a pre-joined string —
+a v2 string heading is refused. A group may carry a heading with no entries (a
+context line standing alone, for Education), and an entry gained an optional
+bold `label` lead-in. The per-entry `detail` field is gone. Group headings come
+from `content/affiliations/<id>.md`, so the résumé cannot disagree with the
+Corpus about where someone worked.
+
+The layout is derived from [celiobjunior/resume-template](https://github.com/celiobjunior/resume-template)
+(Apache-2.0) — 1cm margins, ruled section headings, organisation/location and
+role/period set on two lines with the right-hand halves flush right. The licence
+notice travels in every generated `.tex`. `scripts/render-resume.mjs` walks
+`groups` when cross-checking each `source` against `content/accomplishments/`, so
+story 23 still holds. Translation rules in the skill were extended to cover
+heading `role`/`location`/`period` while leaving `organisation` untranslated.
+
+Suite: 64 tests pass (was 52); `npx tsc --noEmit` and `npm run build` green.
+
+**Left open deliberately:** `generated/email/` holds two outreach emails written
+during these applications. Email is a Render Target this ticket never defined —
+no format, no non-fabrication clause, no `source` cross-check. It works, but it
+is ungoverned; giving it a ticket is a separate decision.
