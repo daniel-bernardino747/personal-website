@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "//": "next.config.mjs sets output: 'export', so what ships is a plain static site in out/ — not a Next server. Left to auto-detect, @vercel/next claims the build and rewrites index.html to the path 'index', which leaves / matching no file and falling through to the 404. framework: null takes that builder out of the deploy and publishes out/ as static files, where / resolves to index.html the ordinary way and Vercel's own extension fallback serves /achievements from achievements.html. Do not add cleanUrls: it regenerates the same broken index override.",
+  "framework": null,
+  "buildCommand": "next build",
+  "outputDirectory": "out"
+}

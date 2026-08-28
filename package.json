@@ -9,6 +9,8 @@
     "lint": "next lint",
     "render": "node --no-warnings scripts/render-resume.mjs",
     "test": "vitest run",
+    "deploy": "vercel build --prod && vercel deploy --prebuilt --prod",
+    "deploy:preview": "vercel build && vercel deploy --prebuilt",
     "test:watch": "vitest"
   },
   "dependencies": {
@@ -41,6 +43,7 @@
     "postcss": "^8",
     "tailwindcss": "^4.2.1",
     "typescript": "^5",
+    "vercel": "^59.9.1",
     "vitest": "^4.1.10"
   }
 }
