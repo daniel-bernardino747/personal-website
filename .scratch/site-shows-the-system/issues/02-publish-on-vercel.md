@@ -71,21 +71,62 @@ static `.html` fallback.
 ## Acceptance criteria
 
 - [ ] A Vercel project exists for this site, **not** connected to the Git repo
-- [ ] `npm run deploy` produces a production deployment from a local build
-- [ ] The deployed site renders the real Corpus — Identity, the bento, and the
+- [x] `npm run deploy` produces a production deployment from a local build
+- [x] The deployed site renders the real Corpus — Identity, the bento, and the
       project gallery with the wide Personal Website card from ticket 01
 - [x] `www.teamdbsolutions.com` serves this project over HTTPS with a valid
       certificate
-- [ ] The apex `teamdbsolutions.com` redirects to www
-- [ ] No `content/` or `generated/` file is present in any deployment
+- [x] The apex `teamdbsolutions.com` redirects to www
+- [x] No `content/` or `generated/` file is present in any deployment
 - [ ] The Featured set on `/achievements` was reviewed against what should be
       public under a company domain before the first production deploy
-- [ ] `content/accomplishments/personal-website.md` gains
+- [x] `content/accomplishments/personal-website.md` gains
       `Live: https://www.teamdbsolutions.com` once the domain resolves
+
+## Two more traps, both paid for
+
+`vercel.json` rejects a `//` comment key — the schema forbids additional
+properties, and the deploy fails with `Invalid vercel.json` *after* a successful
+build. The reasoning that was in that key lives in this ticket instead.
+
+Extension-less paths do **not** resolve on their own once `framework: null` takes
+the Next builder out. The first corrected deploy fixed `/` and broke
+`/achievements`, `/chat` and `/guestbook`. `cleanUrls` is still not the answer —
+it recreates the broken `index` override even under a static build. The fix is an
+explicit catch-all rewrite, `/:path*` to `/:path*.html`, which is safe because
+Vercel runs rewrites *after* the filesystem: a request that matches a real file
+(`/favicon.ico`) never reaches it. Verified live, including a 404 for an unknown
+path.
+
+## Deploy from Git Bash, not PowerShell
+
+`npm run deploy` fails in PowerShell with `Error: spawn cmd.exe ENOENT`, after
+the dependency install and before the build command. It is not the project and
+not a missing `cmd.exe`: `ComSpec` is set and `System32` is on the PATH.
+
+Windows environment variables are case-insensitive, but a spread copy
+(`{...process.env}`) freezes whichever casing the parent process used. Under
+PowerShell the copied object has `Path` and no `PATH`; under Git Bash it has
+`PATH` and no `Path`. The Vercel CLI reads `env.PATH` when assembling the child
+environment, so under PowerShell it hands `cmd.exe` an environment with no PATH.
+
+Neither reassigning `$env:PATH` nor `cmd /c set PATH=%PATH%` flips the casing —
+both update the existing key in place. Routing the npm script through `bash` is
+worse, not better: on this machine `bash` resolves to `C:\Windows\system32ash.exe`,
+the WSL launcher, which would run the build in a different filesystem entirely.
+So the scripts are left alone and the rule is the deploy runs from Git Bash.
 
 ## Notes
 
-The last criterion closes the loop from ticket 01, where the `Live:` marker was
+**The `not connected to Git` criterion is now deliberately broken.** Automatic
+builds were switched on after this ticket was written. A push therefore triggers
+a cloud build that clones a repository with no Corpus and fails on the missing
+Identity — loudly, without replacing production, which is the guard working as
+designed. It also means a push never ships anything: production only moves when
+`npm run deploy` runs here. Either turn the integration back off, or supersede
+ADR-0006 with the environment-variable route it names as the reversal path.
+
+The `Live:` criterion closes the loop from ticket 01, where the `Live:` marker was
 left out because nothing was deployed. It is a one-line edit to the closing
 sentence of the statement, not a re-interview.
 
