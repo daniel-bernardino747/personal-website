@@ -115,7 +115,7 @@ export function Navbar() {
               className="rounded-full bg-accent text-white border border-accent/20 hover:bg-accent/80 flex gap-2 items-center shadow-lg shadow-accent/20 transition-all active:scale-95"
             >
               <Calendar size={14} />
-              <span className="hidden md:inline">Book a Call</span>
+              <span className="hidden md:inline">Get it off the ground</span>
             </Button>
           </a>
         </motion.div>
