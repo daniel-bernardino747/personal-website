@@ -3,9 +3,9 @@
 **What to do:** make `/api/chat` expensive to abuse while keeping it open to
 visitors, who are the reason it exists.
 
-**Status:** origin check done; Turnstile implemented and **awaiting keys**
+**Status:** done — all layers live on https://www.teamdbsolutions.com
 
-**Blocked on:** Daniel — a Cloudflare account, step 2 below.
+**Blocked on:** nothing. Keys set and verified 2026-09-09.
 
 ## The question, and the honest answer
 
@@ -94,5 +94,42 @@ what proves a solved challenge, and it stays server-side.
 - [x] The site's own pages still work
 - [x] Turnstile verified server-side when configured, skipped when not
 - [x] A fresh token per message
-- [ ] Turnstile keys created and set (Daniel)
+- [x] Turnstile keys created and set, verified in a browser by Daniel
 - [ ] The Anthropic spend limit is set (Daniel) — outstanding since issue 05
+
+## Comments
+
+**2026-09-09 — live.** Keys set on the Railway service and in `.env.local`,
+redeployed (the site key is inlined at build time, so it needs a rebuild, not
+just a variable).
+
+Verified in production: no `Origin` → 403; a lookalike origin → 403; the correct
+origin with no Turnstile token → 403; a forged token → 403; `/chat` → 200. Daniel
+confirmed in a browser that the widget solves and the chat answers.
+
+That browser check was the one thing that could not be verified from here, and it
+mattered more than the rest: with Turnstile configured, a widget that fails to
+solve means the server refuses **everyone**. The failure mode is a dead chat, not
+a degraded one. The rollback was one variable — deleting `TURNSTILE_SECRET_KEY`
+makes the server skip the check with no redeploy — and was not needed.
+
+### Two things worth remembering
+
+**Bundle audit.** A first grep for `TURNSTILE_SECRET` in `.next/static` appeared
+to find the secret in the browser bundle. It was a false positive on the variable
+*name*. A proper scan — every file under `.next/static`, matching the actual
+values of all four secrets — found only the site key, which belongs there. Worth
+re-running that scan after any change that touches environment variables; the
+naive grep is not trustworthy in either direction.
+
+**The secret was exposed in a session transcript.** A diagnostic script printed
+the value instead of its length. Rotation was recommended.
+
+### The dual-stack quota
+
+Resetting Daniel's counter revealed two rows for one person: the same visitor
+arriving over IPv4 and IPv6 hashes to two different keys, so anyone on a
+dual-stack network effectively has two allowances. Not a defect — the limit still
+binds, at 40 rather than 20 — but it explains a counter reading 27/20, since
+refusals keep incrementing. If the limit ever needs to be exact, the key would
+have to normalise the address family.

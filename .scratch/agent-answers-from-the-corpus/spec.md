@@ -103,7 +103,7 @@ nothing else, `.dockerignore` guarding `content/` the way `.vercelignore` did.
 | 08 | A mock agent for development | **done** |
 | 09 | Two streaming bugs: runaway scroll, interleaved answers | **done** |
 | 10 | Scope enforcement + Markdown rendering | **done** |
-| 11 | Hardening the chat endpoint | origin done; Turnstile awaiting keys |
+| 11 | Hardening the chat endpoint | **done** |
 
 01 ships alone and needs no infrastructure. 02 is blocked on 05 and should not
 merge before 04. 03 depends on 02. 06 is fallout from 02, 07 was found while
