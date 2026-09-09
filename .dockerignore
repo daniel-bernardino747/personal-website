@@ -1,0 +1,5 @@
+# The build context is one tarball, packed by `scripts/pack-deploy.mjs`.
+# Everything else is excluded, which makes the Corpus guard (ADR-0002, ADR-0007)
+# a whitelist rather than a list of things to remember.
+*
+!deploy.tar

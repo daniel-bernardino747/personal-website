@@ -1,0 +1,13 @@
+# What `railway up` uploads.
+#
+# A whitelist of one file. `npm run build` packs the entire artefact into
+# `deploy.tar` (scripts/pack-deploy.mjs) precisely so this list can be this short:
+# an ignore rule cannot reach inside a tarball, and two deploys were lost to rules
+# that did — `content` also matching .next/standalone/content, `node_modules` also
+# matching the standalone's traced dependencies.
+#
+# `deploy.tar` is gitignored, and the CLI combines this file with `.gitignore`,
+# so the negation below is what puts it back.
+*
+!deploy.tar
+!Dockerfile
