@@ -27,3 +27,7 @@ Interview que grava um Accomplishment ou Affiliation no Corpus (`content/`), sem
 ### Generate
 
 Job posting → Selection estruturada → PDF de currículo via Tectonic (o modelo nunca escreve LaTeX). Também produz blocos LinkedIn/GitHub e currículo em português. Saída em `generated/` (gitignored). See `.claude/skills/generate/SKILL.md`.
+
+### Recon
+
+Empresa-alvo → dossiê verificado + abordagem direta ao decisor. Investiga a dor que a vaga não declara (canais quebrados, GitHub vivo, desafio técnico, board vazio) e cruza com o Corpus. Todo achado marcado CONFIRMADO ou INFERIDO; nada inferido entra no e-mail. Saída em `generated/recon/` (gitignored). See `.claude/skills/recon/SKILL.md`.

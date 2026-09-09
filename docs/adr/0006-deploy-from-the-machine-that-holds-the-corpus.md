@@ -1,5 +1,12 @@
 # The site deploys from the machine that holds the Corpus
 
+> **Superseded by [ADR-0007](./0007-the-site-gains-a-runtime-on-railway.md).** The
+> reasoning below still holds and is why ADR-0007 is shaped the way it is — only
+> the host changed, from Vercel to Railway. What survives verbatim is the rule:
+> the build happens where the Corpus lives, and only the rendered artefact
+> travels.
+
+
 The site is a Render Target of a Corpus that is deliberately not in the repository ([ADR-0002](./0002-corpus-as-single-source-of-truth.md)): `content/` is gitignored because the repo is public and the career record is not. That leaves a gap no git-driven build can cross — a Vercel build triggered by a push clones a repository with no Corpus, and `getIdentity()` halts the export rather than shipping a header with no name. Three ways across were considered: mirroring the Corpus into a private repository, shipping it as a build-time environment variable (it gzips to ~10KB, well inside Vercel's 64KB limit), or building locally and uploading only the rendered output.
 
 Local build was chosen. It is the only option where the Corpus never leaves the machine — Vercel receives rendered HTML, never the source record — and it is the only one that needs no new moving part: no private mirror to keep in sync, no prebuild script writing `content/` out of an environment variable that must be re-uploaded after every capture. Deployment is therefore `vercel build && vercel deploy --prebuilt`, from a project deliberately **not** connected to the Git repository.
