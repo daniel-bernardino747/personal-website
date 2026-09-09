@@ -1,5 +1,6 @@
 'use client';
 
+import { useTurnstile } from '@/components/chat/useTurnstile';
 import { useChatStore } from '@/store/useChatStore';
 import { useCallback, useState } from 'react';
 
@@ -17,6 +18,7 @@ import { useCallback, useState } from 'react';
 export function useChatMutation() {
   const addMessage = useChatStore((state) => state.addMessage);
   const appendToMessage = useChatStore((state) => state.appendToMessage);
+  const getTurnstileToken = useTurnstile();
   const [isPending, setIsPending] = useState(false);
 
   const mutate = useCallback(
@@ -44,10 +46,14 @@ export function useChatMutation() {
       };
 
       try {
+        // Resolves undefined when Turnstile is not configured, which is also
+        // when the server skips the check.
+        const turnstileToken = await getTurnstileToken();
+
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question }),
+          body: JSON.stringify({ question, turnstileToken }),
         });
 
         // Every non-OK path from the route is a plain-text honest message —
@@ -87,7 +93,7 @@ export function useChatMutation() {
         setIsPending(false);
       }
     },
-    [addMessage, appendToMessage],
+    [addMessage, appendToMessage, getTurnstileToken],
   );
 
   return { mutate, isPending };

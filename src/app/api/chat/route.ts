@@ -3,6 +3,8 @@ import { NextRequest } from 'next/server';
 
 import { classifyQuestion } from '@/lib/agent/classifier';
 import { MOCK_HEADER, isMockEnabled, mockStream } from '@/lib/agent/mock';
+import { isAllowedOrigin } from '@/lib/agent/origin';
+import { verifyTurnstile } from '@/lib/agent/turnstile';
 import { buildSystemPrompt } from '@/lib/agent/prompt';
 import { clientIp, consumeQuota, visitorKey } from '@/lib/db/rate-limit';
 import { recordExchange } from '@/lib/db/transcripts';
@@ -46,10 +48,19 @@ function honestly(message: string, status: number): Response {
 }
 
 export async function POST(request: NextRequest) {
+  // Cheapest check first: no database, no third party, no model. A request that
+  // did not come from this site's own pages stops here.
+  if (!isAllowedOrigin(request)) {
+    return honestly('This chat only works from the site itself.', 403);
+  }
+
   let question: string;
+  let turnstileToken: string | undefined;
   try {
     const body = await request.json();
     question = typeof body?.question === 'string' ? body.question.trim() : '';
+    turnstileToken =
+      typeof body?.turnstileToken === 'string' ? body.turnstileToken : undefined;
   } catch {
     return honestly('That request did not parse.', 400);
   }
@@ -81,11 +92,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Turnstile before the quota, so a bot cannot burn a visitor's allowance, and
+  // before the model, so it cannot spend anything. Returns `skipped` when not
+  // configured — see turnstile.ts.
+  const ip = clientIp(request.headers);
+  const challenge = await verifyTurnstile(turnstileToken, ip);
+  if (challenge === 'fail') {
+    return honestly(
+      'I could not verify that this came from a browser. Reloading the page usually fixes it.',
+      403,
+    );
+  }
+
   // Quota is consumed before the model is called, and the counter is the same
   // whether the answer succeeds — otherwise a failing model becomes free retries.
   let visitor: string;
   try {
-    visitor = visitorKey(clientIp(request.headers));
+    visitor = visitorKey(ip);
     const verdict = await consumeQuota(visitor);
 
     if (!verdict.allowed) {
