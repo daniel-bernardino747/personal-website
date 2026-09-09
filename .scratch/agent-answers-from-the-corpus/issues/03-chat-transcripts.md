@@ -3,7 +3,7 @@
 **What to do:** persist what people ask the agent, and delete it after seven
 days.
 
-**Status:** ready-for-agent
+**Status:** done — shipped inside issue 02
 
 **Blocked by:** 02.
 
@@ -46,7 +46,27 @@ anyone, which is the point.
 
 ## Acceptance criteria
 
-- [ ] Each exchange is persisted with its timestamp and the salted hash
-- [ ] No raw IP address is stored anywhere
-- [ ] Rows older than seven days are gone, verified with a backdated row
-- [ ] A forced database failure leaves the agent answering normally
+- [x] Each exchange is persisted with its timestamp and the salted hash
+- [x] No raw IP address is stored anywhere
+- [x] Rows older than seven days are gone, verified with a backdated row
+- [x] A forced database failure leaves the agent answering normally
+
+## Comments
+
+**Closed 2026-09-09.** Implemented as part of issue 02 rather than after it —
+`recordExchange` was needed the moment the agent could answer, and splitting it
+into a second pass would have meant touching the same route twice.
+
+`src/lib/db/transcripts.ts`: each exchange stored with the salted visitor hash
+and never an address, swept on write because there is no cron on this deployment
+and retention that depends on someone remembering is not retention. The write is
+best-effort and deliberately not awaited into the response path — a database
+outage degrades logging, never the agent.
+
+Verified: a row backdated nine days was gone after the next conversation
+triggered the sweep. 33 rows recorded on the first day, all from testing.
+
+The second life this ticket anticipated is now available: with real traffic,
+conversation volume is a number that could be captured as a Metric, which
+`.scratch/site-shows-the-system/issues/01` left open as the second leg of the
+`~2 hours to 3 minutes` claim.

@@ -95,7 +95,7 @@ nothing else, `.dockerignore` guarding `content/` the way `.vercelignore` did.
 |---|---|---|
 | 01 | The scripted answers come from the Corpus | **done** |
 | 02 | Runtime, the agent, and the rate limit | **done** |
-| 03 | Chat transcripts, kept for seven days | ready-for-agent |
+| 03 | Chat transcripts, kept for seven days | **done** |
 | 04 | Review the Featured set before the agent speaks it | ready-for-human |
 | 05 | Manual setup: keys, database, domain | ready-for-human |
 | 06 | The orphaned guestbook page | needs-triage |
