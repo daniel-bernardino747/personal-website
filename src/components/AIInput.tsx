@@ -1,7 +1,6 @@
 "use client";
 
-import { useIdentity } from "@/components/IdentityProvider";
-import { buildInitialResponses } from "@/data/responses";
+import { useChatAnswers } from "@/components/ChatAnswersProvider";
 import { useChatStore } from "@/store/useChatStore";
 import { useChatMutation } from '@/hooks/useChatMutation';
 import { motion } from "framer-motion";
@@ -10,7 +9,7 @@ import {
   ArrowRight,
   Briefcase,
   Layers,
-  PartyPopper,
+  Bot,
   Search,
   Smile,
   UserSearch
@@ -57,14 +56,13 @@ function QuickAction({ icon, label, color, delay, onClick }: QuickActionProps) {
 }
 
 export function AIInput() {
-  const identity = useIdentity();
+  const answers = useChatAnswers();
   const router = useRouter();
   const { addMessage, setInitialQuery } = useChatStore();
 
   const [placeholder, setPlaceholder] = useState("");
 
-  const responses = useMemo(() => buildInitialResponses(identity), [identity]);
-  const phrases = useMemo(() => Object.values(responses).map(r => r.phrase), [responses]);
+  const phrases = useMemo(() => answers.map(answer => answer.phrase), [answers]);
   
   const [phraseIndex, setPhraseIndex] = useState(0);
 
@@ -104,9 +102,10 @@ export function AIInput() {
 
   const mutation = useChatMutation();
 
-  const handleAction = (query: string) => {
-    const entry = responses[query];
-    const phrase = entry ? entry.phrase : query;
+  const handleAction = (id: string) => {
+    const answer = answers.find(entry => entry.id === id);
+    const phrase = answer ? answer.phrase : id;
+
     
     addMessage({ role: 'user', text: phrase });
     setInitialQuery(phrase);
@@ -118,11 +117,11 @@ export function AIInput() {
   const [inputText, setInputText] = useState('');
 
   const actions = [
-    { icon: <Smile size={20} />, label: "Me", color: "emerald", delay: 1.4 },
-    { icon: <Briefcase size={20} />, label: "Projects", color: "green", delay: 1.5 },
-    { icon: <Layers size={20} />, label: "Skills", color: "violet", delay: 1.6 },
-    { icon: <PartyPopper size={20} />, label: "Fun", color: "pink", delay: 1.7 },
-    { icon: <UserSearch size={20} />, label: "Contact", color: "amber", delay: 1.8 },
+    { icon: <Smile size={20} />, id: "me", label: "Me", color: "emerald", delay: 1.4 },
+    { icon: <Briefcase size={20} />, id: "projects", label: "Projects", color: "green", delay: 1.5 },
+    { icon: <Layers size={20} />, id: "skills", label: "Skills", color: "violet", delay: 1.6 },
+    { icon: <Bot size={20} />, id: "site", label: "This site", color: "pink", delay: 1.7 },
+    { icon: <UserSearch size={20} />, id: "contact", label: "Contact", color: "amber", delay: 1.8 },
   ];
 
   return (
@@ -163,7 +162,7 @@ export function AIInput() {
             label={action.label}
             color={action.color}
             delay={action.delay}
-            onClick={() => handleAction(action.label)}
+            onClick={() => handleAction(action.id)}
           />
         ))}
       </div>

@@ -10,7 +10,7 @@ const ChatContainer = dynamic(
 
 export default function ChatPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       <ChatHeader />
       <ChatContainer />
     </div>

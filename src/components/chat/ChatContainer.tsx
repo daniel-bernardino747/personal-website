@@ -1,19 +1,28 @@
 'use client';
 
-import { useIdentity } from '@/components/IdentityProvider';
-import { buildInitialResponses } from '@/data/responses';
+import { useChatAnswers } from '@/components/ChatAnswersProvider';
 import { useChatMutation } from '@/hooks/useChatMutation';
 import { useChatStore } from '@/store/useChatStore';
-import { ArrowRight, Briefcase, Layers, PartyPopper, Search, Smile, Trash2, UserSearch } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
-import { Typewriter } from './Typewriter';
+import { ArrowRight, Bot, Briefcase, Layers, Search, Smile, Trash2, UserSearch } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { MarkdownMessage } from './MarkdownMessage';
 
+/**
+ * The chips that offer the suggested questions. `id` keys into the
+ * Corpus-derived answers from `ChatAnswersProvider` — the labels and icons are
+ * UI copy, the answers behind them are not.
+ *
+ * There used to be a "Fun" chip here. It was dropped rather than re-pointed:
+ * the Corpus has no Accomplishment about what Daniel does for fun, and it should
+ * not — an Accomplishment needs a Metric. Its slot went to the one question this
+ * Corpus answers better than any other.
+ */
 const quickActions = [
-  { icon: <Smile size={14} />, label: 'Me', color: 'emerald' },
-  { icon: <Briefcase size={14} />, label: 'Projects', color: 'green' },
-  { icon: <Layers size={14} />, label: 'Skills', color: 'violet' },
-  { icon: <PartyPopper size={14} />, label: 'Fun', color: 'pink' },
-  { icon: <UserSearch size={14} />, label: 'Contact', color: 'amber' },
+  { icon: <Smile size={14} />, id: 'me', label: 'Me', color: 'emerald' },
+  { icon: <Briefcase size={14} />, id: 'projects', label: 'Projects', color: 'green' },
+  { icon: <Layers size={14} />, id: 'skills', label: 'Skills', color: 'violet' },
+  { icon: <Bot size={14} />, id: 'site', label: 'This site', color: 'pink' },
+  { icon: <UserSearch size={14} />, id: 'contact', label: 'Contact', color: 'amber' },
 ];
 
 const chipColorMap: Record<string, { bg: string; text: string }> = {
@@ -25,17 +34,24 @@ const chipColorMap: Record<string, { bg: string; text: string }> = {
 };
 
 export function ChatContainer() {
-  const identity = useIdentity();
-  const responses = useMemo(() => buildInitialResponses(identity), [identity]);
+  const answers = useChatAnswers();
   const { messages, addMessage, clearHistory } = useChatStore();
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const lastScrollTopRef = useRef(0);
   const autoScrollRef = useRef(true);
-  const [mountTime] = useState(() => Date.now());
 
   const mutation = useChatMutation();
+
+  // The typewriter used to drive this through `onUpdate`. Tokens now arrive from
+  // the stream instead, so the scroll follows the message text itself — the last
+  // message grows character by character and this fires on each growth.
+  const lastMessageText = messages[messages.length - 1]?.text ?? '';
+  useEffect(() => {
+    scrollToBottom('auto');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastMessageText, messages.length]);
 
   const handleScroll = () => {
     const container = scrollContainerRef.current;
@@ -55,10 +71,24 @@ export function ChatContainer() {
     }
   };
 
+  /**
+   * Scrolls the message list, and only the message list.
+   *
+   * This used `messagesEndRef.current.scrollIntoView()`, which scrolls *every*
+   * scrollable ancestor — including the document. On a short viewport the page
+   * itself has scroll, so each arriving chunk dragged the whole page up and the
+   * header out of view. It looked like a production-only bug because a tall
+   * window has no document scroll to drag.
+   *
+   * Setting `scrollTop` on the container cannot touch anything outside it.
+   */
   const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
-    if (autoScrollRef.current) {
-      messagesEndRef.current?.scrollIntoView({ behavior });
-    }
+    if (!autoScrollRef.current) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({ top: container.scrollHeight, behavior });
   };
 
   const handleSend = () => {
@@ -71,12 +101,12 @@ export function ChatContainer() {
     mutation.mutate(text);
   };
 
-  const handleQuickAction = (label: string) => {
+  const handleQuickAction = (id: string) => {
     if (mutation.isPending) return;
-    
-    const entry = responses[label];
-    const phrase = entry ? entry.phrase : label;
-    
+
+    const answer = answers.find(entry => entry.id === id);
+    const phrase = answer ? answer.phrase : id;
+
     autoScrollRef.current = true;
     addMessage({ role: 'user', text: phrase });
     mutation.mutate(phrase);
@@ -85,8 +115,15 @@ export function ChatContainer() {
   return (
     <>
       {/* Message List */}
+      {/*
+        `min-h-0` is load-bearing. A flex item defaults to `min-height: auto`,
+        which refuses to shrink below its content — so `flex-1 overflow-y-auto`
+        alone never scrolls: the list grows, the page grows past the viewport,
+        and the document scrolls instead of the list. With the parent at
+        `h-screen` and this at `min-h-0`, the scroll lives where it belongs.
+      */}
       <div 
-        className="flex-1 overflow-y-auto py-6 relative"
+        className="flex-1 min-h-0 overflow-y-auto py-6 relative"
         ref={scrollContainerRef}
         onScroll={handleScroll}
       >
@@ -114,20 +151,19 @@ export function ChatContainer() {
             >
               <div
                 className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed ${
+                  // The agent's Markdown carries its own paragraphs and lists;
+                  // `whitespace-pre-wrap` on top of that would double every gap.
+                  // A visitor's message is literal text and still needs it.
+                  msg.role === 'user' ? 'whitespace-pre-wrap ' : ''
+                }${
                   msg.role === 'ai'
                     ? 'bg-surface border border-border rounded-2xl rounded-tl-sm text-foreground'
                     : 'bg-accent/10 border border-accent/20 rounded-2xl rounded-tr-sm text-foreground'
                 }`}
               >
-                {msg.role === 'ai' ? (
-                  <Typewriter 
-                    text={msg.text} 
-                    speed={15} 
-                    animate={msg.timestamp >= mountTime}
-                    onUpdate={() => scrollToBottom('auto')}
-                  />
-                ) : (
-                  msg.text
+                {msg.role === 'ai' ? <MarkdownMessage text={msg.text} /> : msg.text}
+                {msg.role === 'ai' && msg.text === '' && (
+                  <span className="inline-block w-1 h-3.5 bg-accent/50 align-middle animate-pulse" />
                 )}
               </div>
             </div>
@@ -161,7 +197,7 @@ export function ChatContainer() {
               return (
                 <button
                   key={index}
-                  onClick={() => handleQuickAction(action.label)}
+                  onClick={() => handleQuickAction(action.id)}
                   disabled={mutation.isPending}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/5 ${colors.bg} ${colors.text} text-[11px] font-medium hover:bg-white/10 transition-colors cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
