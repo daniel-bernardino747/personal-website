@@ -9,12 +9,15 @@ import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// Every link must land somewhere the home actually renders. "Skills" and "Other"
+// used to point at `/#skills` and `/#other` — anchors no page carries — while
+// /achievements and /chat, the two pages with the proof, had no link at all.
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/#about" },
   { label: "Projects", href: "/#projects" },
-  { label: "Skills", href: "/#skills" },
-  { label: "Other", href: "/#other" },
+  { label: "Achievements", href: "/achievements" },
+  { label: "Chat", href: "/chat" },
 ];
 
 const containerVariants = {
@@ -59,15 +62,15 @@ export function Navbar() {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="fixed top-6 left-0 right-0 z-50 flex justify-center px-6"
+      className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 md:px-6"
     >
       <nav
-        className="flex items-center gap-2 md:gap-4 px-4 py-2 border rounded-full bg-surface backdrop-blur-md border-border shadow-navbar"
+        className="flex items-center gap-2 md:gap-4 px-3 md:px-4 py-2 max-w-full border rounded-full bg-surface backdrop-blur-md border-border shadow-navbar"
         aria-label="Main navigation"
       >
         <motion.div 
           variants={itemVariants}
-          className="p-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+          className="shrink-0 p-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
           onClick={toggleTheme}
         >
           {mounted ? (
@@ -89,13 +92,20 @@ export function Navbar() {
 
         <motion.div variants={itemVariants} className="h-4 w-px bg-border mx-1 hidden md:block" />
 
-        <ul className="flex items-center gap-1 md:gap-2" role="list">
+        {/* Five links do not fit a phone. The list scrolls sideways instead of
+            pushing the pill past the viewport; the theme toggle and the booking
+            button stay pinned at either end, and the fade on the right edge is
+            what says there is more. */}
+        <ul
+          className="flex min-w-0 items-center gap-1 md:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_80%,transparent)] lg:[mask-image:none]"
+          role="list"
+        >
           {navLinks.map((link) => (
             <motion.li key={link.href} variants={itemVariants}>
               <Link
                 href={link.href}
-                className={`px-4 py-1.5 text-sm rounded-full transition-all ${
-                  link.label === "Home"
+                className={`block whitespace-nowrap px-3 md:px-4 py-1.5 text-sm rounded-full transition-all ${
+                  link.href === pathname
                     ? "bg-muted text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
                 }`}
@@ -108,7 +118,7 @@ export function Navbar() {
 
         <motion.div variants={itemVariants} className="h-4 w-px bg-border mx-1 hidden md:block" />
 
-        <motion.div variants={itemVariants}>
+        <motion.div variants={itemVariants} className="shrink-0">
           <a href={identity.bookingUrl} target="_blank" rel="noopener noreferrer">
             <Button
               size="sm"
