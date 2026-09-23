@@ -31,3 +31,7 @@ Job posting → Selection estruturada → PDF de currículo via Tectonic (o mode
 ### Recon
 
 Empresa-alvo → dossiê verificado + abordagem direta ao decisor. Investiga a dor que a vaga não declara (canais quebrados, GitHub vivo, desafio técnico, board vazio) e cruza com o Corpus. Todo achado marcado CONFIRMADO ou INFERIDO; nada inferido entra no e-mail. Saída em `generated/recon/` (gitignored). See `.claude/skills/recon/SKILL.md`.
+
+### Article
+
+Interview que escreve um Article (estudo de caso a partir do Corpus, ou ensaio técnico) em inglês, na voz do Daniel, sem inventar fato nem número. Grava em `content/articles/<slug>.md` sempre como `status: draft`; só o Daniel marca `ready`. Ainda não há página que renderize Articles — ela é feita quando houver Articles `ready` suficientes. See `.claude/skills/article/SKILL.md`.

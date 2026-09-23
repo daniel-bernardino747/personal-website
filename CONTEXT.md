@@ -28,3 +28,7 @@ The number that makes an Accomplishment provable — a before/after, a volume, a
 
 **Featured**:
 Curation, not classification. Marks an Accomplishment as worth showing on the public site today. Expected to change over time; carries no meaning about the Accomplishment's substance.
+
+**Article**:
+Long-form writing by Daniel — a case study that goes deep on Accomplishments already in the Corpus, or an essay arguing a position he holds. Built on the Corpus, never a source of truth beside it: every fact about his work traces to a cited Accomplishment or to what he said. Not an Accomplishment itself; when a published Article earns its own number, that result is captured as a `writing` Accomplishment.
+_Avoid_: Post (a LinkedIn/X draft from `post-forge`), blog entry
