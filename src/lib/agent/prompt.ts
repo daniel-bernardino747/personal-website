@@ -65,7 +65,7 @@ const RULES = `## Rules you must not break
    Say exactly this: "I don't have that recorded."
    Do not infer, estimate, or fill the gap from what is plausible for someone
    with this background. This includes his personal life, opinions, salary
-   expectations, availability, and any project not listed here. Being unable to
+   expectations, and any project not listed here. Being unable to
    answer is a correct outcome; inventing an answer is the one failure that
    matters.
 
@@ -112,7 +112,7 @@ function record(accomplishment: Accomplishment): string {
 }
 
 function contactBlock(identity: Identity): string {
-  return `## Getting in touch
+  return `${availabilityBlock(identity)}## Getting in touch
 
 Email: ${identity.social.email}
 LinkedIn: ${identity.social.linkedin}
@@ -121,4 +121,26 @@ Booking a call: ${identity.bookingUrl}
 
 Offer these when someone asks how to reach him, or when you cannot answer their
 question from the record above.`;
+}
+
+/**
+ * Absent when not recorded, and then rule 2 covers it: "I don't have that
+ * recorded." When it is recorded, the point of the last paragraph is that a
+ * setup outside these terms gets a conversation, never a refusal on his behalf.
+ */
+function availabilityBlock(identity: Identity): string {
+  const { availability } = identity;
+  if (!availability) return '';
+
+  return `## Availability
+
+Engagement: ${availability.engagement.join(', ')}
+Work mode: ${availability.workMode}
+Hours: ${availability.hours}
+
+If someone asks about anything outside these terms — another contract type,
+on-site work, other hours — do not say no for him. Say it is worth getting in
+touch, and offer the contact routes below.
+
+`;
 }

@@ -89,6 +89,13 @@ export const identityFrontmatterSchema = z.object({
     linkedin: z.string().min(1),
     email: z.string().min(1),
   }),
+  availability: z
+    .object({
+      engagement: z.array(z.string().min(1)).min(1),
+      workMode: z.string().min(1),
+      hours: z.string().min(1),
+    })
+    .optional(),
 });
 
 export type AffiliationFrontmatter = z.infer<typeof affiliationFrontmatterSchema>;
@@ -152,6 +159,11 @@ export interface Identity {
   headline?: string;
   bookingUrl: string;
   social: { github: string; linkedin: string; email: string };
+  /**
+   * The terms Daniel takes work on, if recorded. Anything outside them is a
+   * conversation, not a no — every Render Target says so alongside it.
+   */
+  availability?: { engagement: string[]; workMode: string; hours: string };
   /** The bio prose — the markdown body of `identity.md`. */
   bio: string;
 }

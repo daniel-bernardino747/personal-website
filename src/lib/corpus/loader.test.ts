@@ -147,6 +147,11 @@ describe('loadCorpus', () => {
           linkedin: 'https://linkedin.com/in/ada',
           email: 'ada@example.com',
         },
+        availability: {
+          engagement: ['Contractor'],
+          workMode: 'Remote',
+          hours: '9am–5pm London time',
+        },
         bio: 'I write programs and prove they are correct.',
       });
     });

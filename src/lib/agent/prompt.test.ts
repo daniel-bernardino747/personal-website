@@ -51,6 +51,18 @@ describe('the agent system prompt', () => {
     }
   });
 
+  it('states the recorded availability, and that other terms mean getting in touch', () => {
+    const availability = corpus.identity?.availability;
+    if (!availability) return;
+
+    expect(prompt).toContain(availability.hours);
+    expect(prompt).toContain(availability.workMode);
+    for (const engagement of availability.engagement) {
+      expect(prompt).toContain(engagement);
+    }
+    expect(prompt).toContain('do not say no for him');
+  });
+
   it('instructs the model to refuse rather than fill gaps', () => {
     expect(prompt).toContain("I don't have that recorded");
   });

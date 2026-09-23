@@ -131,5 +131,20 @@ function contact(identity: Identity | undefined): string {
   if (!identity) return 'The Corpus has no Identity recorded yet.';
 
   const { email, linkedin } = identity.social;
-  return `Email is the surest route: ${email}. LinkedIn works too (${linkedin}), and there's a booking link if a call is easier: ${identity.bookingUrl}`;
+  const reach = `Email is the surest route: ${email}. LinkedIn works too (${linkedin}), and there's a booking link if a call is easier: ${identity.bookingUrl}`;
+
+  if (!identity.availability) return reach;
+
+  return `${availabilityLine(identity.availability)}\n\n${reach}`;
+}
+
+/**
+ * The last sentence matters as much as the terms: a visitor whose setup differs
+ * should write anyway, not leave.
+ */
+function availabilityLine(
+  availability: NonNullable<Identity['availability']>,
+): string {
+  const engagement = availability.engagement.join(' or ');
+  return `Yes — ${engagement}, ${availability.workMode.toLowerCase()}, ${availability.hours}. Anything outside that isn't a no: get in touch anyway.`;
 }
