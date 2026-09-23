@@ -108,11 +108,12 @@
     );
   }
 
-  /* Malha viária de Criciúma. O PNG é opaco (linhas claras sobre carvão), então
-     entra como máscara de luminância sobre um preenchimento chapado — assim as
-     ruas herdam a cor do tema em vez de arrastar o fundo escuro da imagem para
-     o tema claro. Sem `mask-mode: luminance` o retângulo inteiro pintaria, daí
-     o @supports. */
+  /* Malha viária de Criciúma, dados © OpenStreetMap (render terraink.app), já
+     recortada no centro da cidade e sem o texto do pôster. O PNG é opaco (ruas
+     claras sobre preto), então entra como máscara de luminância sobre um
+     preenchimento chapado — assim as ruas herdam a cor do tema em vez de
+     arrastar o fundo escuro da imagem para o tema claro. Sem `mask-mode:
+     luminance` o retângulo inteiro pintaria, daí o @supports. */
   .map-stencil {
     background-color: currentColor;
   }
@@ -124,11 +125,10 @@
       -webkit-mask-source-type: luminance;
       mask-repeat: no-repeat;
       -webkit-mask-repeat: no-repeat;
-      /* Zoom no centro denso da cidade — a imagem original é muito larga. */
-      mask-size: 220%;
-      -webkit-mask-size: 220%;
-      mask-position: 53% 45%;
-      -webkit-mask-position: 53% 45%;
+      mask-size: cover;
+      -webkit-mask-size: cover;
+      mask-position: center;
+      -webkit-mask-position: center;
     }
   }
   @supports not ((mask-mode: luminance) or (-webkit-mask-source-type: luminance)) {
@@ -136,8 +136,8 @@
       background-color: transparent;
       background-image: url("/criciuma-city-roads.png");
       background-repeat: no-repeat;
-      background-size: 220%;
-      background-position: 53% 45%;
+      background-size: cover;
+      background-position: center;
       mix-blend-mode: screen;
     }
   }
