@@ -52,3 +52,8 @@ next-env.d.ts
 # Build artefact for the Railway deploy (scripts/pack-deploy.mjs).
 /deploy.tar
 /.deploy-staging/
+
+# raw training photos and videos for the Mindset card — heavy originals, never
+# published. `npm run mindset` converts them into public/mindset/, which is.
+/media/mindset/*
+!/media/mindset/README.md
