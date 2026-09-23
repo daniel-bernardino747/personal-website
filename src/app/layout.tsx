@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { PageTransitionLayout } from "@/components/layout/PageTransitionLayout";
 import { buildChatAnswers } from "@/lib/chat/answers";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
+import { SITE_URL } from "@/lib/site-url";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -28,11 +29,33 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+/**
+ * The share preview is drawn from the Identity, like everything else: title,
+ * description and the image in `opengraph-image.tsx` all change with a
+ * `content/` edit. Pages set only `title` and `description`; the template and
+ * the Open Graph fields below carry them into the preview.
+ */
 export function generateMetadata(): Metadata {
   const identity = getIdentity();
+  const title = `${identity.name} — ${identity.role[0]}`;
+
   return {
-    title: `${identity.name} — ${identity.role[0]}`,
+    metadataBase: SITE_URL,
+    title: { default: title, template: `%s — ${identity.name}` },
     description: identity.bio,
+    openGraph: {
+      type: "website",
+      siteName: identity.name,
+      title,
+      description: identity.bio,
+      url: "/",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: identity.bio,
+    },
     icons: {
       icon: "/images/avatar.png",
       apple: "/images/avatar.png",

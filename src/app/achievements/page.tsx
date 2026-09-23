@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { ArrowLeft, Trophy } from "lucide-react";
-import { getCorpus } from "@/lib/corpus/site";
+import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { KIND_LABELS } from "@/lib/corpus/schema";
+import { pageMetadata } from "@/lib/site-url";
 
-export const metadata = {
-  title: "Featured Accomplishments",
-  description: "The accomplishments Daniel considers most significant.",
-};
+export function generateMetadata() {
+  return pageMetadata({
+    title: "Featured Accomplishments",
+    description: "The accomplishments Daniel considers most significant.",
+    path: "/achievements",
+    owner: getIdentity().name,
+  });
+}
 
 export default function AchievementsPage() {
   const { featured } = getCorpus();

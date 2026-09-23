@@ -4,6 +4,9 @@ import { Projects } from "@/components/sections/Projects";
 import { careerTimeline } from "@/lib/corpus/career";
 import { getCorpus } from "@/lib/corpus/site";
 import { listMindsetSlides } from "@/lib/mindset";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   const corpus = getCorpus();
