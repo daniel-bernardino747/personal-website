@@ -3,12 +3,16 @@
 import { type CareerStop, displayPeriod } from "@/lib/corpus/career";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
 /**
  * The career as a timeline — every Affiliation in order, each with the one
  * measured result that best stands for it. Order, dates and results all come
  * from the Corpus (see `careerTimeline`), so a new job or a newly Featured
  * Accomplishment reaches this cell as a `content/` edit, not a code change.
+ *
+ * The cell shows one result per stop; the link in its corner is the long form —
+ * every record, in the complete résumé (ADR-0009).
  */
 export function BentoExperiences({ stops }: { stops: CareerStop[] }) {
   return (
@@ -77,6 +81,16 @@ export function BentoExperiences({ stops }: { stops: CareerStop[] }) {
           </li>
         ))}
       </ol>
+
+      <a
+        href="/resume.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative z-10 self-end mt-3 inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+      >
+        Full résumé
+        <ArrowUpRight size={12} aria-hidden="true" />
+      </a>
     </motion.div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Linkedin, Mail } from "lucide-react";
+import { FileText, Github, Linkedin, Mail } from "lucide-react";
 import { useIdentity } from "@/components/IdentityProvider";
 import { usePathname } from "next/navigation";
 
@@ -37,6 +37,15 @@ export function Footer() {
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
           >
             <Linkedin size={18} strokeWidth={2} aria-hidden="true" />
+          </a>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Résumé (PDF)"
+            className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
+          >
+            <FileText size={18} strokeWidth={2} aria-hidden="true" />
           </a>
           <a
             href={`mailto:${identity.social.email}`}

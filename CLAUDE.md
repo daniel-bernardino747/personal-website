@@ -18,7 +18,7 @@ Single-context — `CONTEXT.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/
 
 ## Tooling prerequisites
 
-- **Tectonic** é obrigatório para renderizar currículos (`npm run render`) e para o smoke test em `src/lib/render/resume.test.ts` (o teste faz `skipIf` quando ausente). Instale com `scoop install tectonic` (ou winget/cargo) — é um binário único que baixa só os pacotes LaTeX usados.
+- **Tectonic** é obrigatório para o build (`/resume.pdf`, o currículo completo, é gerado no build — ver ADR-0009), para renderizar currículos (`npm run render`) e para o smoke test em `src/lib/render/resume.test.ts` (o teste faz `skipIf` quando ausente). Instale com `scoop install tectonic` (ou winget/cargo) — é um binário único que baixa só os pacotes LaTeX usados.
 
 ### Capture
 
