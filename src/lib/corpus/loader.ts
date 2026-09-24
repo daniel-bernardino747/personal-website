@@ -14,7 +14,7 @@ import {
   type Identity,
   identityFrontmatterSchema,
   type Kind,
-} from './schema';
+} from './schema.ts';
 
 /**
  * Thrown when the Corpus is malformed — a missing field, an invalid `kind`, or a

@@ -34,7 +34,7 @@ Job posting → Letter estruturada → PDF de carta de apresentação via Tecton
 
 ### Recon
 
-Empresa-alvo → dossiê verificado + abordagem direta ao decisor. Investiga a dor que a vaga não declara (canais quebrados, GitHub vivo, desafio técnico, board vazio) e cruza com o Corpus. Todo achado marcado CONFIRMADO ou INFERIDO; nada inferido entra no e-mail. Saída em `generated/recon/` (gitignored). See `.claude/skills/recon/SKILL.md`.
+Saiu deste repo: vive no repo `prospect-me` (irmão deste checkout), que investiga a empresa, propõe 3 soluções digitais, e só aborda o decisor depois que uma delas foi construída. Ele lê o Corpus daqui por `npm run corpus:json` — o JSON validado pelo loader, só Accomplishments com Metric — e nunca parseia `content/` sozinho; mudar o formato desse JSON é mudar um contrato com outro repo. Nunca rode `corpus:json` num build ou deploy. Ver ADR-0011.
 
 ### Article
 
