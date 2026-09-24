@@ -23,6 +23,10 @@ _Avoid_: Filter, query, tailoring
 An audience-shaped output built from a Selection — a resume, a LinkedIn block, a page of the site. Targets differ in format and length, never in facts.
 _Avoid_: Export, sync target, destination
 
+**Letter**:
+A cover letter for one posting, built like a Selection — structured data rendered through a fixed template — and paired with that posting's résumé. Each paragraph cites its sources; what Daniel did comes from the Corpus, why he wants the job comes only from what he said.
+_Avoid_: Motivation letter, cover note
+
 **Metric**:
 The number that makes an Accomplishment provable — a before/after, a volume, a duration, a rank. An Accomplishment without one is a draft, not a record.
 

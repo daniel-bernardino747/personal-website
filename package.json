@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "render": "node --no-warnings scripts/render-resume.mjs",
+    "render:letter": "node --no-warnings scripts/render-letter.mjs",
     "mindset": "node scripts/mindset.mjs",
     "test": "vitest run",
     "deploy": "npm run build && railway up --detach",

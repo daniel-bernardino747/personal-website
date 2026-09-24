@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "language": "en",
+  "targetRole": "Senior Backend Engineer",
+  "header": {
+    "name": "Ada Fixture",
+    "role": "Senior Backend Engineer",
+    "location": "Florianópolis, Brazil",
+    "email": "ada@example.com",
+    "links": [{ "label": "github.com/ada", "url": "https://github.com/ada" }]
+  },
+  "recipient": {
+    "organisation": "Acme Corp",
+    "name": "Hiring Team",
+    "location": "Berlin"
+  },
+  "date": "23 September 2026",
+  "salutation": "Dear Acme hiring team,",
+  "paragraphs": [
+    {
+      "text": "Your posting asks for someone who can own the read path of a busy API.",
+      "sources": ["posting"]
+    },
+    {
+      "text": "At my last role I rebuilt the read path around a cache, cutting p95 latency from 800ms to 120ms.",
+      "sources": ["caching-layer"]
+    },
+    {
+      "text": "I want to work on infrastructure that other teams lean on every day.",
+      "sources": ["daniel"]
+    }
+  ],
+  "closing": "Kind regards,",
+  "statedByDaniel": ["I like building the thing other teams depend on."]
+}
