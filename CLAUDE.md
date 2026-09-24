@@ -32,9 +32,9 @@ Job posting → Selection estruturada → PDF de currículo via Tectonic (o mode
 
 Job posting → Letter estruturada → PDF de carta de apresentação via Tectonic, par do currículo do `generate`. O que o Daniel fez vem do Corpus; por que ele quer a vaga vem só do que ele disse na sessão (ADR-0010). Saída em `generated/letters/` (gitignored). See `.claude/skills/cover-letter/SKILL.md`.
 
-### Recon
+### Prospect-me (antigo Recon)
 
-Saiu deste repo: vive no repo `prospect-me` (irmão deste checkout), que investiga a empresa, propõe 3 soluções digitais, e só aborda o decisor depois que uma delas foi construída. Ele lê o Corpus daqui por `npm run corpus:json` — o JSON validado pelo loader, só Accomplishments com Metric — e nunca parseia `content/` sozinho; mudar o formato desse JSON é mudar um contrato com outro repo. Nunca rode `corpus:json` num build ou deploy. Ver ADR-0011.
+Skill `/prospect-me`, que saiu deste repo: vive no repo `prospect-me` (irmão deste checkout), investiga a empresa, propõe 3 soluções digitais, e só aborda o decisor depois que uma delas foi construída. Ele lê o Corpus daqui por `npm run corpus:json` — o JSON validado pelo loader, só Accomplishments com Metric — e nunca parseia `content/` sozinho; mudar o formato desse JSON é mudar um contrato com outro repo. Nunca rode `corpus:json` num build ou deploy. Ver ADR-0011.
 
 ### Article
 
