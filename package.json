@@ -7,8 +7,6 @@
     "build": "node --no-warnings scripts/fetch-corpus.mjs && next build && node scripts/bake-corpus.mjs && node scripts/pack-deploy.mjs",
     "start": "next start",
     "lint": "next lint",
-    "render": "node --no-warnings scripts/render-resume.mjs",
-    "render:letter": "node --no-warnings scripts/render-letter.mjs",
     "project:image": "node --no-warnings --conditions=react-server scripts/project-image.mjs",
     "mindset": "node scripts/mindset.mjs",
     "test": "vitest run",

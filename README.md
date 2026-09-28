@@ -25,22 +25,12 @@ their output to `.corpus/`, which is gitignored:
 A build without it stops and says so. How to write the Corpus is in `career`'s
 README.
 
-## Agent skills
+## Career skills
 
-Four skills in `.claude/skills/` write and read the Corpus. Neither invents a
-number that is not in it.
-
-- **`capture`** — a guided interview that records an Accomplishment or
-  Affiliation into `../career/corpus/`. Use it rather than hand-writing files; it is what
-  keeps the frontmatter conventions above consistent.
-- **`generate`** — turns a pasted job posting into a structured Selection and
-  renders it to a tailored résumé PDF, plus LinkedIn/GitHub profile blocks and a
-  Portuguese résumé. Output lands in `generated/`, which is gitignored so a
-  résumé naming a target employer is never committed.
-- **`cover-letter`** — the résumé's matching pair: a Letter rendered to PDF,
-  where only what Daniel said in the session explains why he wants the role.
-- **`article`** — an interview that drafts a long-form Article in
-  `../career/corpus/articles/`, always as `status: draft`.
+`capture`, `generate`, `cover-letter` and `article` write the Corpus or render
+from it, so they live in `career` (ADR-0013). `npm run project:image` stays
+here, because a project's image is site presentation (ADR-0012); `capture`
+runs it by path.
 
 ## Scripts
 
@@ -51,12 +41,11 @@ number that is not in it.
 | `npm run build` | fetch, standalone build, the Featured slice baked in, packed into `deploy.tar` |
 | `npm run deploy` | build here and upload to Railway (ADR-0007) |
 | `npm test` | Vitest |
-| `npm run render` | render a Selection to a résumé PDF |
+| `npm run project:image -- <id>` | acquire a project card's image into `public/projects/` |
 
-**Tectonic** is required for `npm run render` and for the résumé smoke test in
-`src/lib/render/resume.test.ts` (the test skips itself when Tectonic is absent).
-Install with `scoop install tectonic` (or winget/cargo) — a single binary that
-downloads only the LaTeX packages actually used.
+**Tectonic** is required for the build: `corpus:fetch` runs `career`'s
+`resume:pdf`, which renders `/resume.pdf`. Install with `scoop install tectonic`
+(or winget/cargo), a single binary that downloads only the LaTeX packages used.
 
 ## Further reading
 

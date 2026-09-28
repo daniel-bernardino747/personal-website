@@ -1,6 +1,6 @@
 # 03 — The site reads `site:json`, and its loader is deleted
 
-**Status:** implemented, not deployed. The last criterion waits on `npm run deploy`.
+**Status:** done — deployed 2026-09-28 and checked by Daniel on www.teamdbsolutions.com
 
 **Blocked by:** 02.
 
@@ -12,7 +12,7 @@
 - [x] The home page, `/achievements`, `/chat` and `/resume.pdf` match what production served before the change
 - [x] The standalone artefact carries only the `site:json` output and the PDF, with no Corpus markdown
 - [x] `baked-corpus.test.ts` guards the new artefact shape
-- [ ] Deployed and verified on www.teamdbsolutions.com
+- [x] Deployed and verified on www.teamdbsolutions.com
 
 ## Comments
 
