@@ -2,7 +2,7 @@
 
 The questions attached to the cal.com event `get-off-the-ground`, and how the answers turn into a 15-minute conversation.
 
-Written in English because the booking page sits behind an English site and an English CTA ("Get it off the ground"). The Portuguese version lives at [`booking-intake.pt.md`](booking-intake.pt.md) — pick one funnel language and keep only that file.
+Written in English because the booking page sits behind an English site and an English CTA ("Get it off the ground").
 
 ## The rule
 

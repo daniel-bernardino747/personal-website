@@ -57,3 +57,6 @@ next-env.d.ts
 # published. `npm run mindset` converts them into public/mindset/, which is.
 /media/mindset/*
 !/media/mindset/README.md
+
+# local build logs
+build_log.txt

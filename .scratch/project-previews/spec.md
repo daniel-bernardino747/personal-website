@@ -1,5 +1,7 @@
 # Project cards show the project
 
+Status: done — shipped in b3679c4
+
 **What this is:** each project card on the site gains an image of the thing
 itself — the site's Open Graph image, a screenshot of it, or an image Daniel
 supplies — so the gallery shows the work instead of only describing it. The

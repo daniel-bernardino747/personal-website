@@ -1,6 +1,6 @@
 # Career Corpus
 
-Status: ready-for-agent
+Status: done — issues 01–04 shipped
 
 ## Problem Statement
 

@@ -1,6 +1,6 @@
 # personal-website
 
-Portfolio pessoal — Next.js 16 (App Router, React 19, TypeScript, Tailwind v4, static export via `output: 'export'`).
+Portfolio pessoal — Next.js 16 (App Router, React 19, TypeScript, Tailwind v4, `output: 'standalone'`, servidor no Railway — ADR-0007).
 
 ## Agent skills
 

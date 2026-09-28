@@ -13,7 +13,7 @@ This is the binding constraint on everything else in this directory.
 **Blocked by:** nothing in the repo. Blocked on Daniel's Vercel account — the
 login, the domain move, and the first deploy are his to run.
 
-**Status:** ready-for-human
+**Status:** wontfix — superseded by [ADR-0007](../../../docs/adr/0007-the-site-gains-a-runtime-on-railway.md): the site runs on Railway, not Vercel. Kept for the diagnosis ADR-0007 cites. The unchecked Featured-review criterion lives on in `agent-answers-from-the-corpus/issues/04`.
 
 ## Prepared in this repo already
 
