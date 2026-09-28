@@ -19,7 +19,7 @@ const ALL = "All";
 
 /**
  * The Corpus id of the project that is this website. Lives here rather than in
- * `content/` because "you are on it" is true of this page only — a résumé
+ * the Corpus because "you are on it" is true of this page only — a résumé
  * rendered from the same statement must not claim it.
  */
 const THIS_SITE_ID = "personal-website";

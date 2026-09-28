@@ -12,7 +12,7 @@ Primary: a prospective client hiring Daniel as a contractor (PJ) or freelancer â
 
 ## Product Purpose
 
-The public site of Daniel Bernardino de Souza, fullstack and AI developer. It is one Render Target of the career Corpus (`CONTEXT.md`): every fact it shows comes from `content/`, validated by the loader. It exists to show the work and turn a visit into a conversation (the booking link, the chat agent at `/chat`).
+The public site of Daniel Bernardino de Souza, fullstack and AI developer. It is one Render Target of the career Corpus (`CONTEXT.md`): every fact it shows comes from the `career` repository through `site:json` (ADR-0013). It exists to show the work and turn a visit into a conversation (the booking link, the chat agent at `/chat`).
 
 For the Projects section specifically, success is the visitor opening a project live â€” the click out to the real thing is the conversion.
 

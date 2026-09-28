@@ -9,7 +9,7 @@ import { SITE_URL } from "@/lib/site-url";
  * The card a link to the site unfolds into on LinkedIn, WhatsApp, X and Slack.
  * It applies to every route — pages only change the title and description
  * beside it — and it is drawn from the Identity, so a new role or headline
- * reaches the preview with a `content/` edit and a deploy, never a redesign.
+ * reaches the preview with a Corpus edit in `career` and a deploy, never a redesign.
  *
  * Rendered once at build: nothing here reads the request.
  */

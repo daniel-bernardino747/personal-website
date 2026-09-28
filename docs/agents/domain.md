@@ -4,6 +4,8 @@ How the engineering skills should consume this repo's domain documentation when 
 
 ## Before exploring, read these
 
+This site is a reader of the career Corpus, which lives in the private `career` repository (ADR-0013). Its `CONTEXT.md` holds the Corpus glossary; this repository's `CONTEXT.md` holds only the terms the site uses. Changes to the Corpus, its schema or the career skills happen there.
+
 - **`CONTEXT.md`** at the repo root, or
 - **`CONTEXT-MAP.md`** at the repo root if it exists — it points at one `CONTEXT.md` per context. Read each one relevant to the topic.
 - **`docs/adr/`** — read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.

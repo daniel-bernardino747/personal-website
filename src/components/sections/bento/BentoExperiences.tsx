@@ -9,7 +9,7 @@ import { ArrowUpRight } from "lucide-react";
  * The career as a timeline — every Affiliation in order, each with the one
  * measured result that best stands for it. Order, dates and results all come
  * from the Corpus (see `careerTimeline`), so a new job or a newly Featured
- * Accomplishment reaches this cell as a `content/` edit, not a code change.
+ * Accomplishment reaches this cell as a Corpus edit in `career`, not a code change.
  *
  * The cell shows one result per stop; the link in its corner is the long form —
  * every record, in the complete résumé (ADR-0009).

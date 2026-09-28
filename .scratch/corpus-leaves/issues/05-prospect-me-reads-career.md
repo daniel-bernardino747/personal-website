@@ -1,6 +1,6 @@
 # 05 — `prospect-me` reads the Corpus from `career`
 
-**Status:** done on branch `corpus-from-career` of prospect-me; lands when that PR merges
+**Status:** done — merged in prospect-me PR #10
 
 **Blocked by:** 02.
 

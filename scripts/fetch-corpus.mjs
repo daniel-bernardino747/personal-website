@@ -13,9 +13,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { careerRepo } from '../src/lib/corpus/location.ts';
+import { SITE_JSON_VERSION } from '../src/lib/corpus/schema.ts';
 import { runCareer } from './career.mjs';
-
-const SITE_JSON_VERSION = 1; // src/lib/corpus/schema.ts checks it again on read
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, '.corpus');

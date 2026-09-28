@@ -32,7 +32,7 @@ const geistMono = localFont({
 /**
  * The share preview is drawn from the Identity, like everything else: title,
  * description and the image in `opengraph-image.tsx` all change with a
- * `content/` edit. Pages set only `title` and `description`; the template and
+ * Corpus edit in `career`. Pages set only `title` and `description`; the template and
  * the Open Graph fields below carry them into the preview.
  */
 export function generateMetadata(): Metadata {

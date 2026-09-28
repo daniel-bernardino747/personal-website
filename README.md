@@ -3,10 +3,10 @@
 Daniel Bernardino's portfolio — Next.js 16 (App Router, React 19, TypeScript,
 Tailwind v4), running as a standalone Next server on Railway (ADR-0007).
 
-The site does not hardcode career facts. It renders from a **career Corpus**: a
-directory of markdown files that is also the single source for every generated
-résumé, so the site and a PDF can never disagree about a date, a number, or a
-job title.
+The site does not hardcode career facts. It renders from a **career Corpus**
+that lives in the private `career` repository and is also the single source for
+every generated résumé, so the site and a PDF can never disagree about a date, a
+number, or a job title.
 
 ## The Corpus
 
@@ -14,7 +14,7 @@ The site does not own its data. The Corpus, the career record behind every page
 and every résumé, lives in the private `career` repository (ADR-0013), and this
 site is one of its readers. It never parses the markdown. Before `dev`, `build`
 and `test`, `npm run corpus:fetch` runs two of `career`'s contracts and writes
-their output to `.corpus/`, which is gitignored:
+their output to `.corpus/`, which is gitignored (the tests fetch only the JSON):
 
 - `site:json`: only what the site publishes. The Identity, every Affiliation,
   every project (drafts included) and the Featured records. `career` decides
@@ -43,7 +43,7 @@ runs it by path.
 | `npm test` | Vitest |
 | `npm run project:image -- <id>` | acquire a project card's image into `public/projects/` |
 
-**Tectonic** is required for the build: `corpus:fetch` runs `career`'s
+**Tectonic** is required for `dev` and the build: `corpus:fetch` runs `career`'s
 `resume:pdf`, which renders `/resume.pdf`. Install with `scoop install tectonic`
 (or winget/cargo), a single binary that downloads only the LaTeX packages used.
 

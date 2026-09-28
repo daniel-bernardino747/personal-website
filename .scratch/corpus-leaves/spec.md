@@ -1,6 +1,6 @@
 # The Corpus leaves for its own repository
 
-Status: ready-for-agent — decided in [ADR-0013](../../docs/adr/0013-the-corpus-leaves-for-its-own-repository.md)
+Status: done — all seven tickets shipped 2026-09-28. Decided in [ADR-0013](../../docs/adr/0013-the-corpus-leaves-for-its-own-repository.md)
 
 ## Problem
 

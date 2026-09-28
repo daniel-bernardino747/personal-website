@@ -1,38 +1,31 @@
-# Career Corpus
+# Personal website
 
-This repo is the single source of truth for Daniel's professional career. Career facts are written once, as versioned prose, and rendered into whatever a given audience needs — a resume tailored to a job posting, a block to paste into LinkedIn, a section of the public site.
+Daniel's portfolio: a Next.js site with a chat agent, served at www.teamdbsolutions.com. It is one **Render Target** of the career Corpus, which lives in the private `career` repository (ADR-0013). The site owns how the record is shown, never the record itself. The canonical glossary of the Corpus is `career/CONTEXT.md`; the terms below are the ones this site's code uses, as it sees them.
 
 ## Language
 
+**Corpus**:
+Daniel's career record: Affiliations, Accomplishments and the Identity. It is written and validated in `career`; this site receives only the slice `site:json` publishes, and never parses the markdown.
+_Avoid_: content, data, CMS
+
+**site:json**:
+The contract through which the site reads the Corpus: the Identity, every Affiliation, every project (drafts included) and the Featured records. What it leaves out cannot reach a page, the agent or the deployed image, because `career` applies the gate before the site ever sees the data.
+_Avoid_: export, feed, API
+
 **Accomplishment**:
-Something you did that you can prove, stated with a metric and self-sufficient outside its Affiliation. The atomic unit that gets selected when building a resume. A talk, an open-source contribution, and a shipped project are all Accomplishments distinguished by kind — not separate entities.
-_Avoid_: Achievement, highlight, win, bullet
+One provable thing, with a `kind`. On this site it becomes a project card, an `/achievements` entry, or something the agent may say.
+_Avoid_: Achievement, highlight, win
 
 **Affiliation**:
-The organisation or institution an Accomplishment happened inside — an employer, a client, a course of study. Holds where and when, plus the stack involved; holds no claims of its own. Stable and rarely edited; enters every Render Target unchanged. An Accomplishment may have no Affiliation (a conference talk, a personal project).
-_Avoid_: Context, job, position, employment, experience
-
-**Corpus**:
-The full body of Affiliations and Accomplishments. The single source of truth — every Render Target reads from it, nothing writes back into it except capture.
-
-**Selection**:
-The subset of the Corpus chosen for one Render Target, plus the order and compression applied to it. Produced per job posting, never hand-edited into the Corpus.
-_Avoid_: Filter, query, tailoring
-
-**Render Target**:
-An audience-shaped output built from a Selection — a resume, a LinkedIn block, a page of the site. Targets differ in format and length, never in facts.
-_Avoid_: Export, sync target, destination
-
-**Letter**:
-A cover letter for one posting, built like a Selection — structured data rendered through a fixed template — and paired with that posting's résumé. Each paragraph cites its sources; what Daniel did comes from the Corpus, why he wants the job comes only from what he said.
-_Avoid_: Motivation letter, cover note
+The organisation an Accomplishment happened inside: an employer, a client, a course of study. The career timeline is built from them.
+_Avoid_: Job, position, experience
 
 **Metric**:
-The number that makes an Accomplishment provable — a before/after, a volume, a duration, a rank. An Accomplishment without one is a draft, not a record.
+The number that makes an Accomplishment provable. The agent quotes it as the exact string, never rounded or re-derived (ADR-0008). An Accomplishment without one is a draft; only a project may appear on the site as a draft.
 
 **Featured**:
-Curation, not classification. Marks an Accomplishment as worth showing on the public site today. Expected to change over time; carries no meaning about the Accomplishment's substance.
+Curation, not classification: an Accomplishment worth showing today. It decides what `/achievements` lists and, entirely, what the agent knows (ADR-0008).
 
-**Article**:
-Long-form writing by Daniel — a case study that goes deep on Accomplishments already in the Corpus, or an essay arguing a position he holds. Built on the Corpus, never a source of truth beside it: every fact about his work traces to a cited Accomplishment or to what he said. Not an Accomplishment itself; when a published Article earns its own number, that result is captured as a `writing` Accomplishment.
-_Avoid_: Post (a LinkedIn/X draft from `post-forge`), blog entry
+**Render Target**:
+An audience-shaped output built from the Corpus: this site, its agent, the complete résumé at `/resume.pdf`. Targets differ in format and length, never in facts.
+_Avoid_: Export, sync target, destination
