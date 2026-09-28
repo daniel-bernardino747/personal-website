@@ -10,6 +10,7 @@
     "render": "node --no-warnings scripts/render-resume.mjs",
     "render:letter": "node --no-warnings scripts/render-letter.mjs",
     "corpus:json": "node --no-warnings --conditions=react-server scripts/corpus-json.mjs",
+    "project:image": "node --no-warnings --conditions=react-server scripts/project-image.mjs",
     "mindset": "node scripts/mindset.mjs",
     "test": "vitest run",
     "deploy": "npm run build && railway up --detach",
@@ -49,6 +50,7 @@
     "eslint": "^10",
     "eslint-config-next": "16.1.6",
     "postcss": "^8",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4.2.1",
     "typescript": "^5",
     "vitest": "^4.1.10"

@@ -43,6 +43,16 @@ describe('loadCorpus', () => {
       expect(caching?.title).toBeUndefined();
     });
 
+    it('reads the image when one is recorded, and leaves it absent otherwise', () => {
+      const project = corpus.accomplishments.find((a) => a.id === 'side-project');
+      expect(project?.image).toEqual({
+        src: '/projects/side-project.webp',
+        alt: 'The Open Toolkit landing page, with its install command',
+      });
+      const caching = corpus.accomplishments.find((a) => a.id === 'caching-layer');
+      expect(caching?.image).toBeUndefined();
+    });
+
     it('loads an Accomplishment that has no Affiliation', () => {
       const talk = corpus.accomplishments.find((a) => a.id === 'react-talk');
       expect(talk).toBeDefined();
@@ -123,6 +133,20 @@ describe('loadCorpus', () => {
       );
       expect(() => loadCorpus(fixture('missing-affiliation-field'))).toThrow(
         /Affiliation "no-role" .* role/,
+      );
+    });
+
+    it('rejects an image without alt text', () => {
+      expect(() => loadCorpus(fixture('image-without-alt'))).toThrow(CorpusError);
+      expect(() => loadCorpus(fixture('image-without-alt'))).toThrow(
+        /Accomplishment "no-alt" .* image\.alt/,
+      );
+    });
+
+    it('rejects an image that is not a site path under /projects/', () => {
+      expect(() => loadCorpus(fixture('image-remote'))).toThrow(CorpusError);
+      expect(() => loadCorpus(fixture('image-remote'))).toThrow(
+        /Accomplishment "remote" .* image\.src/,
       );
     });
 

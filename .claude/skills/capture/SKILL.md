@@ -141,6 +141,41 @@ Field notes:
   Only record a repository Daniel confirms is **public** — a private URL renders
   as a link that 404s for every visitor.
 
+### The project's image
+
+A `kind: project` card shows an image of the thing when one exists (ADR-0012).
+After the file is written, acquire it — never by hand, never by hotlinking:
+
+```bash
+npm run project:image -- <id>                 # og:image of the Live URL, else a screenshot
+npm run project:image -- <id> --screenshot    # skip the og:image (e.g. it shows Daniel, not the project)
+npm run project:image -- <id> --file <path>   # an image Daniel supplies
+```
+
+The script writes `public/projects/<id>.webp` at 1200×630 and prints the
+frontmatter to add; it never edits the Corpus. Then:
+
+1. **Look at the image** and show it to Daniel. It must show the *project* — an
+   Open Graph card that is his portrait, or a screenshot caught mid-animation, is
+   not it. If none is right, delete the file and leave the card without an image;
+   that is a first-class state, not a gap.
+2. **Draft the alt** from what is visible in the image — its headline, its
+   numbers, what the layout shows — never from what you know about the project.
+   In English, like the rest of the Corpus.
+3. **Only on Daniel's approval**, add to the frontmatter:
+
+   ```yaml
+   image:
+     src: /projects/<id>.webp
+     alt: "What the image shows, in words."
+   ```
+
+   A backslash inside a double-quoted YAML value must be written `\\`.
+
+A project with no `Live:` URL needs `--file`. The script refuses anything not
+close to 1.91:1 rather than cropping it — a portrait phone screenshot is composed
+onto a 1200×630 canvas by Daniel first.
+
 ### When it can't be quantified yet — the draft
 
 If step 2 produced no real number, write the file **without a `metric` field**.
@@ -217,6 +252,8 @@ Ask for the end date; never assume it. Leave everything else untouched.
   `metric` and the matching figure in the body so the two never disagree, and
   confirm the new number with Daniel first. Fixing a draft's missing number
   (adding a `metric`) promotes it to a record automatically.
+- **Add or replace a project's image** — follow "The project's image" above; the
+  same approval applies to a replacement as to a first image.
 - **Feature / unfeature** — flip `featured` in the target file. Featured is
   curation, not substance: it reflects what Daniel wants to lead with today.
 

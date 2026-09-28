@@ -58,6 +58,20 @@ export const affiliationFrontmatterSchema = z.object({
   stack: z.array(z.string()).default([]),
 });
 
+/**
+ * A project's picture of itself — its Open Graph image, a screenshot, or a file
+ * Daniel supplied — acquired once by `npm run project:image` and approved before
+ * it is recorded (ADR-0012). The file lives in `public/projects/`, so `src` is a
+ * site path; a remote URL would reintroduce the hotlink the script exists to
+ * avoid. `alt` is required: it is written once, by whoever approves the image.
+ */
+const projectImageSchema = z.object({
+  src: z
+    .string()
+    .regex(/^\/projects\/[\w.-]+$/, 'must be a site path under /projects/'),
+  alt: z.string().min(1),
+});
+
 /** Frontmatter shape of an Accomplishment file, before body/id are attached. */
 export const accomplishmentFrontmatterSchema = z.object({
   affiliation: z.string().min(1).optional(),
@@ -69,6 +83,8 @@ export const accomplishmentFrontmatterSchema = z.object({
   // because most Accomplishments are a claim rather than a named thing; a project
   // gallery needs it, a résumé bullet does not.
   title: z.string().min(1).optional(),
+  // Only the site shows it; the résumé, LinkedIn blocks and `corpus:json` ignore it.
+  image: projectImageSchema.optional(),
 });
 
 /**
@@ -138,6 +154,11 @@ export interface Accomplishment {
    * Affiliation or render no heading.
    */
   title?: string;
+  /**
+   * The image a project card shows, 1200×630 WebP under `public/projects/`.
+   * Absent for most Accomplishments, and for projects with nothing to show yet.
+   */
+  image?: { src: string; alt: string };
   /** The prose statement — the markdown body of the file. */
   statement: string;
   featured: boolean;

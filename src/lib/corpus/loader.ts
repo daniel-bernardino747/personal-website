@@ -167,13 +167,20 @@ function parseAccomplishment(
   { id, data, body }: ParsedFile,
   affiliationsById: Map<string, Affiliation>,
 ): Accomplishment {
-  const { affiliation: affiliationId, date, kind, metric, featured, title } =
-    validateFrontmatter(
-      accomplishmentFrontmatterSchema,
-      'Accomplishment',
-      id,
-      data,
-    );
+  const {
+    affiliation: affiliationId,
+    date,
+    kind,
+    metric,
+    featured,
+    title,
+    image,
+  } = validateFrontmatter(
+    accomplishmentFrontmatterSchema,
+    'Accomplishment',
+    id,
+    data,
+  );
 
   if (body.length === 0) {
     throw new CorpusError(
@@ -199,6 +206,7 @@ function parseAccomplishment(
     kind,
     metric,
     title,
+    image,
     statement: body,
     featured,
     isDraft: metric === undefined,

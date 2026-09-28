@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 import type { Accomplishment } from "@/lib/corpus/schema";
 import { displayYear } from "@/lib/corpus/statement";
+import { packRows } from "@/lib/projects/pack";
 import { ProjectCard } from "./projects/ProjectCard";
 
 /**
@@ -46,6 +47,24 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
         : ordered.filter((project) => displayYear(project) === activeYear),
     [ordered, activeYear],
   );
+
+  // Rows are decided here, not by CSS, so the order a keyboard walks is the
+  // order on screen. The index numeral counts only the cards that show it.
+  const cells = useMemo(() => {
+    let numeral = 0;
+    return packRows(
+      visible.map((project) => ({
+        project,
+        featured: project.featured,
+        hasImage: project.image !== undefined,
+      })),
+    )
+      .flat()
+      .map((cell) => ({
+        ...cell,
+        numeral: cell.item.hasImage ? undefined : ++numeral,
+      }));
+  }, [visible]);
 
   const filters = years.length > 1 ? [ALL, ...years] : [];
 
@@ -136,12 +155,13 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
             className="grid grid-cols-1 gap-4 sm:grid-cols-2"
           >
             <AnimatePresence mode="popLayout">
-              {visible.map((project, index) => (
+              {cells.map(({ item: { project }, wide, numeral }) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  index={index}
+                  numeral={numeral}
                   featured={project.featured}
+                  wide={wide}
                   isThisSite={project.id === THIS_SITE_ID}
                 />
               ))}

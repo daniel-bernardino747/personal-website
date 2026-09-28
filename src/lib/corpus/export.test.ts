@@ -33,6 +33,13 @@ describe('toCorpusJson', () => {
     }
   });
 
+  it('leaves the project image out of the contract (it is site presentation)', () => {
+    expect(corpus.accomplishments.some((a) => a.image)).toBe(true);
+    for (const a of json.accomplishments) {
+      expect(a).not.toHaveProperty('image');
+    }
+  });
+
   it('survives a JSON round trip unchanged', () => {
     expect(JSON.parse(JSON.stringify(json))).toEqual(json);
   });
