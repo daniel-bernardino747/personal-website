@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "identity": {
+    "name": "Ada Lovelace",
+    "initials": "AL",
+    "role": [
+      "Software Engineer",
+      "Mathematician"
+    ],
+    "location": "London, United Kingdom",
+    "headline": "Building provable systems.",
+    "bookingUrl": "https://cal.com/ada",
+    "social": {
+      "github": "https://github.com/ada",
+      "linkedin": "https://linkedin.com/in/ada",
+      "email": "ada@example.com"
+    },
+    "availability": {
+      "engagement": [
+        "Contractor"
+      ],
+      "workMode": "Remote",
+      "hours": "9am–5pm London time"
+    },
+    "bio": "I write programs and prove they are correct."
+  },
+  "affiliations": [
+    {
+      "id": "acme-corp",
+      "organisation": "Acme Corp",
+      "role": "Senior Software Engineer",
+      "period": {
+        "start": "2022-01",
+        "end": "2024-03"
+      },
+      "stack": [
+        "TypeScript",
+        "Next.js",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "id": "university",
+      "organisation": "Federal University",
+      "role": "BSc Computer Science",
+      "period": {
+        "start": "2016-03",
+        "end": "2021-12"
+      },
+      "stack": [
+        "C",
+        "Python"
+      ]
+    }
+  ],
+  "accomplishments": [
+    {
+      "id": "side-project",
+      "date": "2023-02-10",
+      "kind": "project",
+      "metric": "1200 GitHub stars",
+      "title": "Open Toolkit",
+      "image": {
+        "src": "/projects/side-project.webp",
+        "alt": "The Open Toolkit landing page, with its install command"
+      },
+      "statement": "Built an open toolkit that reached 1200 GitHub stars.",
+      "featured": false,
+      "isDraft": false
+    },
+    {
+      "id": "caching-layer",
+      "affiliationId": "acme-corp",
+      "date": "2024-03-15",
+      "kind": "engineering",
+      "metric": "p95 latency 800ms to 120ms",
+      "statement": "Rebuilt the read path around a cache, cutting p95 latency from 800ms to 120ms.",
+      "featured": true,
+      "isDraft": false
+    },
+    {
+      "id": "react-talk",
+      "date": "2024-06-01",
+      "kind": "talk",
+      "metric": "audience of 300",
+      "statement": "Delivered a talk on server components to an audience of 300.",
+      "featured": true,
+      "isDraft": false
+    },
+    {
+      "id": "unshipped-idea",
+      "date": "2025-01",
+      "kind": "project",
+      "title": "Unshipped Idea",
+      "statement": "A project whose numbers are not recovered yet. Built with TypeScript.",
+      "featured": false,
+      "isDraft": true
+    }
+  ]
+}

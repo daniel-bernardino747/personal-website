@@ -21,7 +21,9 @@ import { join } from 'node:path';
 
 import sharp from 'sharp';
 
-import { loadCorpus } from '../src/lib/corpus/loader.ts';
+import { runCareer } from './career.mjs';
+
+import { fromSiteJson } from '../src/lib/corpus/source.ts';
 import { parseStatement } from '../src/lib/corpus/statement.ts';
 import {
   fitsRatio,
@@ -114,11 +116,18 @@ function screenshot(liveUrl) {
 async function main() {
   const { id, file, screenshot: forceScreenshot } = parseArgs(process.argv.slice(2));
 
-  const corpus = loadCorpus();
+  // Read fresh from `career`, not from `.corpus/`: capture runs this right after
+  // writing the record, before any fetch.
+  const corpus = fromSiteJson(JSON.parse(runCareer('site:json')));
   const accomplishment = [...corpus.accomplishments, ...corpus.drafts].find(
     (a) => a.id === id,
   );
-  if (!accomplishment) fail(`No Accomplishment "${id}" in content/accomplishments/.`);
+  if (!accomplishment) {
+    fail(
+      `"${id}" is not in site:json. Only projects and Featured records reach the site, ` +
+        'so only they carry an image. Check career/corpus/accomplishments/.',
+    );
+  }
 
   let acquired;
   if (file) {
@@ -159,7 +168,7 @@ async function main() {
       `Wrote ${out} (${kb} KB) from the ${acquired.origin}.`,
       '',
       'Look at it. If it shows the project, add to the frontmatter of',
-      `content/accomplishments/${id}.md:`,
+      `career/corpus/accomplishments/${id}.md:`,
       '',
       'image:',
       `  src: ${imageSrc(id)}`,

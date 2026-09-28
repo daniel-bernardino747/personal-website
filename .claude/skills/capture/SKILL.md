@@ -265,7 +265,7 @@ Every file this skill writes must load cleanly through the loader — a malforme
 Corpus halts the build (spec story 34). After writing or editing, confirm it:
 
 ```bash
-npm test -- content   # loads the real Corpus (../career/corpus/) through loadCorpus and asserts it validates
+npm test --prefix ../career -- content   # loads the real Corpus through the loader in career and asserts it validates
 ```
 
 A green run means the frontmatter satisfied the schema and every Affiliation

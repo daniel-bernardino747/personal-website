@@ -8,81 +8,22 @@ directory of markdown files that is also the single source for every generated
 résumé, so the site and a PDF can never disagree about a date, a number, or a
 job title.
 
-## The `content/` directory
+## The Corpus
 
-`content/` is the Corpus. **It is deliberately not in this repository** —
-`.gitignore` excludes it. The code is public; the career record behind it is
-not, and a real Corpus holds employer metrics that have no business in a public
-git history.
+The site does not own its data. The Corpus, the career record behind every page
+and every résumé, lives in the private `career` repository (ADR-0013), and this
+site is one of its readers. It never parses the markdown. Before `dev`, `build`
+and `test`, `npm run corpus:fetch` runs two of `career`'s contracts and writes
+their output to `.corpus/`, which is gitignored:
 
-That means a fresh clone will not build until you create one. Copy the committed
-template and edit it:
+- `site:json`: only what the site publishes. The Identity, every Affiliation,
+  every project (drafts included) and the Featured records. `career` decides
+  what is public, so nothing else can reach a page, the agent or the image.
+- `resume:pdf`: the complete résumé served at `/resume.pdf` (ADR-0009).
 
-```bash
-cp -r content.example content   # PowerShell: Copy-Item content.example content -Recurse
-npm install
-npm run dev
-```
-
-`content.example/` is a working, schema-valid Corpus of three files. It exists to
-be copied and overwritten, not to be edited in place.
-
-### Layout
-
-```
-content/
-  identity.md                  # exactly one — the site and résumé header
-  affiliations/<id>.md         # where and when: an employer, client, course of study
-  accomplishments/<id>.md      # one provable thing each
-```
-
-The **filename is the stable id**. An Accomplishment references its Affiliation
-by that id (`affiliation: example-employer` → `affiliations/example-employer.md`),
-never by display name. A dangling reference fails the build rather than rendering
-a broken page.
-
-### Writing an Accomplishment
-
-```markdown
----
-affiliation: example-employer      # optional — the id of a file in affiliations/
-date: "2025-03"                    # required — always quoted, YYYY / YYYY-MM / YYYY-MM-DD
-kind: project                      # required — see below
-metric: "Cut median checkout time from 4.2s to 1.1s"   # optional
-featured: true                     # optional, defaults false
-title: "Example Checkout"          # the display name, when it is a named thing
----
-
-The prose statement — the body of the file. One self-sufficient claim, written
-to stand alone outside its Affiliation.
-
-Built with Next.js, TypeScript, PostgreSQL. Live: https://example.com Repo: https://github.com/you/example
-```
-
-`kind` is one of `engineering`, `talk`, `open-source`, `project`, `education`,
-`writing`.
-
-**The metric gate.** An Accomplishment with no `metric` is a *draft*. Drafts are
-excluded from résumés — a résumé must never imply a result it cannot back — but
-the site's project gallery opts back in, because a shipped project whose numbers
-aren't recovered yet is still a real project, and its card claims nothing
-numeric. Record what is true; add the number when you have it.
-
-**The closing conventions.** A project statement may end with any of:
-
-| Marker | Rendered as |
-| --- | --- |
-| `Built with A, B and C.` | stack chips on the card |
-| `Live: https://…` | a "Visit …" link |
-| `Repo: https://…` | a "… on GitHub" link |
-
-They are optional and order-independent, and only ever *split* text you wrote —
-nothing is inferred. A statement that skips them renders as plain prose, which is
-a correct card, just a quieter one. Only record a repository that is actually
-public; a private URL renders as a link that 404s for every visitor.
-
-Everything is validated on load (`src/lib/corpus/`), so a malformed file halts
-the build instead of shipping a broken page.
+`career` is found at `CORPUS_REPO`, default the sibling directory `../career`.
+A build without it stops and says so. How to write the Corpus is in `career`'s
+README.
 
 ## Agent skills
 
@@ -90,7 +31,7 @@ Four skills in `.claude/skills/` write and read the Corpus. Neither invents a
 number that is not in it.
 
 - **`capture`** — a guided interview that records an Accomplishment or
-  Affiliation into `content/`. Use it rather than hand-writing files; it is what
+  Affiliation into `../career/corpus/`. Use it rather than hand-writing files; it is what
   keeps the frontmatter conventions above consistent.
 - **`generate`** — turns a pasted job posting into a structured Selection and
   renders it to a tailored résumé PDF, plus LinkedIn/GitHub profile blocks and a
@@ -99,14 +40,15 @@ number that is not in it.
 - **`cover-letter`** — the résumé's matching pair: a Letter rendered to PDF,
   where only what Daniel said in the session explains why he wants the role.
 - **`article`** — an interview that drafts a long-form Article in
-  `content/articles/`, always as `status: draft`.
+  `../career/corpus/articles/`, always as `status: draft`.
 
 ## Scripts
 
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | development server on :3000 |
-| `npm run build` | standalone build, the Featured Corpus baked in, packed into `deploy.tar` |
+| `npm run corpus:fetch` | `site:json` and the complete résumé from `career`, into `.corpus/` |
+| `npm run build` | fetch, standalone build, the Featured slice baked in, packed into `deploy.tar` |
 | `npm run deploy` | build here and upload to Railway (ADR-0007) |
 | `npm test` | Vitest |
 | `npm run render` | render a Selection to a résumé PDF |

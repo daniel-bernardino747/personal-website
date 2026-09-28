@@ -57,3 +57,6 @@ next-env.d.ts
 
 # local build logs
 build_log.txt
+
+# fetched from the career checkout by scripts/fetch-corpus.mjs (ADR-0013)
+/.corpus/

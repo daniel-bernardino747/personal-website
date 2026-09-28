@@ -1,40 +1,28 @@
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { getCorpus } from '@/lib/corpus/site';
-import { renderSelectionToPdf } from '@/lib/render/resume';
-import { buildCompleteSelection } from '@/lib/resume/complete';
-import { SITE_URL } from '@/lib/site-url';
+import { getIdentity } from '@/lib/corpus/site';
 
 /**
- * The complete résumé, as a download.
+ * The complete résumé, as a download (ADR-0009).
  *
- * Prerendered at build, like `opengraph-image`: Tectonic runs here, on the
- * machine that holds the Corpus, and the deployed server only ever hands out the
- * finished bytes — it has neither Tectonic nor the non-Featured records. A build
- * without Tectonic fails at this route rather than shipping a broken link, which
- * is why it is a prerequisite in CLAUDE.md.
+ * `career` renders it, where Tectonic and the whole Corpus are (ADR-0013), and
+ * `scripts/fetch-corpus.mjs` puts the finished PDF in `.corpus/`. This route
+ * is prerendered at build and only hands out those bytes, so neither this site
+ * nor its server holds Tectonic or the non-Featured records as data.
  */
 export const dynamic = 'force-static';
 
 export function GET() {
-  const selection = buildCompleteSelection(getCorpus(), SITE_URL);
-  const outDir = mkdtempSync(join(tmpdir(), 'complete-resume-'));
+  const pdf = readFileSync(join(process.cwd(), '.corpus', 'resume.pdf'));
+  const filename = `${getIdentity().name.toLowerCase().replace(/\s+/g, '-')}-resume.pdf`;
 
-  try {
-    const { pdfPath } = renderSelectionToPdf(selection, { outDir, name: 'resume' });
-    const filename = `${selection.header.name.toLowerCase().replace(/\s+/g, '-')}-resume.pdf`;
-
-    return new Response(readFileSync(pdfPath), {
-      headers: {
-        'Content-Type': 'application/pdf',
-        // `inline` opens it in the browser's viewer; the name is what "Save"
-        // proposes, instead of a bare "resume.pdf".
-        'Content-Disposition': `inline; filename="${filename}"`,
-      },
-    });
-  } finally {
-    rmSync(outDir, { recursive: true, force: true });
-  }
+  return new Response(pdf, {
+    headers: {
+      'Content-Type': 'application/pdf',
+      // `inline` opens it in the browser's viewer; the name is what "Save"
+      // proposes, instead of a bare "resume.pdf".
+      'Content-Disposition': `inline; filename="${filename}"`,
+    },
+  });
 }

@@ -1,88 +1,61 @@
-// Copies the Featured slice of the Corpus into the standalone artefact.
+// Writes the Featured slice of `site:json` into the standalone artefact.
 //
-// Why this exists: `/api/chat` builds its system prompt on the first request, and
-// `loadCorpus()` reads `content/` from disk. That directory is gitignored and
-// excluded from the image, and the loader treats a missing directory as a
-// legitimate empty state — so without this step the agent would deploy knowing
-// nothing at all, silently, with no error anywhere.
+// Why this exists: `/api/chat` builds its system prompt on the first request,
+// reading `SITE_JSON`, which the Dockerfile points at `corpus/site.json` beside
+// the server. Without this step the agent would deploy knowing nothing.
 //
-// It copies files rather than serialising records, so there is no second reader
-// of the Corpus to keep in sync with `src/lib/corpus/loader.ts`. What lands in
-// the artefact is exactly what ADR-0008 permits: the Featured Accomplishments,
-// the Affiliations they reference, and the Identity. The other 21 records never
-// leave this machine.
+// `.corpus/site.json` is already only what the site publishes (ADR-0013), but the
+// agent's scope is narrower still (ADR-0008): the Featured records, the
+// Affiliations they reference, and the Identity. The pages are prerendered HTML
+// and need no data at runtime, so the gallery's other projects stay out of the
+// image too. Anything `next build` traced on its own (`.corpus/`, a stray
+// `content/`) is deleted here, so this file is the only record data that ships.
 //
-// Guarded by `src/lib/agent/baked-corpus.test.ts`.
-
-import { copyFileSync, mkdirSync, readdirSync, readFileSync, rmSync } from 'node:fs';
+// Guarded by `src/lib/agent/baked-corpus.test.ts` and checked again by
+// `pack-deploy`.
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import matter from 'gray-matter';
-
-import { corpusDir } from '../src/lib/corpus/location.ts';
-
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const source = corpusDir();
-const target = join(root, '.next', 'standalone', 'content');
+const source = join(root, '.corpus', 'site.json');
+const standalone = join(root, '.next', 'standalone');
+const target = join(standalone, 'corpus', 'site.json');
 
-function read(dir) {
-  try {
-    return readdirSync(join(source, dir))
-      .filter((name) => name.endsWith('.md'))
-      .map((name) => ({
-        name,
-        id: name.slice(0, -3),
-        ...matter(readFileSync(join(source, dir, name), 'utf8')),
-      }));
-  } catch {
-    return [];
-  }
-}
-
-const accomplishments = read('accomplishments');
-const featured = accomplishments.filter((file) => file.data.featured === true);
+const site = JSON.parse(readFileSync(source, 'utf8'));
+const featured = site.accomplishments.filter((a) => a.featured === true && a.isDraft === false);
 
 if (featured.length === 0) {
   console.error(
-    'bake-corpus: no Featured Accomplishments found. The agent would ship with an\n' +
-      'empty record, so the build is stopped here rather than deploying a chat that\n' +
-      `knows nothing. Check ${source}/accomplishments/ for \`featured: true\`.`,
+    'bake-corpus: no Featured records in .corpus/site.json. The agent would ship\n' +
+      'with an empty record, so the build is stopped here rather than deploying a\n' +
+      'chat that knows nothing. Check `featured: true` in career/corpus/accomplishments/.',
   );
   process.exit(1);
 }
 
-// Only the Affiliations the Featured records point at. A dangling reference is a
-// load error, so this set is not optional.
-const needed = new Set(
-  featured.map((file) => file.data.affiliation).filter(Boolean),
+const needed = new Set(featured.map((a) => a.affiliationId).filter(Boolean));
+
+for (const traced of ['.corpus', 'content', 'corpus']) {
+  rmSync(join(standalone, traced), { recursive: true, force: true });
+}
+mkdirSync(dirname(target), { recursive: true });
+writeFileSync(
+  target,
+  `${JSON.stringify(
+    {
+      version: site.version,
+      identity: site.identity,
+      affiliations: site.affiliations.filter((a) => needed.has(a.id)),
+      accomplishments: featured,
+    },
+    null,
+    2,
+  )}\n`,
 );
 
-rmSync(target, { recursive: true, force: true });
-mkdirSync(join(target, 'accomplishments'), { recursive: true });
-mkdirSync(join(target, 'affiliations'), { recursive: true });
-
-for (const file of featured) {
-  copyFileSync(
-    join(source, 'accomplishments', file.name),
-    join(target, 'accomplishments', file.name),
-  );
-}
-
-let affiliations = 0;
-for (const file of read('affiliations')) {
-  if (!needed.has(file.id)) continue;
-  copyFileSync(
-    join(source, 'affiliations', file.name),
-    join(target, 'affiliations', file.name),
-  );
-  affiliations += 1;
-}
-
-copyFileSync(join(source, 'identity.md'), join(target, 'identity.md'));
-
-const withheld = accomplishments.length - featured.length;
+const withheld = site.accomplishments.length - featured.length;
 console.log(
-  `bake-corpus: ${featured.length} featured, ${affiliations} affiliations, identity. ` +
-    `${withheld} non-featured record${withheld === 1 ? '' : 's'} withheld.`,
+  `bake-corpus: ${featured.length} featured, ${needed.size} affiliations, identity. ` +
+    `${withheld} other published record${withheld === 1 ? '' : 's'} left to the prerendered pages.`,
 );

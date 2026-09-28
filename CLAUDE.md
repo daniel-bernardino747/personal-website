@@ -4,7 +4,7 @@ Portfolio pessoal — Next.js 16 (App Router, React 19, TypeScript, Tailwind v4,
 
 ## Corpus
 
-O Corpus e tudo que se gera dele moram no repo privado `career`, irmão deste checkout (`CORPUS_REPO`, padrão `../career`; `CORPUS_DIR` só no deploy, apontando o recorte Featured embutido). A migração segue `.scratch/corpus-leaves/` (ADR-0013): o schema, o loader e as skills de carreira ainda estão aqui até os tickets 02 e 04.
+O Corpus e tudo que se gera dele moram no repo privado `career`, irmão deste checkout (`CORPUS_REPO`, padrão `../career`). Este site é só um leitor (ADR-0013): nunca faz parse do markdown. `npm run corpus:fetch` (rodado antes de `dev`, `build` e `test`) grava em `.corpus/` o `site:json` (só o que o site publica: o filtro fica no `career`) e o `resume.pdf`. No deploy, `SITE_JSON` aponta o recorte Featured embutido pelo `bake-corpus`. Depois de editar o Corpus, rode `corpus:fetch` de novo ou reinicie o `dev`. A migração segue `.scratch/corpus-leaves/`: as skills de carreira ainda rodam daqui até o ticket 04.
 
 ## Agent skills
 
@@ -22,7 +22,7 @@ Single-context — `CONTEXT.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/
 
 ## Tooling prerequisites
 
-- **Tectonic** é obrigatório para o build (`/resume.pdf`, o currículo completo, é gerado no build — ver ADR-0009), para renderizar currículos (`npm run render`) e para o smoke test em `src/lib/render/resume.test.ts` (o teste faz `skipIf` quando ausente). Instale com `scoop install tectonic` (ou winget/cargo) — é um binário único que baixa só os pacotes LaTeX usados.
+- **Tectonic** é obrigatório para renderizar currículos (`npm run render`), para o `resume:pdf` que o `career` roda a cada build (o `/resume.pdf`, ADR-0009) e para o smoke test em `src/lib/render/resume.test.ts` (o teste faz `skipIf` quando ausente). Instale com `scoop install tectonic` (ou winget/cargo) — é um binário único que baixa só os pacotes LaTeX usados.
 
 ### Capture
 

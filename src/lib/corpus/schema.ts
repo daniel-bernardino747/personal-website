@@ -30,70 +30,36 @@ export const KIND_LABELS: Record<Kind, string> = {
 };
 
 /**
- * YAML timestamps like `2024-03-15` are parsed into `Date` objects by the
- * frontmatter parser, while partial dates like `2022-01` stay strings. Normalise
- * both to a stable `YYYY-MM-DD` (or `YYYY-MM`) string so consumers never see a
- * `Date`.
+ * The `site:json` contract (ADR-0013): what the `career` repository hands this
+ * site, and the only way the site learns anything about the Corpus. The gate is
+ * on the other side: `career` emits only what may be published, so this schema
+ * validates shape, not visibility. A mismatched `version` is refused before
+ * parsing, because the producer lives in another repository.
  */
-const dateLike = z
-  .union([z.string().min(1), z.date()])
-  .transform((value) =>
-    value instanceof Date ? value.toISOString().slice(0, 10) : value,
-  );
+export const SITE_JSON_VERSION = 1;
 
-/** Frontmatter shape of an Affiliation file, before its id is attached. */
-export const affiliationFrontmatterSchema = z.object({
+const affiliationSchema = z.object({
+  id: z.string().min(1),
   organisation: z.string().min(1),
   role: z.string().min(1),
-  // A background Affiliation (a club, an ongoing course of study) may be recorded
-  // before its exact dates are known. Rather than fabricate a period, the loader
-  // accepts its absence — the seam absorbing schema evolution as real content
-  // arrives, per the spec.
-  period: z
-    .object({
-      start: dateLike,
-      end: dateLike.optional(),
-    })
-    .optional(),
-  stack: z.array(z.string()).default([]),
+  period: z.object({ start: z.string().min(1), end: z.string().min(1).optional() }).optional(),
+  stack: z.array(z.string()),
 });
 
-/**
- * A project's picture of itself — its Open Graph image, a screenshot, or a file
- * Daniel supplied — acquired once by `npm run project:image` and approved before
- * it is recorded (ADR-0012). The file lives in `public/projects/`, so `src` is a
- * site path; a remote URL would reintroduce the hotlink the script exists to
- * avoid. `alt` is required: it is written once, by whoever approves the image.
- */
-const projectImageSchema = z.object({
-  src: z
-    .string()
-    .regex(/^\/projects\/[\w.-]+$/, 'must be a site path under /projects/'),
-  alt: z.string().min(1),
-});
-
-/** Frontmatter shape of an Accomplishment file, before body/id are attached. */
-export const accomplishmentFrontmatterSchema = z.object({
-  affiliation: z.string().min(1).optional(),
-  date: dateLike,
+const accomplishmentSchema = z.object({
+  id: z.string().min(1),
+  affiliationId: z.string().min(1).optional(),
+  date: z.string().min(1),
   kind: z.enum(KINDS),
   metric: z.string().min(1).optional(),
-  featured: z.boolean().default(false),
-  // The display name — "BaixarMusica", not the `baixarmusica` filename. Optional
-  // because most Accomplishments are a claim rather than a named thing; a project
-  // gallery needs it, a résumé bullet does not.
   title: z.string().min(1).optional(),
-  // Only the site shows it; the résumé, LinkedIn blocks and `corpus:json` ignore it.
-  image: projectImageSchema.optional(),
+  image: z.object({ src: z.string().regex(/^\/projects\/[\w.-]+$/), alt: z.string().min(1) }).optional(),
+  statement: z.string().min(1),
+  featured: z.boolean(),
+  isDraft: z.boolean(),
 });
 
-/**
- * Frontmatter shape of the Identity file. Identity is the resume header — legal
- * name, contact and profile URLs, plus the site-facing role, headline and
- * initials — and belongs to the Corpus so the site and every generated resume
- * agree. The bio prose is the file body, not frontmatter.
- */
-export const identityFrontmatterSchema = z.object({
+const identitySchema = z.object({
   name: z.string().min(1),
   initials: z.string().min(1),
   role: z.array(z.string().min(1)).min(1),
@@ -112,13 +78,15 @@ export const identityFrontmatterSchema = z.object({
       hours: z.string().min(1),
     })
     .optional(),
+  bio: z.string().min(1),
 });
 
-export type AffiliationFrontmatter = z.infer<typeof affiliationFrontmatterSchema>;
-export type AccomplishmentFrontmatter = z.infer<
-  typeof accomplishmentFrontmatterSchema
->;
-export type IdentityFrontmatter = z.infer<typeof identityFrontmatterSchema>;
+export const siteJsonSchema = z.object({
+  version: z.literal(SITE_JSON_VERSION),
+  identity: identitySchema.nullable(),
+  affiliations: z.array(affiliationSchema),
+  accomplishments: z.array(accomplishmentSchema),
+});
 
 /**
  * The organisation or institution an Accomplishment happened inside. Holds where
@@ -169,7 +137,7 @@ export interface Accomplishment {
 /**
  * Who Daniel is, as the site header and the resume header both read it. Lives in
  * the Corpus — not in site configuration — so the two can never disagree. There
- * is exactly one, loaded from `content/identity.md`.
+ * is exactly one, and it arrives through `site:json`.
  */
 export interface Identity {
   name: string;

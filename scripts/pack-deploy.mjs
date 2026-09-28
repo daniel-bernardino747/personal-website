@@ -3,7 +3,7 @@
 // Why a tarball instead of uploading the directory: `railway up` filters the
 // upload through `.railwayignore` *combined with* `.gitignore`, and this tree has
 // names inside the artefact that collide with things which must stay out —
-// `content`, `node_modules`, `src`. Two deploys failed to that: first
+// `corpus`, `node_modules`, `src`. Two deploys failed to that: first
 // `"/.next/static": not found`, then a container dying on `Cannot find module
 // 'next'` because `.next/standalone/node_modules` never arrived. Re-anchoring the
 // patterns fixed the first and not the second.
@@ -14,7 +14,7 @@
 // The layout matches the container's `/app` exactly, so the Dockerfile is a
 // single ADD:
 //
-//   ./            <- .next/standalone (server.js, node_modules, content/)
+//   ./            <- .next/standalone (server.js, node_modules, corpus/site.json)
 //   ./.next/static
 //   ./public
 
@@ -24,14 +24,12 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  readdirSync,
   rmSync,
   statSync,
 } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import matter from 'gray-matter';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const staging = join(root, '.deploy-staging');
@@ -43,46 +41,37 @@ if (!existsSync(standalone)) {
   process.exit(1);
 }
 
-// The guarantee this whole pipeline exists to keep (ADR-0002, ADR-0007): only the
-// Featured slice travels.
+// The guarantee this whole pipeline exists to keep (ADR-0008, ADR-0013): only the
+// Featured slice travels, as `corpus/site.json`, and no other record data does.
 //
-// This is a real check, not a trust in ordering, because `next build` on its own
-// copies the *entire* Corpus here — its file tracer sees the loader reading
-// `content/` and takes the directory with it. Measured: 26 records after
-// `npx next build`, 5 after `npm run build`. `bake-corpus.mjs` deletes and
-// rebuilds the directory, so the pipeline is correct, but only while it runs in
-// the right order. Anyone running `next build && railway up` by hand would ship
-// all 26 and nothing downstream would notice.
-//
-// So the last step before upload counts them itself.
-const baked = join(standalone, 'content');
+// This is a real check, not a trust in ordering. `next build` on its own traces
+// whatever the server reads into the standalone tree, and `bake-corpus.mjs` is
+// what reduces it. Anyone running `next build && railway up` by hand would skip
+// that, and nothing downstream would notice. So the last step before upload
+// looks for itself.
+const baked = join(standalone, 'corpus', 'site.json');
 if (!existsSync(baked)) {
   console.error(
-    'pack-deploy: .next/standalone/content is missing — bake-corpus did not run.\n' +
+    'pack-deploy: .next/standalone/corpus/site.json is missing — bake-corpus did not run.\n' +
       'The agent would deploy with an empty record. Run `npm run build`.',
   );
   process.exit(1);
 }
 
-const bakedRecords = readdirSync(join(baked, 'accomplishments')).filter((name) =>
-  name.endsWith('.md'),
+const stray = ['.corpus', 'content'].filter((name) => existsSync(join(standalone, name)));
+const leaked = JSON.parse(readFileSync(baked, 'utf8')).accomplishments.filter(
+  (a) => a.featured !== true,
 );
-const leaked = bakedRecords.filter((name) => {
-  const { data } = matter(
-    readFileSync(join(baked, 'accomplishments', name), 'utf8'),
-  );
-  return data.featured !== true;
-});
 
-if (leaked.length > 0) {
+if (stray.length > 0 || leaked.length > 0) {
   console.error(
-    `pack-deploy: ${leaked.length} non-Featured Accomplishment(s) are in the\n` +
-      'artefact and would be uploaded:\n' +
-      leaked.map((name) => `  ${name}`).join('\n') +
-      '\n\nThis is what ADR-0008 exists to prevent. `next build` copies the whole\n' +
-      'Corpus on its own; `scripts/bake-corpus.mjs` is what reduces it to the\n' +
-      'Featured set. Run `npm run build`, which does both, rather than\n' +
-      '`next build` directly.',
+    'pack-deploy: the artefact carries record data beyond the Featured slice:\n' +
+      [
+        ...stray.map((name) => `  .next/standalone/${name}/`),
+        ...leaked.map((a) => `  ${a.id} (not Featured)`),
+      ].join('\n') +
+      '\n\nThis is what ADR-0008 exists to prevent. Run `npm run build`, which\n' +
+      'bakes the slice, rather than `next build` directly.',
   );
   process.exit(1);
 }

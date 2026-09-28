@@ -1,6 +1,6 @@
 import 'server-only';
 
-import type { Corpus } from '@/lib/corpus/loader';
+import type { Corpus } from '@/lib/corpus/source';
 import type { Accomplishment, Identity } from '@/lib/corpus/schema';
 import { displayTitle, parseStatement } from '@/lib/corpus/statement';
 
