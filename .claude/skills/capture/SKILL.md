@@ -5,7 +5,7 @@ description: >-
   guided interview. Use when Daniel describes something he did, shipped, built,
   led, gave (a talk), wrote, or published; when he wants to record a metric,
   correct one, mark something Featured; or when he starts or leaves an employer,
-  client, or course of study. Writes schema-valid markdown to `content/` — never
+  client, or course of study. Writes schema-valid markdown to `../career/corpus/` — never
   a blank file, never an invented number.
 ---
 
@@ -42,8 +42,10 @@ inferred and ask.
 
 ## Where files live
 
+Paths are relative to this checkout. The Corpus and everything rendered from it live in the private `career` repository beside it (`CORPUS_REPO`, default `../career`; ADR-0013).
+
 ```
-content/
+../career/corpus/
   identity.md                     one Identity (the resume header)
   affiliations/<id>.md            one Affiliation per file
   accomplishments/<id>.md         one Accomplishment per file
@@ -86,7 +88,7 @@ write a half-formed file and patch it — hold the interview first.
    latency"). Record his role, not a borrowed team result.
 
 4. **The Affiliation it belongs to.** List the existing Affiliations from
-   `content/affiliations/` and ask which one, if any:
+   `../career/corpus/affiliations/` and ask which one, if any:
    - An existing id → set `affiliation: <id>` in frontmatter.
    - **None** (a talk, a personal project, open-source, independent writing) →
      omit the `affiliation` field entirely. "None" is a first-class answer,
@@ -106,7 +108,7 @@ write a half-formed file and patch it — hold the interview first.
    credits Daniel per the attribution. Every clause must trace to something he
    asserted in the interview. This prose is the file body.
 
-Then write `content/accomplishments/<id>.md`:
+Then write `../career/corpus/accomplishments/<id>.md`:
 
 ```markdown
 ---
@@ -214,7 +216,7 @@ holds no claims. Gather:
   isn't known yet, the whole `period` may be omitted rather than guessed.
 - **stack** — the technologies involved, as a list (may be empty).
 
-Write `content/affiliations/<id>.md`:
+Write `../career/corpus/affiliations/<id>.md`:
 
 ```markdown
 ---
@@ -263,7 +265,7 @@ Every file this skill writes must load cleanly through the loader — a malforme
 Corpus halts the build (spec story 34). After writing or editing, confirm it:
 
 ```bash
-npm test -- content   # loads the real content/ through loadCorpus and asserts it validates
+npm test -- content   # loads the real Corpus (../career/corpus/) through loadCorpus and asserts it validates
 ```
 
 A green run means the frontmatter satisfied the schema and every Affiliation
@@ -295,7 +297,7 @@ done until it loads.
 >
 > **Daniel:** Yeah.
 
-Result — `content/accomplishments/caching-layer.md`:
+Result — `../career/corpus/accomplishments/caching-layer.md`:
 
 ```markdown
 ---

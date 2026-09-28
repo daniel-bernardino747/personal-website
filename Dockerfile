@@ -27,5 +27,7 @@ RUN test -f server.js && test -d node_modules/next && test -d content/accomplish
 
 EXPOSE 3000
 ENV PORT=3000 HOSTNAME=0.0.0.0
+# The server reads the baked Featured slice, not a career checkout (ADR-0013).
+ENV CORPUS_DIR=/app/content
 
 CMD ["node", "server.js"]

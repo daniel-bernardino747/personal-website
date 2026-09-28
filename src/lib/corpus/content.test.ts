@@ -3,14 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { loadCorpus } from './index';
 
 /**
- * Loads the real `content/` Corpus — not a fixture — through the loader and
+ * Loads the real Corpus in the `career` checkout — not a fixture — through the loader and
  * asserts it validates. This is the guard the `capture` skill runs after writing
  * a file (`npm test -- content`): a `CorpusError` here means authored content has
  * a malformed frontmatter field or a dangling Affiliation reference, the same
  * failure that would halt a production build (spec story 34). It fails only on
  * genuine corruption — drafts and an Accomplishment-free Corpus are legitimate.
  */
-describe('the authored content/ Corpus', () => {
+describe('the authored Corpus', () => {
   it('loads cleanly through the loader', () => {
     const corpus = loadCorpus();
 

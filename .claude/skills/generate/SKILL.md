@@ -52,21 +52,23 @@ Concretely:
 
 ## Where things live
 
+Paths are relative to this checkout. The Corpus and everything rendered from it live in the private `career` repository beside it (`CORPUS_REPO`, default `../career`; ADR-0013).
+
 ```
-content/                          the Corpus — READ ONLY here; never edit to fit a posting
+../career/corpus/                 the Corpus — READ ONLY here; never edit to fit a posting
   identity.md                     the résumé header (name, contact, links)
   affiliations/<id>.md            employers, clients, courses of study
   accomplishments/<id>.md         the provable things — the id is the `source`
 
-generated/                        gitignored, outside the static export (stories 24, 25)
+../career/generated/              the private career repo, never the site (stories 24, 25)
   selections/<name>.json          the Selection you write
   resumes/<name>.pdf, .tex        the rendered résumé (the CLI writes these)
   linkedin/<name>.md              paste-ready LinkedIn block
   github/<name>.md                paste-ready GitHub profile summary
 ```
 
-Everything under `generated/` is gitignored and outside the published site, so a
-résumé naming a target employer is never committed or reachable. Never write
+Everything under `../career/generated/` lives in the private `career` repository, outside
+the published site, so a résumé naming a target employer is never public. Never write
 generated output anywhere else.
 
 ## Producing a résumé
@@ -74,8 +76,8 @@ generated output anywhere else.
 1. **Read the posting.** Identify the target role, the seniority, and the two or
    three capabilities it most wants evidence of.
 
-2. **Read the Corpus.** Read `content/identity.md` for the header, and the files
-   in `content/accomplishments/` for the material. Consider only records (those
+2. **Read the Corpus.** Read `../career/corpus/identity.md` for the header, and the files
+   in `../career/corpus/accomplishments/` for the material. Consider only records (those
    with a `metric`); ignore drafts.
 
 3. **Select and order.** Choose the Accomplishments that speak to this posting,
@@ -88,7 +90,7 @@ generated output anywhere else.
    line that keeps the metric and the attribution. Shorter than the source, never
    richer than it.
 
-5. **Write the Selection** to `generated/selections/<name>.json`. Use a
+5. **Write the Selection** to `../career/generated/selections/<name>.json`. Use a
    descriptive name (`acme-backend`, `stripe-frontend-pt`). The shape, authored
    by `selectionSchema`:
 
@@ -123,7 +125,7 @@ generated output anywhere else.
              },
              "entries": [
                {
-                 "source": "caching-layer",  // == content/accomplishments/caching-layer.md
+                 "source": "caching-layer",  // == ../career/corpus/accomplishments/caching-layer.md
                  "text": "Rebuilt the read path around a cache, cutting p95 latency 800ms to 120ms."
                },
                {
@@ -162,7 +164,7 @@ generated output anywhere else.
    arrive as three unrelated records. Putting each in its own group renders them
    as three separate-looking jobs — a real defect on the page. Every
    Accomplishment sharing an `affiliation` belongs in one group, whose `heading`
-   comes from `content/affiliations/<id>.md`: `organisation` and `role` from the
+   comes from `../career/corpus/affiliations/<id>.md`: `organisation` and `role` from the
    frontmatter of the same name, `period` written from `period.start`/`period.end`
    (an ongoing Affiliation reads "2025 - Present"). Order the groups most recent
    first, and the bullets inside a group by relevance to the posting. A group with
@@ -192,12 +194,12 @@ generated output anywhere else.
 7. **Render** — this is the only step that touches LaTeX, and it is mechanical:
 
    ```bash
-   npm run render -- generated/selections/<name>.json
+   npm run render -- ../career/generated/selections/<name>.json
    ```
 
-   The CLI cross-checks every `source` against `content/accomplishments/` and
+   The CLI cross-checks every `source` against `../career/corpus/accomplishments/` and
    fails loudly if one is missing (story 23), then writes the PDF to
-   `generated/resumes/<name>.pdf`. To fix a poor choice, edit the Selection and
+   `../career/generated/resumes/<name>.pdf`. To fix a poor choice, edit the Selection and
    re-run the same command (story 22) — no need to regenerate from scratch.
 
    Tectonic is required and is a prerequisite of this feature (see
@@ -226,10 +228,10 @@ Same Corpus, different Render Target — paste-ready text, no LaTeX, no API. Dra
 only from the Corpus, prefer Featured Accomplishments, and keep every figure
 traceable to a source file.
 
-- **LinkedIn "About"** → `generated/linkedin/<name>.md`. First person, a short
+- **LinkedIn "About"** → `../career/generated/linkedin/<name>.md`. First person, a short
   paragraph of positioning followed by three to five of the strongest metric
   lines. Written to be pasted into the profile's About section.
-- **GitHub profile summary** → `generated/github/<name>.md`. Tighter than
+- **GitHub profile summary** → `../career/generated/github/<name>.md`. Tighter than
   LinkedIn: a one-line intro and a compact list of highlights, in Markdown, for a
   `README`-style profile.
 
@@ -239,9 +241,9 @@ never print an id where it would look like résumé content.
 
 ## Verify before you're done
 
-- The Selection rendered: `generated/resumes/<name>.pdf` exists and is non-empty.
+- The Selection rendered: `../career/generated/resumes/<name>.pdf` exists and is non-empty.
 - You wrote a Selection (JSON), never a `.tex` file, by hand.
-- Every entry's `source` names a real `content/accomplishments/*.md` file.
+- Every entry's `source` names a real `../career/corpus/accomplishments/*.md` file.
 - No line carries a number or claim absent from its source Accomplishment.
 
 If the render fails on a shape error, read the message — it names the offending

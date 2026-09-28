@@ -16,9 +16,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 
+import { corpusDir, generatedDir } from '../src/lib/corpus/location.ts';
+
 import { RenderError, renderSelectionToPdf } from '../src/lib/render/resume.ts';
 
-const DEFAULT_OUTDIR = join('generated', 'resumes');
+const DEFAULT_OUTDIR = join(generatedDir(), 'resumes');
 
 function fail(message) {
   process.stderr.write(`${message}\n`);
@@ -58,7 +60,7 @@ function parseArgs(argv) {
 function knownSourceIds() {
   try {
     return new Set(
-      readdirSync(join(process.cwd(), 'content', 'accomplishments'))
+      readdirSync(join(corpusDir(), 'accomplishments'))
         .filter((entry) => entry.endsWith('.md'))
         .map((entry) => entry.slice(0, -'.md'.length)),
     );

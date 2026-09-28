@@ -1,21 +1,21 @@
 // Generates a review sheet for the Featured set (issue 04), and reads it back.
 //
-//   node scripts/featured-review.mjs          -> writes generated/featured-review.md
-//   node scripts/featured-review.mjs --apply  -> applies the decisions to content/
+//   node scripts/featured-review.mjs          -> writes career/generated/featured-review.md
+//   node scripts/featured-review.mjs --apply  -> applies the decisions to career/corpus/
 //
 // The sheet lands in `generated/` because it carries the metrics of the 21
 // records that are deliberately unpublished, and this repository is public.
-// `generated/` is gitignored for exactly this reason.
+// It lives in the private `career` repository for exactly this reason.
 
 import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import matter from 'gray-matter';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dir = join(root, 'content', 'accomplishments');
-const sheet = join(root, 'generated', 'featured-review.md');
+import { corpusDir, generatedDir } from '../src/lib/corpus/location.ts';
+
+const dir = join(corpusDir(), 'accomplishments');
+const sheet = join(generatedDir(), 'featured-review.md');
 
 function load() {
   return readdirSync(dir)
@@ -36,7 +36,7 @@ function affiliationName(id) {
   if (!id) return '—';
   try {
     const f = matter(
-      readFileSync(join(root, 'content', 'affiliations', `${id}.md`), 'utf8'),
+      readFileSync(join(corpusDir(), 'affiliations', `${id}.md`), 'utf8'),
     );
     return f.data.organisation ?? id;
   } catch {

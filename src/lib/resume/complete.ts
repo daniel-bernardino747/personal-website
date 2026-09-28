@@ -20,7 +20,7 @@ export function buildCompleteSelection(
 ): Selection {
   const { identity } = corpus;
   if (!identity) {
-    throw new Error('The complete résumé needs content/identity.md.');
+    throw new Error('The complete résumé needs identity.md in the Corpus (the career checkout, CORPUS_REPO).');
   }
 
   const everything = newestFirst([...corpus.accomplishments, ...corpus.drafts]);

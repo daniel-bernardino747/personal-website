@@ -16,14 +16,11 @@
 # production
 /build
 
-# generated career output — Selections, résumé PDFs, LinkedIn/GitHub blocks.
-# Kept out of the repo and outside the static export so a résumé naming a target
-# employer is never committed or published (spec stories 24, 25).
+# career output and the Corpus moved to the private `career` repository
+# (ADR-0013). Kept ignored so a stray copy here can never be committed to this
+# public repository. `content/devlog/` still lives here until the devlog
+# produces an entry.
 /generated
-
-# the career Corpus — the real Accomplishments and Affiliations behind every
-# résumé. The repo is public; the career record is not, so it lives only on disk
-# and in the deploy. `content.example/` is the committed template — see README.
 /content
 
 # misc

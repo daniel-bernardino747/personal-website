@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { type Corpus, CorpusError, loadCorpus } from './loader';
+import { corpusDir } from './location';
 import type { Identity } from './schema';
 
 /**
@@ -23,7 +24,7 @@ export function getIdentity(): Identity {
   const { identity } = loadCorpus();
   if (!identity) {
     throw new CorpusError(
-      'The site requires content/identity.md, but no Identity was found in the Corpus.',
+      `The site requires an Identity, but ${corpusDir()} has no identity.md. Is the career checkout there, or does CORPUS_REPO point at it?`,
     );
   }
   return identity;

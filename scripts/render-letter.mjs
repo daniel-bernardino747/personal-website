@@ -12,10 +12,12 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 
+import { corpusDir, generatedDir } from '../src/lib/corpus/location.ts';
+
 import { RenderError } from '../src/lib/render/document.ts';
 import { LETTER_NON_CORPUS_SOURCES, renderLetterToPdf } from '../src/lib/render/letter.ts';
 
-const DEFAULT_OUTDIR = join('generated', 'letters');
+const DEFAULT_OUTDIR = join(generatedDir(), 'letters');
 const USAGE =
   'Usage: node scripts/render-letter.mjs <letter.json> [--outdir <dir>] [--name <name>] [--skip-source-check]';
 
@@ -53,7 +55,7 @@ function parseArgs(argv) {
 function knownSourceIds() {
   try {
     return new Set(
-      readdirSync(join(process.cwd(), 'content', 'accomplishments'))
+      readdirSync(join(corpusDir(), 'accomplishments'))
         .filter((entry) => entry.endsWith('.md'))
         .map((entry) => entry.slice(0, -'.md'.length)),
     );

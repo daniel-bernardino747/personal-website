@@ -4,6 +4,8 @@ import { join } from 'node:path';
 import matter from 'gray-matter';
 import { describe, expect, it } from 'vitest';
 
+import { corpusDir } from '../corpus/location';
+
 /**
  * Guards `scripts/bake-corpus.mjs` — the step that decides which records leave
  * this machine.
@@ -17,7 +19,7 @@ import { describe, expect, it } from 'vitest';
  * Skipped when there is no artefact — `npm test` runs on a clean checkout too.
  */
 const BAKED = join(process.cwd(), '.next', 'standalone', 'content');
-const SOURCE = join(process.cwd(), 'content');
+const SOURCE = corpusDir();
 
 function accomplishments(dir: string) {
   const path = join(dir, 'accomplishments');

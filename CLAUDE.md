@@ -2,6 +2,10 @@
 
 Portfolio pessoal — Next.js 16 (App Router, React 19, TypeScript, Tailwind v4, `output: 'standalone'`, servidor no Railway — ADR-0007).
 
+## Corpus
+
+O Corpus e tudo que se gera dele moram no repo privado `career`, irmão deste checkout (`CORPUS_REPO`, padrão `../career`; `CORPUS_DIR` só no deploy, apontando o recorte Featured embutido). A migração segue `.scratch/corpus-leaves/` (ADR-0013): o schema, o loader e as skills de carreira ainda estão aqui até os tickets 02 e 04.
+
 ## Agent skills
 
 ### Issue tracker
@@ -22,20 +26,20 @@ Single-context — `CONTEXT.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/
 
 ### Capture
 
-Interview que grava um Accomplishment ou Affiliation no Corpus (`content/`), sem inventar número. See `.claude/skills/capture/SKILL.md`.
+Interview que grava um Accomplishment ou Affiliation no Corpus (`../career/corpus/`), sem inventar número. See `.claude/skills/capture/SKILL.md`.
 
 ### Generate
 
-Job posting → Selection estruturada → PDF de currículo via Tectonic (o modelo nunca escreve LaTeX). Também produz blocos LinkedIn/GitHub e currículo em português. Saída em `generated/` (gitignored). See `.claude/skills/generate/SKILL.md`.
+Job posting → Selection estruturada → PDF de currículo via Tectonic (o modelo nunca escreve LaTeX). Também produz blocos LinkedIn/GitHub e currículo em português. Saída em `../career/generated/`. See `.claude/skills/generate/SKILL.md`.
 
 ### Cover letter
 
-Job posting → Letter estruturada → PDF de carta de apresentação via Tectonic, par do currículo do `generate`. O que o Daniel fez vem do Corpus; por que ele quer a vaga vem só do que ele disse na sessão (ADR-0010). Saída em `generated/letters/` (gitignored). See `.claude/skills/cover-letter/SKILL.md`.
+Job posting → Letter estruturada → PDF de carta de apresentação via Tectonic, par do currículo do `generate`. O que o Daniel fez vem do Corpus; por que ele quer a vaga vem só do que ele disse na sessão (ADR-0010). Saída em `../career/generated/letters/` (gitignored). See `.claude/skills/cover-letter/SKILL.md`.
 
 ### Prospect-me (antigo Recon)
 
-Skill `/prospect-me`, que saiu deste repo: vive no repo `prospect-me` (irmão deste checkout), investiga a empresa, propõe 3 soluções digitais, e só aborda o decisor depois que uma delas foi construída. Ele lê o Corpus daqui por `npm run corpus:json` — o JSON validado pelo loader, só Accomplishments com Metric — e nunca parseia `content/` sozinho; mudar o formato desse JSON é mudar um contrato com outro repo. Nunca rode `corpus:json` num build ou deploy. Ver ADR-0011.
+Skill `/prospect-me`, que saiu deste repo: vive no repo `prospect-me` (irmão deste checkout), investiga a empresa, propõe 3 soluções digitais, e só aborda o decisor depois que uma delas foi construída. Ele lê o Corpus daqui por `npm run corpus:json` — o JSON validado pelo loader, só Accomplishments com Metric — e nunca parseia `../career/corpus/` sozinho; mudar o formato desse JSON é mudar um contrato com outro repo. Nunca rode `corpus:json` num build ou deploy. Ver ADR-0011.
 
 ### Article
 
-Interview que escreve um Article (estudo de caso a partir do Corpus, ou ensaio técnico) em inglês, na voz do Daniel, sem inventar fato nem número. Grava em `content/articles/<slug>.md` sempre como `status: draft`; só o Daniel marca `ready`. Ainda não há página que renderize Articles — ela é feita quando houver Articles `ready` suficientes. See `.claude/skills/article/SKILL.md`.
+Interview que escreve um Article (estudo de caso a partir do Corpus, ou ensaio técnico) em inglês, na voz do Daniel, sem inventar fato nem número. Grava em `../career/corpus/articles/<slug>.md` sempre como `status: draft`; só o Daniel marca `ready`. Ainda não há página que renderize Articles — ela é feita quando houver Articles `ready` suficientes. See `.claude/skills/article/SKILL.md`.

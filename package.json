@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/bake-corpus.mjs && node scripts/pack-deploy.mjs",
+    "build": "next build && node --no-warnings scripts/bake-corpus.mjs && node scripts/pack-deploy.mjs",
     "start": "next start",
     "lint": "next lint",
     "render": "node --no-warnings scripts/render-resume.mjs",

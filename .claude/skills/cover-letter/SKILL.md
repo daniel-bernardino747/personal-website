@@ -38,9 +38,9 @@ posting.
 ## Steps
 
 1. **Find the résumé.** If `generate` already made a Selection for this posting
-   (`generated/selections/<name>.json`), reuse its name and draw on the same
+   (`../career/generated/selections/<name>.json`), reuse its name and draw on the same
    Accomplishments so the letter and résumé tell one story. If not, read the
-   Corpus as `generate` does (`content/identity.md`, `content/accomplishments/`).
+   Corpus as `generate` does (`../career/corpus/identity.md`, `../career/corpus/accomplishments/`).
 
 2. **Read the posting** for the two or three things the employer most needs, and
    any hard constraint (location, work authorisation, level). A constraint the
@@ -56,7 +56,7 @@ posting.
    Offer a skip. If he skips, the letter has no motivation paragraph — it
    connects posting to Corpus and stops. Do not fill the gap yourself.
 
-4. **Write the Letter** to `generated/letters/<name>.json`:
+4. **Write the Letter** to `../career/generated/letters/<name>.json`:
 
    ```jsonc
    {
@@ -81,7 +81,7 @@ posting.
 
    - **2 to 5 paragraphs**, about 250–350 words in total — one page.
    - Every paragraph lists its `sources`: Accomplishment ids, or the reserved
-     `posting`, `identity` (`content/identity.md`) and `daniel`. A paragraph
+     `posting`, `identity` (`../career/corpus/identity.md`) and `daniel`. A paragraph
      mixing kinds lists all of them.
    - Any paragraph citing `daniel` requires `statedByDaniel` to record what he
      said; the schema refuses the Letter otherwise. Every `daniel` claim in the
@@ -94,11 +94,11 @@ posting.
 5. **Render**:
 
    ```bash
-   npm run render:letter -- generated/letters/<name>.json
+   npm run render:letter -- ../career/generated/letters/<name>.json
    ```
 
    The CLI checks every source against the Corpus and fails loudly on an unknown
-   one, then writes `generated/letters/<name>.pdf`. A shape error names the
+   one, then writes `../career/generated/letters/<name>.pdf`. A shape error names the
    field; fix the Letter and re-run.
 
 6. **Read the PDF** and confirm it is one page and nothing is cut.

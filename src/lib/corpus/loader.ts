@@ -15,6 +15,7 @@ import {
   identityFrontmatterSchema,
   type Kind,
 } from './schema.ts';
+import { corpusDir } from './location.ts';
 
 /**
  * Thrown when the Corpus is malformed — a missing field, an invalid `kind`, or a
@@ -70,10 +71,6 @@ interface ParsedFile {
 }
 
 const MD_EXTENSION = '.md';
-
-function defaultContentDir(): string {
-  return join(process.cwd(), 'content');
-}
 
 /**
  * Reads every markdown file in `dir`, using the filename (without `.md`) as the
@@ -214,11 +211,11 @@ function parseAccomplishment(
 }
 
 /**
- * Load and validate the Corpus rooted at `rootDir` (defaults to `content/` in the
- * project root). Safe to call at build time from a Server Component; the
+ * Load and validate the Corpus rooted at `rootDir` (defaults to `corpusDir()`, the
+ * `career` checkout — ADR-0013). Safe to call at build time from a Server Component; the
  * `server-only` import keeps it out of client bundles.
  */
-export function loadCorpus(rootDir: string = defaultContentDir()): Corpus {
+export function loadCorpus(rootDir: string = corpusDir()): Corpus {
   const identityFile = readMarkdownFile(join(rootDir, 'identity.md'), 'identity');
   const identity = identityFile ? parseIdentity(identityFile) : undefined;
 

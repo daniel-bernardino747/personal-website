@@ -20,8 +20,10 @@ import { fileURLToPath } from 'node:url';
 
 import matter from 'gray-matter';
 
+import { corpusDir } from '../src/lib/corpus/location.ts';
+
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const source = join(root, 'content');
+const source = corpusDir();
 const target = join(root, '.next', 'standalone', 'content');
 
 function read(dir) {
@@ -45,7 +47,7 @@ if (featured.length === 0) {
   console.error(
     'bake-corpus: no Featured Accomplishments found. The agent would ship with an\n' +
       'empty record, so the build is stopped here rather than deploying a chat that\n' +
-      'knows nothing. Check content/accomplishments/ for `featured: true`.',
+      `knows nothing. Check ${source}/accomplishments/ for \`featured: true\`.`,
   );
   process.exit(1);
 }

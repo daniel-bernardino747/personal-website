@@ -5,7 +5,7 @@ description: >-
   already in the Corpus, or a technical essay — through an interview, in
   English, in Daniel's voice. Use when Daniel wants to write up a project, explain
   a decision or a failure at length, turn an Accomplishment into a story, or
-  argue a technical position. Writes `content/articles/<slug>.md` as a draft;
+  argue a technical position. Writes `../career/corpus/articles/<slug>.md` as a draft;
   only Daniel marks one ready. Never invents a fact, a number or an outcome.
 ---
 
@@ -58,13 +58,13 @@ inferred and ask.
 ## Where files live
 
 ```
-content/articles/<slug>.md
+../career/corpus/articles/<slug>.md
 ```
 
-`content/` is gitignored — the repo is public and the career record is not — so
-a draft is private until the page exists and the Article is `ready`.
+`career` is a private repository (ADR-0013), so a draft stays private until the
+page exists and the Article is `ready`. Paths are relative to this checkout.
 
-Not `content/posts/`: that folder belongs to the `post-forge` skill and holds
+Not `../career/posts/`: that folder belongs to the `post-forge` skill and holds
 LinkedIn/X drafts with its own layout (scores, alternative hooks, notes). The
 two meet in one direction only: a `ready` Article can be handed to `post-forge`
 to become a post that links to it. Never paste a post into an Article.
@@ -105,7 +105,7 @@ Field notes:
   him only when he says so in the conversation, never because the text feels
   finished. `ready` is what the future page will publish.
 - **`sources`** — the Accomplishment ids (filenames in
-  `content/accomplishments/`) the Article draws facts from. **Required and
+  `../career/corpus/accomplishments/`) the Article draws facts from. **Required and
   non-empty for a case study.** Optional for an essay, and listed whenever the
   essay uses his work as an example. This is the audit trail: checking the
   Article is opening these files.
