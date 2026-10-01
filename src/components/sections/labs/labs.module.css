@@ -1,0 +1,447 @@
+/* The Labs section is Labs' own world inside this site: the departure hall of
+   labs.teamdbsolutions.com (prospect-me, labs/DESIGN.md). It ignores the site's
+   theme on purpose and opens and closes on the hall's yellow signage. */
+
+.hall {
+  --housing: #0e100f;
+  --board: #151816;
+  --flap-face: #2b302c;
+  --flap-lower: #232724;
+  --hinge: #080908;
+  --glyph: #efeadb;
+  --label: #a9ada2;
+  --rule: #2b302c;
+  --signal: #f2c230;
+  --signal-ink: #15140f;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  position: relative;
+  isolation: isolate;
+  background: var(--housing);
+  color: var(--glyph);
+  border-top: 10px solid var(--signal);
+  font-family: var(--font-signage), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  color-scheme: dark;
+}
+
+/* The site animates every colour change; the hall keeps its own, faster timing. */
+.hall,
+.hall * {
+  transition-duration: 0s;
+}
+
+.hall ::selection {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+.inner {
+  max-width: 76rem;
+  margin: 0 auto;
+  /* At least the fixed navbar's height, so a jump to #labs does not hide the title. */
+  padding: clamp(6rem, 11vh, 7rem) clamp(1rem, 4vw, 2.5rem) clamp(3rem, 8vh, 5rem);
+}
+
+/* ---------- header ---------- */
+
+.header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: 1.25rem clamp(1.5rem, 4vw, 3rem);
+}
+
+.title {
+  margin: 0;
+  color: var(--signal);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 11vw, 6rem);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+}
+
+.lede {
+  max-width: 52ch;
+  margin: 0;
+  padding-bottom: 0.2rem;
+  color: var(--label);
+  font-weight: 400;
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  line-height: 1.55;
+}
+
+/* ---------- board ---------- */
+
+.board {
+  margin-top: clamp(2.25rem, 6vh, 3.5rem);
+  background: var(--board);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.04),
+    0 24px 48px -24px rgb(0 0 0 / 0.7);
+}
+
+.boardBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem clamp(0.875rem, 2.5vw, 1.5rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.boardLabel {
+  color: var(--signal);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.counter {
+  font-size: 1.125rem;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.control {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1.5px solid var(--signal);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--signal);
+  cursor: pointer;
+  transition:
+    background-color 160ms var(--ease),
+    color 160ms var(--ease);
+}
+
+.control:hover:not(:disabled) {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+.control:disabled {
+  border-style: dashed;
+  border-color: var(--rule);
+  color: #5d625b;
+  cursor: default;
+}
+
+.control:focus-visible,
+.card:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+
+/* Positioned, so the screen-reader text inside the cards (absolutely placed) is
+   clipped by the scroll like the cards are, instead of widening the page. */
+.track {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(30rem, 85%);
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #3a3f3b var(--board);
+  background: var(--rule);
+  border-radius: 0 0 6px 6px;
+}
+
+.slide {
+  scroll-snap-align: start;
+  background: var(--board);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.frame {
+  display: block;
+  margin: clamp(0.875rem, 2.5vw, 1.5rem) clamp(0.875rem, 2.5vw, 1.5rem) 0;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--housing);
+  aspect-ratio: 1200 / 630;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.92);
+  transition:
+    transform 420ms var(--ease),
+    filter 420ms var(--ease);
+}
+
+.noImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(90deg, var(--flap-lower) 0 1.5rem, var(--board) 1.5rem 1.6rem);
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1.125rem clamp(0.875rem, 2.5vw, 1.5rem) clamp(1.125rem, 2.5vw, 1.5rem);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.metaLabel {
+  color: var(--label);
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prose {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  color: var(--label);
+  font-weight: 400;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 0.4rem 0.625rem;
+  border: 1.5px solid var(--signal);
+  border-radius: 3px;
+  color: var(--signal);
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition:
+    background-color 180ms var(--ease),
+    color 180ms var(--ease);
+}
+
+.status svg {
+  transition: transform 220ms var(--ease);
+}
+
+.card:hover .image,
+.card:focus-visible .image {
+  transform: scale(1.025);
+  filter: saturate(1);
+}
+
+.card:hover .status,
+.card:focus-visible .status {
+  background: var(--signal);
+  color: var(--signal-ink);
+}
+
+.card:hover .status svg,
+.card:focus-visible .status svg {
+  transform: translateX(3px);
+}
+
+/* ---------- flaps ---------- */
+
+.flaps {
+  display: inline-block;
+  font-family: var(--font-flap), ui-monospace, monospace;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em 0.42em;
+}
+
+.word {
+  display: inline-flex;
+  gap: 0.07em;
+}
+
+.lg {
+  display: block;
+  font-size: clamp(1.0625rem, 2vw, 1.375rem);
+}
+
+/* A board's field has a fixed width: blank flaps fill out the last line. */
+.lg .words::after {
+  content: "";
+  flex: 1 1 0;
+  min-width: 0;
+  height: 1.18em;
+  background: repeating-linear-gradient(90deg, #222623 0 0.74em, transparent 0.74em 0.81em);
+  border-radius: 0.09em;
+}
+
+.md {
+  font-size: 0.9375rem;
+}
+
+.md .words {
+  gap: 0.2em 0.42em;
+}
+
+.cell {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 0.74em;
+  height: 1.18em;
+  border-radius: 0.09em;
+  background: linear-gradient(var(--flap-face) 50%, var(--flap-lower) 50%);
+  box-shadow: 0 0.06em 0.12em rgb(0 0 0 / 0.55);
+  color: var(--glyph);
+}
+
+.cell::after {
+  content: "";
+  position: absolute;
+  inset: calc(50% - 0.5px) 0 auto;
+  height: 1px;
+  background: var(--hinge);
+  z-index: 2;
+}
+
+.glyph {
+  display: block;
+  line-height: 1;
+  transform: translateY(0.06em);
+}
+
+.leaf {
+  position: absolute;
+  inset: 0 0 50%;
+  display: grid;
+  place-items: start center;
+  overflow: hidden;
+  border-radius: 0.09em 0.09em 0 0;
+  background: var(--flap-face);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  z-index: 1;
+  backface-visibility: hidden;
+}
+
+.leaf .glyph {
+  height: 1.18em;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- the exit back to Labs ---------- */
+
+.exit {
+  display: block;
+  background: var(--signal);
+  color: var(--signal-ink);
+  text-decoration: none;
+}
+
+.exitSign {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem);
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: clamp(1.75rem, 5vh, 2.75rem) clamp(1rem, 4vw, 2.5rem);
+}
+
+.exitSign svg {
+  flex: none;
+  width: clamp(2.5rem, 6vw, 4rem);
+  height: auto;
+  transition: transform 260ms var(--ease);
+}
+
+.exitHost {
+  display: block;
+  font-weight: 900;
+  font-size: clamp(1.375rem, 5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.exitLabel {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: 400;
+  font-size: clamp(0.9375rem, 1.8vw, 1.125rem);
+}
+
+.exit:hover .exitSign svg,
+.exit:focus-visible .exitSign svg {
+  transform: translateX(8px);
+}
+
+.exit:hover .exitHost {
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.12em;
+}
+
+.exit:focus-visible {
+  outline: 3px solid var(--signal-ink);
+  outline-offset: -6px;
+}
+
+@media (max-width: 40rem) {
+  .header {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    scroll-behavior: auto;
+  }
+
+  .image,
+  .status,
+  .status svg,
+  .control,
+  .exitSign svg {
+    transition: none;
+  }
+
+  .card:hover .image,
+  .card:focus-visible .image {
+    transform: none;
+  }
+}
