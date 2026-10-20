@@ -57,12 +57,25 @@ function model(chunks: string[], { hang = false } = {}) {
     return new Response(body, { headers: { 'content-type': 'text/event-stream' } });
   };
 
+  return over(fetch);
+}
+
+/** A `MessageStream` whose network is `fetch`. */
+function over(fetch: (url: unknown, init?: RequestInit) => Promise<Response>) {
   return new Anthropic({ apiKey: 'test', fetch: fetch as typeof globalThis.fetch, maxRetries: 0 }).messages.stream({
     model: 'claude-sonnet-5',
     max_tokens: 64,
     messages: [{ role: 'user', content: 'q' }],
   });
 }
+
+/** A model that is overloaded before it says anything. */
+const overloaded = () =>
+  over(async () => new Response('{"type":"error","error":{"type":"overloaded_error","message":"busy"}}', { status: 529 }));
+
+/** A verdict that arrives `ms` later — the classifier takes about 200 ms in production. */
+const later = (ms: number, verdict: Classification['verdict'], label: string): Promise<Classification> =>
+  new Promise((resolve) => setTimeout(() => resolve({ verdict, label, costUSD: 0 }), ms));
 
 const said = (verdict: Classification['verdict'], label: string): Promise<Classification> =>
   Promise.resolve({ verdict, label, costUSD: 0 });
@@ -142,18 +155,42 @@ describe('answerStream', () => {
 
   it('says so, and records it, when the model fails before a word', async () => {
     const record = vi.fn();
-    const failing = new Anthropic({
-      apiKey: 'test',
-      maxRetries: 0,
-      fetch: (async () => new Response('{"type":"error","error":{"type":"overloaded_error","message":"busy"}}', { status: 529 })) as typeof globalThis.fetch,
-    }).messages.stream({ model: 'claude-sonnet-5', max_tokens: 64, messages: [{ role: 'user', content: 'q' }] });
-
-    const text = await readAll(answerStream({ stream: failing, classification: said('allow', 'small_talk'), record }));
+    const text = await readAll(answerStream({ stream: overloaded(), classification: said('allow', 'small_talk'), record }));
     await settle();
 
     expect(text).toMatch(/went wrong reaching the model/);
     expect(record).toHaveBeenCalledTimes(1);
-    expect(record.mock.calls[0][1]).toBe('small_talk');
+    expect(record).toHaveBeenCalledWith('', 'small_talk');
+    expect(unhandled).toEqual([]);
+  });
+
+  it('says so, and records it, when the model fails while the verdict is still pending', async () => {
+    const record = vi.fn();
+    const stream = overloaded();
+    const body = answerStream({ stream, classification: later(50, 'allow', 'about_owner'), record });
+
+    const text = await Promise.race([
+      readAll(body),
+      new Promise<string>((r) => setTimeout(() => r('HUNG'), 1000)),
+    ]);
+    await settle();
+
+    expect(text).toMatch(/went wrong reaching the model/);
+    expect(record).toHaveBeenCalledWith('', 'about_owner');
+    expect(unhandled).toEqual([]);
+  });
+
+  it('records the exchange when the visitor leaves before the verdict', async () => {
+    const record = vi.fn();
+    const stream = model(['Daniel'], { hang: true });
+    const reader = answerStream({ stream, classification: later(50, 'allow', 'about_owner'), record }).getReader();
+
+    await reader.cancel();
+    await new Promise((r) => setTimeout(r, 200));
+
+    expect(record).toHaveBeenCalledTimes(1);
+    expect(record).toHaveBeenCalledWith('', 'about_owner');
+    expect(stream.aborted).toBe(true);
     expect(unhandled).toEqual([]);
   });
 });
