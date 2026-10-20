@@ -217,8 +217,9 @@ export async function POST(request: NextRequest) {
         } finally {
           controller.close();
           // Best-effort, and deliberately not awaited into the response path:
-          // logging must never take the agent down (issue 03).
-          void recordExchange(visitor, question, answer);
+          // logging must never take the agent down (issue 03). `verdict` never
+          // rejects — every failure is already a `timeout` or `error` label.
+          void verdict.then(({ label }) => recordExchange(visitor, question, answer, label));
         }
       },
     });
