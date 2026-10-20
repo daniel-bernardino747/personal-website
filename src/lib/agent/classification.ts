@@ -25,6 +25,6 @@ export interface Classification {
 export const CLASSIFIER_TIMEOUT_MS = 2_500;
 
 /** Every failure passes the message through. See `classifier.ts` on why. */
-export function failed(signal: AbortSignal): Classification {
+export function failOpen(signal: AbortSignal): Classification {
   return { verdict: 'unknown', label: signal.aborted ? 'timeout' : 'error', costUSD: 0 };
 }

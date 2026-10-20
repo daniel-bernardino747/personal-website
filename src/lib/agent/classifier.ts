@@ -23,8 +23,8 @@ export type { Classification, Verdict } from './classification';
  * a free LLM proxy. The daily limits cap the damage, but a stranger's homework
  * would be spending the same quota a recruiter needs.
  *
- * It runs on TypeSafe's Jev (ADR-0014), which only picks one of six labels and
- * so cannot be talked into writing anything. Claude Haiku 4.5, answering ALLOW
+ * It runs on TypeSafe's Jev (ADR-0014), which only picks one of six labels, or
+ * `none`, and so cannot be talked into writing anything. Claude Haiku 4.5, answering ALLOW
  * or REFUSE, is kept as the rollback: `SCOPE_CLASSIFIER=haiku`. Any other value,
  * or none, means Jev.
  *

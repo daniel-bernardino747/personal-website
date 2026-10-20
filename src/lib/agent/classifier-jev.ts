@@ -2,7 +2,7 @@ import 'server-only';
 
 import { TypeSafeClient } from '@typesafe-ai/sdk';
 
-import { CLASSIFIER_TIMEOUT_MS, failed, type Classification, type Verdict } from './classification';
+import { CLASSIFIER_TIMEOUT_MS, failOpen, type Classification, type Verdict } from './classification';
 
 /**
  * The scope filter on TypeSafe's Jev, which only picks one option from a list.
@@ -68,7 +68,7 @@ export async function classifyWithJev(
         state: { message: question },
         questions: { scope: { type: 'choice', instructions: INSTRUCTIONS, criteria: SCOPE } },
       },
-      { signal, timeout: timeoutMs, retry: { maxRetries: 0 } },
+      { signal, retry: { maxRetries: 0 } },
     );
 
     const tokens = result.usage.input_tokens + result.usage.output_tokens;
@@ -78,6 +78,6 @@ export async function classifyWithJev(
     if (!Object.hasOwn(VERDICT, label)) return { verdict: 'unknown', label: 'unexpected', costUSD };
     return { verdict: VERDICT[label as Label], label, costUSD };
   } catch {
-    return failed(signal);
+    return failOpen(signal);
   }
 }

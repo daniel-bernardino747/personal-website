@@ -2,7 +2,7 @@ import 'server-only';
 
 import Anthropic from '@anthropic-ai/sdk';
 
-import { CLASSIFIER_TIMEOUT_MS, failed, type Classification } from './classification';
+import { CLASSIFIER_TIMEOUT_MS, failOpen, type Classification } from './classification';
 
 /** The scope filter on Claude Haiku 4.5: one word, ALLOW or REFUSE. */
 const MODEL = 'claude-haiku-4-5';
@@ -69,6 +69,6 @@ export async function classifyWithHaiku(
     if (text.startsWith('REFUSE')) return { verdict: 'refuse', label: 'refuse', costUSD };
     return { verdict: 'unknown', label: 'unexpected', costUSD };
   } catch {
-    return failed(signal);
+    return failOpen(signal);
   }
 }
