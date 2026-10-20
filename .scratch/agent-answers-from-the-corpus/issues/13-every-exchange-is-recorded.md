@@ -4,7 +4,7 @@
 stage, with its `scope` label, whatever way it ends — and stop refusals from
 leaving an unhandled rejection in the logs.
 
-**Status:** in progress
+**Status:** implemented, not deployed
 
 **Blocked by:** nothing.
 
@@ -44,3 +44,16 @@ leave a record; it does not claim to prevent it.
   with its label.
 - Neither a refusal nor an abandoned stream leaves an unhandled rejection.
 - The streaming logic lives outside the route so it can be tested.
+
+## What else changed
+
+- **The visitor leaving now stops the model.** `cancel()` aborts the stream, so
+  an answer nobody will read stops being billed. Before, it ran to the end.
+- **Two more hangs, found in review and already on `master`.** The SDK's
+  iterator only hears events emitted after it is created, and the route created
+  it after the verdict. A model that failed, or a visitor who left, while the
+  classifier was still running left the response open forever, with nothing
+  recorded, and the failure also raised an unhandled rejection. The iterator is
+  now created before the verdict.
+- **A visitor who leaves before the verdict is recorded with an empty answer.**
+  The text they never received is not stored as if they had.
