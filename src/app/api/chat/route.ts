@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
   // instead of their sum. The trade is that a refused message has also paid for
   // the main call it never used (~$0.003); the per-visitor daily limit caps that
   // at pennies, and abuse is the uncommon case.
-  const verdict = classifyQuestion(question);
+  const classification = classifyQuestion(question);
 
   const client = new Anthropic();
 
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
         try {
           // Nothing reaches the visitor until scope is settled. `unknown` passes
           // — see classifier.ts on why this fails open.
-          if ((await verdict) === 'refuse') {
+          if ((await classification).verdict === 'refuse') {
             stream.abort();
             // Assigned rather than enqueued directly so the `finally` below
             // records what happened. Out-of-scope attempts are worth keeping:
@@ -217,8 +217,9 @@ export async function POST(request: NextRequest) {
         } finally {
           controller.close();
           // Best-effort, and deliberately not awaited into the response path:
-          // logging must never take the agent down (issue 03).
-          void recordExchange(visitor, question, answer);
+          // logging must never take the agent down (issue 03). `classification`
+          // never rejects — every failure is already a label of its own.
+          void classification.then(({ label }) => recordExchange(visitor, question, answer, label));
         }
       },
     });
