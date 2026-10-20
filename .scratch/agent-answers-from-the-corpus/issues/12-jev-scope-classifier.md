@@ -4,7 +4,7 @@
 Haiku one from issue 10, measure both on the same labeled set, and switch only
 if Jev is at least as good.
 
-**Status:** implemented, not deployed — Jev is the default (ADR-0014)
+**Status:** done — deployed 2026-10-20; Jev is the default (ADR-0014)
 
 **Blocked by:** nothing.
 
