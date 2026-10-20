@@ -4,7 +4,7 @@
 stage, with its `scope` label, whatever way it ends — and stop refusals from
 leaving an unhandled rejection in the logs.
 
-**Status:** implemented, not deployed
+**Status:** done — deployed 2026-10-20; both exchanges sent after the deploy were recorded with their labels
 
 **Blocked by:** nothing.
 
