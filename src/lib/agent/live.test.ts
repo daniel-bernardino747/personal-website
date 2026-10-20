@@ -109,7 +109,7 @@ describe.skipIf(!enabled)('the scope filter', () => {
 
   for (const task of tasks) {
     it(`refuses: ${task.slice(0, 45)}…`, { timeout: 60_000 }, async () => {
-      expect(await classifyQuestion(task)).toBe('refuse');
+      expect((await classifyQuestion(task)).verdict).toBe('refuse');
     });
   }
 
@@ -125,7 +125,7 @@ describe.skipIf(!enabled)('the scope filter', () => {
   for (const question of legitimate) {
     it(`allows: ${question.slice(0, 45)}`, { timeout: 60_000 }, async () => {
       // A filter that blocks real visitors is worse than the leak it prevents.
-      expect(await classifyQuestion(question)).toBe('allow');
+      expect((await classifyQuestion(question)).verdict).toBe('allow');
     });
   }
 });

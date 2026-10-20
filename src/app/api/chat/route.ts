@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
         try {
           // Nothing reaches the visitor until scope is settled. `unknown` passes
           // — see classifier.ts on why this fails open.
-          if ((await verdict) === 'refuse') {
+          if ((await verdict).verdict === 'refuse') {
             stream.abort();
             // Assigned rather than enqueued directly so the `finally` below
             // records what happened. Out-of-scope attempts are worth keeping:
