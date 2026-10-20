@@ -34,11 +34,12 @@ describe('classifyWithHaiku', () => {
     });
   });
 
-  it('treats anything else as an error, and lets it through', async () => {
-    expect(await classifyWithHaiku('hi', { client: replying('Sure! Here is') })).toMatchObject({
-      verdict: 'unknown',
-      label: 'error',
-    });
+  it('labels any other reply `unexpected`, keeps the cost, and lets it through', async () => {
+    const result = await classifyWithHaiku('hi', { client: replying('Sure! Here is') });
+    // Not `error`: the call worked and was billed. A run of `error` means the
+    // classifier is unreachable or misconfigured; this means it misbehaved.
+    expect(result).toMatchObject({ verdict: 'unknown', label: 'unexpected' });
+    expect(result.costUSD).toBeGreaterThan(0);
   });
 
   it('keeps the visitor’s text in the user turn, out of the system prompt', async () => {

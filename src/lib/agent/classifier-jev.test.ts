@@ -41,9 +41,10 @@ describe('classifyWithJev', () => {
     expect(result).toMatchObject({ verdict: 'unknown', label: 'none' });
   });
 
-  it('treats a label it never offered as an error, and lets it through', async () => {
+  it('labels a label it never offered `unexpected`, keeps the cost, and lets it through', async () => {
     const result = await classifyWithJev('hi', { client: answering('banana') });
-    expect(result).toMatchObject({ verdict: 'unknown', label: 'error' });
+    expect(result).toMatchObject({ verdict: 'unknown', label: 'unexpected' });
+    expect(result.costUSD).toBeGreaterThan(0);
   });
 
   it('puts the visitor’s text only in the state', async () => {
