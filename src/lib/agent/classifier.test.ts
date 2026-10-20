@@ -10,7 +10,7 @@ vi.mock('./classifier-jev', () => ({
 import { classifyWithHaiku } from './classifier-haiku';
 import { classifyWithJev } from './classifier-jev';
 
-/** `SCOPE_CLASSIFIER` picks the classifier; Haiku stays the default. */
+/** `SCOPE_CLASSIFIER` picks the classifier; Jev is the default (ADR-0014). */
 const saved = { selector: process.env.SCOPE_CLASSIFIER, key: process.env.TYPESAFE_API_KEY };
 
 async function freshClassifier() {
@@ -31,16 +31,8 @@ afterEach(() => {
 });
 
 describe('classifyQuestion', () => {
-  it('uses Haiku when nothing is set', async () => {
+  it('uses Jev when nothing is set', async () => {
     delete process.env.SCOPE_CLASSIFIER;
-    const classify = await freshClassifier();
-    expect(await classify('hi')).toMatchObject({ label: 'allow' });
-    expect(classifyWithHaiku).toHaveBeenCalledWith('hi');
-    expect(classifyWithJev).not.toHaveBeenCalled();
-  });
-
-  it('uses Jev when asked', async () => {
-    process.env.SCOPE_CLASSIFIER = 'jev';
     process.env.TYPESAFE_API_KEY = 'test';
     const classify = await freshClassifier();
     expect(await classify('hi')).toMatchObject({ label: 'about_owner' });
@@ -48,15 +40,24 @@ describe('classifyQuestion', () => {
     expect(classifyWithHaiku).not.toHaveBeenCalled();
   });
 
-  it('treats a misspelt selector as unset', async () => {
-    process.env.SCOPE_CLASSIFIER = 'jevv';
+  it('uses Haiku when asked — the rollback', async () => {
+    process.env.SCOPE_CLASSIFIER = 'haiku';
     const classify = await freshClassifier();
-    await classify('hi');
-    expect(classifyWithHaiku).toHaveBeenCalled();
+    expect(await classify('hi')).toMatchObject({ label: 'allow' });
+    expect(classifyWithHaiku).toHaveBeenCalledWith('hi');
+    expect(classifyWithJev).not.toHaveBeenCalled();
   });
 
-  it('says once, in the logs, that Jev was chosen without a key', async () => {
-    process.env.SCOPE_CLASSIFIER = 'jev';
+  it('treats a misspelt selector as unset', async () => {
+    process.env.SCOPE_CLASSIFIER = 'haiku ';
+    process.env.TYPESAFE_API_KEY = 'test';
+    const classify = await freshClassifier();
+    await classify('hi');
+    expect(classifyWithJev).toHaveBeenCalled();
+  });
+
+  it('says once, in the logs, that Jev is running without a key', async () => {
+    delete process.env.SCOPE_CLASSIFIER;
     delete process.env.TYPESAFE_API_KEY;
     const error = vi.spyOn(console, 'error').mockImplementation(() => {});
     const classify = await freshClassifier();
