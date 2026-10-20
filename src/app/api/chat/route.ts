@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextRequest } from 'next/server';
 
+import { answerStream } from '@/lib/agent/answer-stream';
 import { classifyQuestion } from '@/lib/agent/classifier';
 import { MOCK_HEADER, isMockEnabled, mockStream } from '@/lib/agent/mock';
 import { isAllowedOrigin } from '@/lib/agent/origin';
@@ -129,10 +130,10 @@ export async function POST(request: NextRequest) {
   // it added ~1.9s to every legitimate message — measured, 1.5s to 3.4s to first
   // byte — which is a real cost paid by real visitors to stop a rare abuser.
   //
-  // Started here and awaited below, so latency is max(classify, first token)
-  // instead of their sum. The trade is that a refused message has also paid for
-  // the main call it never used (~$0.003); the per-visitor daily limit caps that
-  // at pennies, and abuse is the uncommon case.
+  // Started here and awaited in `answerStream`, so latency is max(classify,
+  // first token) instead of their sum. The trade is that a refused message has
+  // also paid for the main call it never used (~$0.003); the per-visitor daily
+  // limit caps that at pennies, and abuse is the uncommon case.
   const classification = classifyQuestion(question);
 
   const client = new Anthropic();
@@ -154,74 +155,10 @@ export async function POST(request: NextRequest) {
       messages: [{ role: 'user', content: question }],
     });
 
-    const encoder = new TextEncoder();
-    let answer = '';
-
-    const body = new ReadableStream<Uint8Array>({
-      async start(controller) {
-        try {
-          // Nothing reaches the visitor until scope is settled. `unknown` passes
-          // — see classifier.ts on why this fails open.
-          if ((await classification).verdict === 'refuse') {
-            stream.abort();
-            // Assigned rather than enqueued directly so the `finally` below
-            // records what happened. Out-of-scope attempts are worth keeping:
-            // they are the only signal that someone is probing the endpoint.
-            answer =
-              "I only answer questions about Daniel — his work, his projects, and how to reach him. I can't help with anything else here.";
-            controller.enqueue(encoder.encode(answer));
-            controller.close();
-            return;
-          }
-
-          for await (const event of stream) {
-            if (
-              event.type === 'content_block_delta' &&
-              event.delta.type === 'text_delta'
-            ) {
-              answer += event.delta.text;
-              controller.enqueue(encoder.encode(event.delta.text));
-            }
-          }
-
-          const final = await stream.finalMessage();
-
-          // The only visibility into what a conversation costs. `cache_read`
-          // staying at zero across requests means the fixed system prompt is
-          // being re-billed in full every time — a silent multiplier on the
-          // bill, and the one number worth watching after a prompt change.
-          const { usage } = final;
-          console.log(
-            `[chat] in=${usage.input_tokens} out=${usage.output_tokens} ` +
-              `cache_read=${usage.cache_read_input_tokens ?? 0} ` +
-              `cache_write=${usage.cache_creation_input_tokens ?? 0}`,
-          );
-
-          if (final.stop_reason === 'refusal') {
-            controller.enqueue(
-              encoder.encode(
-                answer
-                  ? '\n\n(I had to stop there.)'
-                  : 'I am not able to answer that one.',
-              ),
-            );
-          }
-        } catch {
-          controller.enqueue(
-            encoder.encode(
-              answer
-                ? '\n\n(Something interrupted me mid-answer.)'
-                : 'Something went wrong reaching the model, so I would rather not guess.',
-            ),
-          );
-        } finally {
-          controller.close();
-          // Best-effort, and deliberately not awaited into the response path:
-          // logging must never take the agent down (issue 03). `classification`
-          // never rejects — every failure is already a label of its own.
-          void classification.then(({ label }) => recordExchange(visitor, question, answer, label));
-        }
-      },
+    const body = answerStream({
+      stream,
+      classification,
+      record: (answer, label) => recordExchange(visitor, question, answer, label),
     });
 
     return new Response(body, {
