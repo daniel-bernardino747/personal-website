@@ -40,10 +40,11 @@ export type { Classification, Verdict } from './classification';
  *   | cost per message      | US$0.00033   | US$0.000031   |
  *
  * Haiku refused "Qual a pretensão salarial dele?" on every run — a recruiter
- * turned away, the one outcome worse than a leak. Its two leaks were replies
- * that were neither word, which fail open. The cases were written with the same
- * definitions Jev is given, so the 100% is an upper bound; the `scope` column
- * in `chat_transcript` is where real traffic checks it.
+ * turned away, the one outcome worse than a leak. Its two leaks were `error`s,
+ * which fail open; that run could not tell a thrown error from a reply that was
+ * neither word, which is now labeled `unexpected`. The cases were written with
+ * the same definitions Jev is given, so the 100% is an upper bound; the `scope`
+ * column in `chat_transcript` is where real traffic checks it.
  */
 const CLASSIFIERS = { haiku: classifyWithHaiku, jev: classifyWithJev } as const;
 
