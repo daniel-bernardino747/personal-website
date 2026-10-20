@@ -39,6 +39,13 @@ CREATE TABLE IF NOT EXISTS chat_transcript (
 CREATE INDEX IF NOT EXISTS chat_transcript_created_at_idx
   ON chat_transcript (created_at);
 
+-- What the scope classifier said about the question (issue 12): `allow` or
+-- `refuse` from Haiku, a scope label from Jev, `timeout` or `error` when it
+-- failed open. NULL on rows from before the column existed. A label, not
+-- personal data — it goes when the row goes.
+ALTER TABLE chat_transcript
+  ADD COLUMN IF NOT EXISTS scope TEXT;
+
 -- Counters older than a couple of days are dead weight; transcripts are deleted
 -- on the retention boundary. Both sweeps are driven from the application so they
 -- run without anyone remembering to.

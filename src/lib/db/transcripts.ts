@@ -17,13 +17,14 @@ export async function recordExchange(
   visitor: string,
   question: string,
   answer: string,
+  scope?: string,
 ): Promise<void> {
   try {
     const pool = getPool();
 
     await pool.query(
-      `INSERT INTO chat_transcript (visitor, question, answer) VALUES ($1, $2, $3)`,
-      [visitor, question, answer],
+      `INSERT INTO chat_transcript (visitor, question, answer, scope) VALUES ($1, $2, $3, $4)`,
+      [visitor, question, answer, scope ?? null],
     );
 
     // Swept on write rather than on a schedule: there is no cron on this
