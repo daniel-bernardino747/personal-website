@@ -23,10 +23,27 @@ export type { Classification, Verdict } from './classification';
  * a free LLM proxy. The daily limits cap the damage, but a stranger's homework
  * would be spending the same quota a recruiter needs.
  *
- * Two classifiers, chosen by `SCOPE_CLASSIFIER`: `haiku` (the default — Claude
- * Haiku 4.5 answering ALLOW or REFUSE) and `jev` (TypeSafe's Jev picking one of
- * six labels). Any other value counts as unset. Both are measured on the same
- * cases in `scope.compare.test.ts`.
+ * It runs on TypeSafe's Jev (ADR-0014), which only picks one of six labels and
+ * so cannot be talked into writing anything. Claude Haiku 4.5, answering ALLOW
+ * or REFUSE, is kept as the rollback: `SCOPE_CLASSIFIER=haiku`. Any other value,
+ * or none, means Jev.
+ *
+ * Measured on 2026-10-20, on the 43 cases in `scope-cases.ts`, three runs each
+ * (`docs/measurements/scope-classifier-2026-10-20.md`):
+ *
+ *   |                       | Haiku 4.5    | Jev 1.13.0    |
+ *   |-----------------------|--------------|---------------|
+ *   | verdict accuracy      | 96.1%        | 100%          |
+ *   | false refusals        | 3, recruiter | 0             |
+ *   | leaks                 | 2            | 0             |
+ *   | median / p95 latency  | 550 / 660 ms | 196 / 233 ms  |
+ *   | cost per message      | US$0.00033   | US$0.000031   |
+ *
+ * Haiku refused "Qual a pretensão salarial dele?" on every run — a recruiter
+ * turned away, the one outcome worse than a leak. Its two leaks were replies
+ * that were neither word, which fail open. The cases were written with the same
+ * definitions Jev is given, so the 100% is an upper bound; the `scope` column
+ * in `chat_transcript` is where real traffic checks it.
  */
 const CLASSIFIERS = { haiku: classifyWithHaiku, jev: classifyWithJev } as const;
 
@@ -42,7 +59,7 @@ let warnedNoKey = false;
  * everyone, which is a worse outcome than one leaked code snippet.
  */
 export async function classifyQuestion(question: string): Promise<Classification> {
-  const name = process.env.SCOPE_CLASSIFIER === 'jev' ? 'jev' : 'haiku';
+  const name = process.env.SCOPE_CLASSIFIER === 'haiku' ? 'haiku' : 'jev';
 
   // Jev without a key fails open on every message. It stays Jev rather than
   // falling back to Haiku, so the `scope` column shows the misconfiguration as a
@@ -50,7 +67,7 @@ export async function classifyQuestion(question: string): Promise<Classification
   if (name === 'jev' && !process.env.TYPESAFE_API_KEY && !warnedNoKey) {
     warnedNoKey = true;
     console.error(
-      '[scope] SCOPE_CLASSIFIER=jev but TYPESAFE_API_KEY is not set: every message passes unfiltered.',
+      '[scope] The scope classifier is Jev but TYPESAFE_API_KEY is not set: every message passes unfiltered. Set the key, or SCOPE_CLASSIFIER=haiku.',
     );
   }
 

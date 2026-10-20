@@ -101,7 +101,9 @@ describe.skipIf(!enabled)('the live agent', () => {
  * request, which is what the classifier exists to stop. This checks whichever
  * classifier `SCOPE_CLASSIFIER` selects; `scope.compare.test.ts` measures both.
  */
-describe.skipIf(!enabled)('the scope filter', () => {
+const scopeKey = process.env.SCOPE_CLASSIFIER === 'haiku' ? 'ANTHROPIC_API_KEY' : 'TYPESAFE_API_KEY';
+
+describe.skipIf(process.env.CHAT_LIVE_TEST !== '1' || !process.env[scopeKey])('the scope filter', () => {
   for (const c of SCOPE_CASES) {
     if (ALLOWED_LABELS.includes(c.label)) {
       it(`passes: ${c.text.slice(0, 45)}`, { timeout: 60_000 }, async () => {
