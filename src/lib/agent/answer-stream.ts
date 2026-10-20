@@ -28,10 +28,13 @@ export function answerStream({
   let answer = '';
   let over = false;
 
-  // The SDK raises an unhandled rejection on abort unless someone is listening.
-  // Aborting is expected here — on a refusal and when the visitor leaves — so
-  // this listener only marks it as handled.
-  stream.on('abort', () => {});
+  // Subscribed now, not after the verdict. The SDK's iterator only hears events
+  // emitted after it is created, so one made later would wait forever on a
+  // stream that already failed or was aborted while the classifier ran. This
+  // one queues what arrives in the meantime and ends instead of hanging. It
+  // also listens for `error` and `abort`, which keeps the SDK from raising an
+  // unhandled rejection when either is expected: a refusal, a visitor leaving.
+  const events = stream[Symbol.asyncIterator]();
 
   return new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -48,7 +51,10 @@ export function answerStream({
       try {
         // Nothing reaches the visitor until scope is settled. `unknown` passes
         // — see classifier.ts on why this fails open.
-        if ((await classification).verdict === 'refuse') {
+        const { verdict } = await classification;
+        if (over) return;
+
+        if (verdict === 'refuse') {
           stream.abort();
           // Out-of-scope attempts are worth keeping: they are the only signal
           // that someone is probing the endpoint.
@@ -57,8 +63,8 @@ export function answerStream({
           return;
         }
 
-        for await (const event of stream) {
-          if (over) break;
+        for (let next = await events.next(); !next.done && !over; next = await events.next()) {
+          const event = next.value;
           if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
             answer += event.delta.text;
             send(event.delta.text);
@@ -89,11 +95,12 @@ export function answerStream({
             : 'Something went wrong reaching the model, so I would rather not guess.',
         );
       } finally {
-        end();
-        // Best-effort, and deliberately not awaited into the response path:
-        // logging must never take the agent down (issue 03). `classification`
-        // never rejects — every failure is already a label of its own.
+        // Recorded before the response is closed, so nothing the close does can
+        // skip it. Best-effort, and deliberately not awaited into the response
+        // path: logging must never take the agent down (issue 03).
+        // `classification` never rejects — every failure is a label of its own.
         void classification.then(({ label }) => record(answer, label));
+        end();
       }
     },
 
