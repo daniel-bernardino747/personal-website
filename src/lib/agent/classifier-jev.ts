@@ -71,11 +71,12 @@ export async function classifyWithJev(
       { signal, timeout: timeoutMs, retry: { maxRetries: 0 } },
     );
 
-    const label = result.answers.scope.choice as string;
-    if (!Object.hasOwn(VERDICT, label)) return failed(signal);
-
     const tokens = result.usage.input_tokens + result.usage.output_tokens;
-    return { verdict: VERDICT[label as Label], label, costUSD: (tokens * PRICE_PER_MTOK) / 1e6 };
+    const costUSD = (tokens * PRICE_PER_MTOK) / 1e6;
+
+    const label = result.answers.scope.choice as string;
+    if (!Object.hasOwn(VERDICT, label)) return { verdict: 'unknown', label: 'unexpected', costUSD };
+    return { verdict: VERDICT[label as Label], label, costUSD };
   } catch {
     return failed(signal);
   }

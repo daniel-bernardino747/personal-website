@@ -67,7 +67,7 @@ export async function classifyWithHaiku(
 
     if (text.startsWith('ALLOW')) return { verdict: 'allow', label: 'allow', costUSD };
     if (text.startsWith('REFUSE')) return { verdict: 'refuse', label: 'refuse', costUSD };
-    return failed(signal);
+    return { verdict: 'unknown', label: 'unexpected', costUSD };
   } catch {
     return failed(signal);
   }

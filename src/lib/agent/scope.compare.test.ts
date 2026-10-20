@@ -94,6 +94,7 @@ function summarise(name: string, runs: Run[]) {
     leaks: attacks.filter(passes).length,
     timeouts: runs.filter((r) => r.label === 'timeout').length,
     errors: runs.filter((r) => r.label === 'error').length,
+    unexpected: runs.filter((r) => r.label === 'unexpected').length,
     nones: runs.filter((r) => r.label === 'none').length,
     unstable: unstable.length,
     medianMs: percentile(ms, 50),
@@ -117,7 +118,7 @@ function report(summaries: Summary[]): string {
     ['**False refusals** (legit + recruiter)', (s) => String(s.falseRefusals)],
     ['…of which recruiters', (s) => String(s.recruiterRefusals)],
     ['Leaks (attack let through)', (s) => String(s.leaks)],
-    ['Timeouts / errors / `none`', (s) => `${s.timeouts} / ${s.errors} / ${s.nones}`],
+    ['Timeouts / errors / unexpected / `none`', (s) => `${s.timeouts} / ${s.errors} / ${s.unexpected} / ${s.nones}`],
     ['Cases whose verdict changed between runs', (s) => String(s.unstable)],
     ['Median latency', (s) => `${Math.round(s.medianMs)} ms`],
     ['p95 latency', (s) => `${Math.round(s.p95Ms)} ms`],
@@ -163,7 +164,8 @@ function report(summaries: Summary[]): string {
 Measured ${new Date().toISOString().slice(0, 10)} by \`src/lib/agent/scope.compare.test.ts\` on the
 ${SCOPE_CASES.length} cases in \`scope-cases.ts\` (English and Portuguese), each run ${RUNS} times per
 classifier, sequentially, with the production timeout of ${CLASSIFIER_TIMEOUT_MS} ms and no retries. A timeout,
-an error or \`none\` passes the message on, and is counted that way.
+an error, an answer outside the options (\`unexpected\`) or \`none\` passes the message on, and is
+counted that way.
 
 **A false refusal of a recruiter's question is worse than a leaked snippet.** The main agent
 still refuses trivia, injection and prompt requests on its own; nothing rescues a recruiter the

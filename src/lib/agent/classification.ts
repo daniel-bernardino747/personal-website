@@ -8,8 +8,8 @@ export interface Classification {
   verdict: Verdict;
   /**
    * What the classifier actually said, stored with the transcript: `allow` or
-   * `refuse` from Haiku, a scope label from Jev, `timeout` or `error` when it
-   * said nothing usable.
+   * `refuse` from Haiku, a scope label from Jev, `unexpected` when it answered
+   * outside its options, `timeout` or `error` when no answer came back.
    */
   label: string;
   /** What the call cost, in US$. Zero when it failed before any usage came back. */

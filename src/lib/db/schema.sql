@@ -40,9 +40,9 @@ CREATE INDEX IF NOT EXISTS chat_transcript_created_at_idx
   ON chat_transcript (created_at);
 
 -- What the scope classifier said about the question (issue 12): `allow` or
--- `refuse` from Haiku, a scope label from Jev, `timeout` or `error` when it
--- failed open. NULL on rows from before the column existed. A label, not
--- personal data — it goes when the row goes.
+-- `refuse` from Haiku, a scope label from Jev, `unexpected`, `timeout` or
+-- `error` when it failed open. NULL on rows from before the column existed.
+-- A label, not personal data — it goes when the row goes.
 ALTER TABLE chat_transcript
   ADD COLUMN IF NOT EXISTS scope TEXT;
 
