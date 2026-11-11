@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+import { localeHref, LOCALES } from "@/i18n/routing";
+import { useLocale, useSitePath } from "@/i18n/client";
 import { useEffect, useState } from "react";
 
 // Every link must land somewhere the home actually renders. "Skills" and "Other"
@@ -45,14 +46,16 @@ const itemVariants = {
 export function Navbar() {
   const identity = useIdentity();
   const { theme, setTheme } = useTheme();
-  const pathname = usePathname();
+  const locale = useLocale();
+  const path = useSitePath();
+  const otherLocale = LOCALES.find((l) => l !== locale)!;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (pathname === "/chat") return null;
+  if (path === "/chat") return null;
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -104,9 +107,9 @@ export function Navbar() {
           {navLinks.map((link) => (
             <motion.li key={link.href} variants={itemVariants}>
               <Link
-                href={link.href}
+                href={localeHref(locale, link.href)}
                 className={`block whitespace-nowrap px-3 md:px-4 py-1.5 text-sm rounded-full transition-all ${
-                  link.href === pathname
+                  link.href === path
                     ? "bg-muted text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
                 }`}
@@ -118,6 +121,17 @@ export function Navbar() {
         </ul>
 
         <motion.div variants={itemVariants} className="h-4 w-px bg-border mx-1 hidden md:block" />
+
+        {/* The same page in the other language (ADR-0015). */}
+        <motion.div variants={itemVariants} className="shrink-0">
+          <Link
+            href={localeHref(otherLocale, path)}
+            hrefLang={otherLocale === "pt" ? "pt-BR" : "en"}
+            className="block px-2 py-1.5 text-xs font-mono uppercase text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {otherLocale}
+          </Link>
+        </motion.div>
 
         <motion.div variants={itemVariants} className="shrink-0">
           <a href={identity.bookingUrl} target="_blank" rel="noopener noreferrer">

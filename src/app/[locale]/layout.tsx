@@ -7,8 +7,10 @@ import { buildChatAnswers } from "@/lib/chat/answers";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { SITE_URL } from "@/lib/site-url";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { HTML_LANG, isLocale, LOCALES, OG_LOCALE, type Locale } from "@/i18n/routing";
 import localFont from "next/font/local";
-import "./globals.css";
+import "../globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -19,12 +21,12 @@ import { ChatAnswersProvider } from "@/components/ChatAnswersProvider";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "../fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "../fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -35,7 +37,16 @@ const geistMono = localFont({
  * Corpus edit in `career`. Pages set only `title` and `description`; the template and
  * the Open Graph fields below carry them into the preview.
  */
-export function generateMetadata(): Metadata {
+type LocaleParams = { params: Promise<{ locale: string }> };
+
+// Only the two languages exist; any other first segment is a 404.
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
+  const { locale } = await params;
   const identity = getIdentity();
   const title = `${identity.name} — ${identity.role[0]}`;
 
@@ -49,7 +60,7 @@ export function generateMetadata(): Metadata {
       title,
       description: identity.bio,
       url: "/",
-      locale: "en_US",
+      locale: OG_LOCALE[locale as Locale] ?? OG_LOCALE.pt,
     },
     twitter: {
       card: "summary_large_image",
@@ -63,16 +74,19 @@ export function generateMetadata(): Metadata {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}> & LocaleParams) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
   const identity = getIdentity();
   const chatAnswers = buildChatAnswers(getCorpus());
 
   return (
-    <html lang="en" suppressHydrationWarning className={cn(geistSans.variable, geistMono.variable, "font-sans", geist.variable)}>
+    <html lang={HTML_LANG[locale]} suppressHydrationWarning className={cn(geistSans.variable, geistMono.variable, "font-sans", geist.variable)}>
       <body className="antialiased">
         <ThemeProvider
           attribute="class"

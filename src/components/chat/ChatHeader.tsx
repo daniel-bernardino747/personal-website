@@ -5,15 +5,17 @@ import { Button } from '@/components/ui/Button';
 import { useIdentity } from '@/components/IdentityProvider';
 import { ArrowLeft, Calendar, Github, Linkedin, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { useLocaleHref } from '@/i18n/client';
 
 export function ChatHeader() {
   const identity = useIdentity();
+  const localeHref = useLocaleHref();
 
   return (
     <div className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
         <Link
-          href="/"
+          href={localeHref("/")}
           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mr-2"
         >
           <ArrowLeft size={16} />

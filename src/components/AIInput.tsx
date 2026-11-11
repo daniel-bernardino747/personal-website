@@ -15,6 +15,7 @@ import {
   UserSearch
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLocaleHref } from "@/i18n/client";
 import { useEffect, useState, useMemo } from "react";
 
 interface QuickActionProps {
@@ -58,6 +59,7 @@ function QuickAction({ icon, label, color, delay, onClick }: QuickActionProps) {
 export function AIInput() {
   const answers = useChatAnswers();
   const router = useRouter();
+  const localeHref = useLocaleHref();
   const { addMessage, setInitialQuery } = useChatStore();
 
   const [placeholder, setPlaceholder] = useState("");
@@ -110,7 +112,7 @@ export function AIInput() {
     addMessage({ role: 'user', text: phrase });
     setInitialQuery(phrase);
     mutation.mutate(phrase); // Trigger simulation immediately
-    router.push('/chat');
+    router.push(localeHref('/chat'));
   };
 
 

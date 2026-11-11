@@ -4,10 +4,12 @@ import Link from "next/link";
 import { ArrowLeft, Send } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useLocaleHref } from "@/i18n/client";
 
 type FormState = "idle" | "sending" | "done" | "error";
 
 export default function GuestbookPage() {
+  const localeHref = useLocaleHref();
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<FormState>("idle");
@@ -35,7 +37,7 @@ export default function GuestbookPage() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-16">
       <Link
-        href="/"
+        href={localeHref("/")}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
       >
         <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />

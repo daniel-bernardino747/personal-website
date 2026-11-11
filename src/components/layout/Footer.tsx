@@ -2,12 +2,11 @@
 
 import { FileText, Github, Linkedin, Mail } from "lucide-react";
 import { useIdentity } from "@/components/IdentityProvider";
-import { usePathname } from "next/navigation";
+import { useSitePath } from "@/i18n/client";
 
 export function Footer() {
   const identity = useIdentity();
-  const pathname = usePathname();
-  if (pathname === "/chat") return null;
+  if (useSitePath() === "/chat") return null;
 
   return (
     <footer className="border-t border-border py-10">

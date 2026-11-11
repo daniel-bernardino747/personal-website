@@ -3,6 +3,7 @@ import { ArrowLeft, Trophy } from "lucide-react";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { KIND_LABELS } from "@/lib/corpus/schema";
 import { pageMetadata } from "@/lib/site-url";
+import { isLocale, localeHref } from "@/i18n/routing";
 
 export function generateMetadata() {
   return pageMetadata({
@@ -13,13 +14,15 @@ export function generateMetadata() {
   });
 }
 
-export default function AchievementsPage() {
+export default async function AchievementsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const home = localeHref(isLocale(locale) ? locale : "pt", "/");
   const { featured } = getCorpus();
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
       <Link
-        href="/"
+        href={home}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
       >
         <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
