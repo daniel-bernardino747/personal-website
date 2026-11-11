@@ -1,6 +1,7 @@
 "use client";
 
 import { AvatarVideo } from "@/components/AvatarVideo";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useIdentity } from "@/components/IdentityProvider";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -11,6 +12,7 @@ import { ScrollMessage } from "./ScrollMessage";
 
 export function Hero() {
   const identity = useIdentity();
+  const t = useDictionary();
   const prefersReducedMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -68,7 +70,7 @@ export function Hero() {
             transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
             className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6 min-h-[1.2em] flex items-center justify-center"
           >
-            <span className="text-foreground mr-3">Hi, I&apos;m </span>
+            <span className="text-foreground mr-3">{t.hero.greeting} </span>
             <div className="relative h-[1.2em] flex items-center justify-center overflow-visible">
               <AnimatePresence mode="wait">
                 <motion.span

@@ -1,22 +1,30 @@
 import Link from "next/link";
 import { ArrowLeft, Trophy } from "lucide-react";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
-import { KIND_LABELS } from "@/lib/corpus/schema";
 import { pageMetadata } from "@/lib/site-url";
+import { getDictionary } from "@/i18n/dictionary";
 import { isLocale, localeHref } from "@/i18n/routing";
 
-export function generateMetadata() {
+type Params = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Params) {
+  const { locale } = await params;
+  const t = getDictionary(isLocale(locale) ? locale : "pt");
+  const owner = getIdentity().name;
   return pageMetadata({
-    title: "Featured Accomplishments",
-    description: "The accomplishments Daniel considers most significant.",
+    title: t.achievements.metaTitle,
+    description: t.achievements.metaDescription,
     path: "/achievements",
-    owner: getIdentity().name,
+    owner,
+    imageAlt: t.meta.imageAlt(owner),
   });
 }
 
-export default async function AchievementsPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const home = localeHref(isLocale(locale) ? locale : "pt", "/");
+export default async function AchievementsPage({ params }: Params) {
+  const { locale: param } = await params;
+  const locale = isLocale(param) ? param : "pt";
+  const t = getDictionary(locale);
+  const home = localeHref(locale, "/");
   const { featured } = getCorpus();
 
   return (
@@ -26,18 +34,17 @@ export default async function AchievementsPage({ params }: { params: Promise<{ l
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
       >
         <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
-        Back to home
+        {t.achievements.back}
       </Link>
 
-      <h1 className="text-4xl font-bold mb-4">Featured Accomplishments</h1>
+      <h1 className="text-4xl font-bold mb-4">{t.achievements.title}</h1>
       <p className="text-muted-foreground text-lg mb-16 max-w-xl">
-        The work I consider most significant — the highlights, without reading
-        everything.
+        {t.achievements.lede}
       </p>
 
       {featured.length === 0 ? (
         <p className="text-muted-foreground">
-          Featured accomplishments will appear here as they are captured.
+          {t.achievements.empty}
         </p>
       ) : (
         <div className="space-y-16">
@@ -53,7 +60,7 @@ export default async function AchievementsPage({ params }: { params: Promise<{ l
                 <div
                   className="rounded-2xl bg-gray-100 w-full aspect-video flex items-center justify-center"
                   role="img"
-                  aria-label={`${accomplishment.id} illustration`}
+                  aria-label={t.achievements.illustration(accomplishment.id)}
                 >
                   <Trophy
                     size={40}
@@ -71,7 +78,7 @@ export default async function AchievementsPage({ params }: { params: Promise<{ l
                 </p>
                 <h2 className="text-2xl font-bold mb-1">
                   {accomplishment.affiliation?.organisation ??
-                    KIND_LABELS[accomplishment.kind]}
+                    t.kinds[accomplishment.kind]}
                 </h2>
                 {accomplishment.metric && (
                   <p className="text-accent font-medium text-sm mb-4">

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useMemo, useState } from "react";
 
+import { useDictionary } from "@/components/DictionaryProvider";
 import type { Accomplishment } from "@/lib/corpus/schema";
 import { displayYear } from "@/lib/corpus/statement";
 import { packRows } from "@/lib/projects/pack";
@@ -15,7 +16,8 @@ import { ProjectCard } from "./projects/ProjectCard";
  * yet: the card states what the thing is and claims nothing numeric. The page
  * opts into that with `byKind('project', { includeDrafts: true })`.
  */
-const ALL = "All";
+// The "every year" filter's state value; its label comes from the dictionary.
+const ALL = "all";
 
 /**
  * The Corpus id of the project that is this website. Lives here rather than in
@@ -25,6 +27,7 @@ const ALL = "All";
 const THIS_SITE_ID = "personal-website";
 
 export function Projects({ projects }: { projects: Accomplishment[] }) {
+  const t = useDictionary();
   const prefersReducedMotion = useReducedMotion();
   const [activeYear, setActiveYear] = useState<string>(ALL);
 
@@ -86,10 +89,10 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
           className="mb-10"
         >
           <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-accent-text">
-            Selected work
+            {t.projects.eyebrow}
           </p>
           <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Projects
+            {t.projects.title}
           </h2>
           {/* Draws itself in on scroll — motion that marks the section starting. */}
           <motion.div
@@ -101,15 +104,14 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
             className="mt-3 h-1 w-16 rounded-full bg-accent/60"
           />
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-            Things I&apos;ve built — side projects, open source contributions,
-            and professional work.
+            {t.projects.lede}
           </p>
         </motion.div>
 
         {filters.length > 0 && (
           <div
             role="group"
-            aria-label="Filter projects by year"
+            aria-label={t.projects.filterAria}
             className="mb-10 flex flex-wrap gap-2"
           >
             {filters.map((filter) => {
@@ -134,7 +136,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
                       className="absolute inset-0 rounded-full bg-accent/15"
                     />
                   )}
-                  <span className="relative">{filter}</span>
+                  <span className="relative">{filter === ALL ? t.projects.all : filter}</span>
                 </button>
               );
             })}
@@ -143,7 +145,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
 
         {ordered.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            Projects are being written up — check back soon.
+            {t.projects.empty}
           </p>
         ) : (
           <motion.div
@@ -171,7 +173,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
 
         {/* Announced politely so a filter change isn't silent to a screen reader. */}
         <p aria-live="polite" className="sr-only">
-          {`${visible.length} project${visible.length === 1 ? "" : "s"} shown`}
+          {t.projects.shown(visible.length)}
         </p>
       </div>
     </section>

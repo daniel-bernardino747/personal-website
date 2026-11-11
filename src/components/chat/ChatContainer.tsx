@@ -1,6 +1,7 @@
 'use client';
 
 import { useChatAnswers } from '@/components/ChatAnswersProvider';
+import { useDictionary } from '@/components/DictionaryProvider';
 import { useChatMutation } from '@/hooks/useChatMutation';
 import { useChatStore } from '@/store/useChatStore';
 import { ArrowRight, Bot, Briefcase, Layers, Search, Smile, Trash2, UserSearch } from 'lucide-react';
@@ -9,8 +10,9 @@ import { MarkdownMessage } from './MarkdownMessage';
 
 /**
  * The chips that offer the suggested questions. `id` keys into the
- * Corpus-derived answers from `ChatAnswersProvider` — the labels and icons are
- * UI copy, the answers behind them are not.
+ * Corpus-derived answers from `ChatAnswersProvider` and into the dictionary's
+ * `questions`, where the labels live — the labels and icons are UI copy, the
+ * answers behind them are not.
  *
  * There used to be a "Fun" chip here. It was dropped rather than re-pointed:
  * the Corpus has no Accomplishment about what Daniel does for fun, and it should
@@ -18,12 +20,12 @@ import { MarkdownMessage } from './MarkdownMessage';
  * Corpus answers better than any other.
  */
 const quickActions = [
-  { icon: <Smile size={14} />, id: 'me', label: 'Me', color: 'emerald' },
-  { icon: <Briefcase size={14} />, id: 'projects', label: 'Projects', color: 'green' },
-  { icon: <Layers size={14} />, id: 'skills', label: 'Skills', color: 'violet' },
-  { icon: <Bot size={14} />, id: 'site', label: 'This site', color: 'pink' },
-  { icon: <UserSearch size={14} />, id: 'contact', label: 'Contact', color: 'amber' },
-];
+  { icon: <Smile size={14} />, id: 'me', color: 'emerald' },
+  { icon: <Briefcase size={14} />, id: 'projects', color: 'green' },
+  { icon: <Layers size={14} />, id: 'skills', color: 'violet' },
+  { icon: <Bot size={14} />, id: 'site', color: 'pink' },
+  { icon: <UserSearch size={14} />, id: 'contact', color: 'amber' },
+] as const;
 
 const chipColorMap: Record<string, { bg: string; text: string }> = {
   emerald: { bg: 'bg-emerald-400/10', text: 'text-emerald-400' },
@@ -35,6 +37,7 @@ const chipColorMap: Record<string, { bg: string; text: string }> = {
 
 export function ChatContainer() {
   const answers = useChatAnswers();
+  const t = useDictionary();
   const { messages, addMessage, clearHistory } = useChatStore();
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -129,10 +132,10 @@ export function ChatContainer() {
       >
         <button
           onClick={() => {
-            if (confirm('Clear chat history?')) clearHistory();
+            if (confirm(t.chat.clearConfirm)) clearHistory();
           }}
           className="fixed top-24 right-6 z-20 p-3 rounded-full bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20 transition-all cursor-pointer shadow-lg backdrop-blur-md"
-          title="Clear History (Debug)"
+          title={t.chat.clearTitle}
         >
           <Trash2 size={20} />
         </button>
@@ -140,7 +143,7 @@ export function ChatContainer() {
         <div className="max-w-2xl mx-auto px-4 flex flex-col gap-4">
           {messages.length === 0 && !mutation.isPending && (
             <div className="text-center text-muted-foreground text-sm py-12">
-              Ask me anything using the buttons below or type a message.
+              {t.chat.empty}
             </div>
           )}
 
@@ -202,7 +205,7 @@ export function ChatContainer() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/5 ${colors.bg} ${colors.text} text-[11px] font-medium hover:bg-white/10 transition-colors cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {action.icon}
-                  {action.label}
+                  {t.questions[action.id].label}
                 </button>
               );
             })}
@@ -218,7 +221,7 @@ export function ChatContainer() {
                 onChange={e => setInputValue(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSend()}
                 disabled={mutation.isPending}
-                placeholder="Ask me anything..."
+                placeholder={t.chat.placeholder}
                 className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground text-sm selection:bg-accent/30 disabled:opacity-50"
               />
               <button

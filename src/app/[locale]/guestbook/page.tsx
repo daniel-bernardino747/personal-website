@@ -4,12 +4,14 @@ import Link from "next/link";
 import { ArrowLeft, Send } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useLocaleHref } from "@/i18n/client";
 
 type FormState = "idle" | "sending" | "done" | "error";
 
 export default function GuestbookPage() {
   const localeHref = useLocaleHref();
+  const { guestbook: t } = useDictionary();
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<FormState>("idle");
@@ -41,12 +43,12 @@ export default function GuestbookPage() {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
       >
         <ArrowLeft size={16} strokeWidth={2} aria-hidden="true" />
-        Back to home
+        {t.back}
       </Link>
 
-      <h1 className="text-4xl font-bold mb-4">Guestbook</h1>
+      <h1 className="text-4xl font-bold mb-4">{t.title}</h1>
       <p className="text-muted-foreground text-lg mb-12">
-        Leave a note — say hello, share feedback, or just drop a wave.
+        {t.lede}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -55,7 +57,7 @@ export default function GuestbookPage() {
             htmlFor="name"
             className="block text-sm font-medium mb-2"
           >
-            Name
+            {t.name}
           </label>
           <input
             id="name"
@@ -74,7 +76,7 @@ export default function GuestbookPage() {
             htmlFor="message"
             className="block text-sm font-medium mb-2"
           >
-            Message
+            {t.message}
           </label>
           <textarea
             id="message"
@@ -93,17 +95,17 @@ export default function GuestbookPage() {
           className="flex items-center gap-2"
         >
           <Send size={16} strokeWidth={2} aria-hidden="true" />
-          {status === "sending" ? "Sending…" : "Sign the guestbook"}
+          {status === "sending" ? t.sending : t.submit}
         </Button>
 
         {status === "done" && (
           <p role="status" className="text-sm text-green-600 font-medium">
-            Thanks for signing! Your message was received.
+            {t.done}
           </p>
         )}
         {status === "error" && (
           <p role="alert" className="text-sm text-red-600 font-medium">
-            Something went wrong. Please try again.
+            {t.error}
           </p>
         )}
       </form>

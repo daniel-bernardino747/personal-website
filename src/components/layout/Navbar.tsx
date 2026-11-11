@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useIdentity } from "@/components/IdentityProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Moon, Sun } from "lucide-react";
@@ -14,13 +15,13 @@ import { useEffect, useState } from "react";
 // used to point at `/#skills` and `/#other` — anchors no page carries — while
 // /achievements and /chat, the two pages with the proof, had no link at all.
 const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Labs", href: "/#labs" },
-  { label: "Achievements", href: "/achievements" },
-  { label: "Chat", href: "/chat" },
-];
+  { key: "home", href: "/" },
+  { key: "about", href: "/#about" },
+  { key: "projects", href: "/#projects" },
+  { key: "labs", href: "/#labs" },
+  { key: "achievements", href: "/achievements" },
+  { key: "chat", href: "/chat" },
+] as const;
 
 const containerVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -45,6 +46,7 @@ const itemVariants = {
 
 export function Navbar() {
   const identity = useIdentity();
+  const t = useDictionary();
   const { theme, setTheme } = useTheme();
   const locale = useLocale();
   const path = useSitePath();
@@ -70,7 +72,7 @@ export function Navbar() {
     >
       <nav
         className="flex items-center gap-2 md:gap-4 px-3 md:px-4 py-2 max-w-full border rounded-full bg-surface backdrop-blur-md border-border shadow-navbar"
-        aria-label="Main navigation"
+        aria-label={t.nav.ariaLabel}
       >
         <motion.div 
           variants={itemVariants}
@@ -114,7 +116,7 @@ export function Navbar() {
                     : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
                 }`}
               >
-                {link.label}
+                {t.nav[link.key]}
               </Link>
             </motion.li>
           ))}
@@ -140,7 +142,7 @@ export function Navbar() {
               className="rounded-full bg-accent text-white border border-accent/20 hover:bg-accent/80 flex gap-2 items-center shadow-lg shadow-accent/20 transition-all active:scale-95"
             >
               <Calendar size={14} />
-              <span className="hidden md:inline">Get it off the ground</span>
+              <span className="hidden md:inline">{t.nav.booking}</span>
             </Button>
           </a>
         </motion.div>

@@ -24,15 +24,18 @@ export function pageMetadata({
   description,
   path,
   owner,
+  imageAlt,
 }: {
   title: string;
   description: string;
   path: string;
   /** Appended to the share title, which has no template to add it. */
   owner: string;
+  /** The share image's alt text, in the page's language. */
+  imageAlt: string;
 }): Metadata {
   const shareTitle = `${title} — ${owner}`;
-  const image = { url: '/opengraph-image', width: 1200, height: 630, alt: `${owner} — portfolio` };
+  const image = { url: '/opengraph-image', width: 1200, height: 630, alt: imageAlt };
   return {
     title,
     description,

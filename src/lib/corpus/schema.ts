@@ -17,19 +17,6 @@ export const KINDS = [
 export type Kind = (typeof KINDS)[number];
 
 /**
- * Human-readable label per Kind. Keyed by `Kind` so adding a Kind to `KINDS`
- * forces a label here rather than silently rendering a raw enum value.
- */
-export const KIND_LABELS: Record<Kind, string> = {
-  engineering: 'Engineering',
-  talk: 'Talk',
-  'open-source': 'Open Source',
-  project: 'Project',
-  education: 'Education',
-  writing: 'Writing',
-};
-
-/**
  * The `site:json` contract (ADR-0013): what the `career` repository hands this
  * site, and the only way the site learns anything about the Corpus. The gate is
  * on the other side: `career` emits only what may be published, so this schema

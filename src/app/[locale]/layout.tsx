@@ -1,4 +1,5 @@
 import { Footer } from "@/components/layout/Footer";
+import { DictionaryProvider } from "@/components/DictionaryProvider";
 import { IdentityProvider } from "@/components/IdentityProvider";
 import { MouseTracker } from "@/components/layout/MouseTracker";
 import { Navbar } from "@/components/layout/Navbar";
@@ -8,6 +9,7 @@ import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { SITE_URL } from "@/lib/site-url";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getDictionary } from "@/i18n/dictionary";
 import { HTML_LANG, isLocale, LOCALES, OG_LOCALE, type Locale } from "@/i18n/routing";
 import localFont from "next/font/local";
 import "../globals.css";
@@ -83,7 +85,8 @@ export default async function RootLayout({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const identity = getIdentity();
-  const chatAnswers = buildChatAnswers(getCorpus());
+  const chatAnswers = buildChatAnswers(getCorpus(), locale);
+  const t = getDictionary(locale);
 
   return (
     <html lang={HTML_LANG[locale]} suppressHydrationWarning className={cn(geistSans.variable, geistMono.variable, "font-sans", geist.variable)}>
@@ -95,24 +98,26 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <IdentityProvider identity={identity}>
-              <ChatAnswersProvider answers={chatAnswers}>
-                <MouseTracker />
-                <a
-                  href="#main-content"
-                  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium"
-                >
-                  Skip to main content
-                </a>
-                <Navbar />
-                <main id="main-content">
-                  <PageTransitionLayout>
-                    {children}
-                  </PageTransitionLayout>
-                </main>
-                <Footer />
-              </ChatAnswersProvider>
-            </IdentityProvider>
+            <DictionaryProvider locale={locale}>
+              <IdentityProvider identity={identity}>
+                <ChatAnswersProvider answers={chatAnswers}>
+                  <MouseTracker />
+                  <a
+                    href="#main-content"
+                    className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[100] bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    {t.skipLink}
+                  </a>
+                  <Navbar />
+                  <main id="main-content">
+                    <PageTransitionLayout>
+                      {children}
+                    </PageTransitionLayout>
+                  </main>
+                  <Footer />
+                </ChatAnswersProvider>
+              </IdentityProvider>
+            </DictionaryProvider>
           </Providers>
         </ThemeProvider>
       </body>

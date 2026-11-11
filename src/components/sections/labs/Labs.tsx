@@ -1,5 +1,7 @@
 import localFont from "next/font/local";
 
+import { getDictionary } from "@/i18n/dictionary";
+import { INTL_LOCALE, type Locale } from "@/i18n/routing";
 import type { Accomplishment } from "@/lib/corpus/schema";
 import { displayTitle, parseStatement } from "@/lib/corpus/statement";
 import { LABS_ORIGIN } from "@/lib/projects/labs";
@@ -22,13 +24,20 @@ const flap = localFont({
   variable: "--font-flap",
 });
 
-const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
-/** "2026-09" → "SEP 2026"; a date recorded as a year alone stays a year. */
-function boardMonth(date: string): string {
+/**
+ * "2026-09" → "SEP 2026" (or "SET 2026" in Portuguese); a date recorded as a year
+ * alone stays a year. The month is the page language's own short name, in the
+ * board's capitals and without the abbreviation's dot.
+ */
+function boardMonth(date: string, locale: Locale): string {
   const [year, month] = date.split("-");
   const m = Number(month);
-  return m >= 1 && m <= 12 ? `${MONTHS[m - 1]} ${year}` : year;
+  if (!(m >= 1 && m <= 12)) return year;
+  const name = new Intl.DateTimeFormat(INTL_LOCALE[locale], { month: "short", timeZone: "UTC" })
+    .format(new Date(Date.UTC(2000, m - 1, 1)))
+    .replace(".", "")
+    .toUpperCase();
+  return `${name} ${year}`;
 }
 
 /**
@@ -37,12 +46,13 @@ function boardMonth(date: string): string {
  * takes over between a yellow edge and a yellow exit. It holds the projects whose
  * Live link is a Labs demo, which the Projects gallery leaves out.
  */
-export function Labs({ demos }: { demos: Accomplishment[] }) {
+export function Labs({ demos, locale }: { demos: Accomplishment[]; locale: Locale }) {
+  const t = getDictionary(locale);
   const board: LabsDemo[] = demos.flatMap((demo) => {
     const { prose, liveUrl } = parseStatement(demo.statement);
     const title = displayTitle(demo);
     if (!liveUrl || !title) return [];
-    return [{ id: demo.id, title, when: boardMonth(demo.date), prose, href: liveUrl, image: demo.image }];
+    return [{ id: demo.id, title, when: boardMonth(demo.date, locale), prose, href: liveUrl, image: demo.image }];
   });
   if (board.length === 0) return null;
 
@@ -51,11 +61,10 @@ export function Labs({ demos }: { demos: Accomplishment[] }) {
       <div className={s.inner}>
         <header className={s.header}>
           <h2 id="labs-title" className={s.title}>
-            Labs
+            {t.labs.title}
           </h2>
           <p className={s.lede}>
-            Where I build small, working demos on public data. Each one answers a single concrete question and cites
-            every source it uses. They are concepts, not products for any company.
+            {t.labs.lede}
           </p>
         </header>
 
@@ -69,7 +78,7 @@ export function Labs({ demos }: { demos: Accomplishment[] }) {
           </svg>
           <span>
             <span className={s.exitHost}>labs.teamdbsolutions.com</span>
-            <span className={s.exitLabel}>Every demo, with its sources and method</span>
+            <span className={s.exitLabel}>{t.labs.exitLabel}</span>
           </span>
         </span>
       </a>

@@ -78,15 +78,16 @@ describe('careerTimeline', () => {
 
 describe('displayPeriod', () => {
   it('abbreviates the end year within a century', () => {
-    expect(displayPeriod({ start: '2020', end: '2022' })).toBe('2020–22');
+    expect(displayPeriod({ start: '2020', end: '2022' }, 'now')).toBe('2020–22');
   });
 
   it('reads an open period as running to now', () => {
-    expect(displayPeriod({ start: '2025-03' })).toBe('2025–now');
+    expect(displayPeriod({ start: '2025-03' }, 'now')).toBe('2025–now');
+    expect(displayPeriod({ start: '2025-03' }, 'hoje')).toBe('2025–hoje');
   });
 
   it('collapses a single-year period and tolerates an absent one', () => {
-    expect(displayPeriod({ start: '2023', end: '2023' })).toBe('2023');
-    expect(displayPeriod(undefined)).toBe('');
+    expect(displayPeriod({ start: '2023', end: '2023' }, 'now')).toBe('2023');
+    expect(displayPeriod(undefined, 'now')).toBe('');
   });
 });

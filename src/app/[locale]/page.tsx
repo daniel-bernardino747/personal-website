@@ -6,11 +6,13 @@ import { careerTimeline } from "@/lib/corpus/career";
 import { getCorpus } from "@/lib/corpus/site";
 import { listMindsetSlides } from "@/lib/mindset";
 import { splitLabs } from "@/lib/projects/labs";
+import { isLocale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
-export default function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const corpus = getCorpus();
   // A Labs demo shows once, in the Labs section, not also in the gallery.
   const { labs, rest } = splitLabs(corpus.byKind("project", { includeDrafts: true }));
@@ -25,7 +27,7 @@ export default function Home() {
       {/* The gallery shows projects without a Metric too — that gate exists so a
           résumé never implies an unmeasured result, not to hide shipped work. */}
       <Projects projects={rest} />
-      <Labs demos={labs} />
+      <Labs demos={labs} locale={isLocale(locale) ? locale : "pt"} />
     </>
   );
 }

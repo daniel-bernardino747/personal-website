@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import { useLayoutEffect, useRef, useState } from "react";
 
+import { useDictionary } from "@/components/DictionaryProvider";
 import type { Accomplishment } from "@/lib/corpus/schema";
 import {
   displayTitle,
@@ -50,6 +51,7 @@ export function ProjectCard({
   /** True for the project that *is* this website, which says so on its card. */
   isThisSite?: boolean;
 }) {
+  const t = useDictionary();
   const prefersReducedMotion = useReducedMotion();
   const surfaceRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(false);
@@ -171,7 +173,7 @@ export function ProjectCard({
             image={image}
             title={title}
             href={liveUrl ?? repoUrl}
-            destination={liveUrl ? "Live" : "Source"}
+            destination={liveUrl ? t.projects.live : t.projects.source}
             failed={imageFailed}
             onFail={() => setImageFailed(true)}
           />
@@ -189,13 +191,13 @@ export function ProjectCard({
             {featured && (
               <span className="inline-flex items-center gap-1 rounded-full border border-accent/25 bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-emerald-800 dark:text-emerald-300">
                 <Sparkles className="size-3" aria-hidden="true" />
-                Featured
+                {t.projects.featured}
               </span>
             )}
             {isThisSite && (
               <span className="inline-flex items-center gap-1 rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-accent-text">
                 <MousePointerClick className="size-3" aria-hidden="true" />
-                You&apos;re looking at it
+                {t.projects.thisSite}
               </span>
             )}
           </div>
@@ -224,8 +226,8 @@ export function ProjectCard({
               aria-expanded={expanded}
               className="mt-2 -ml-1 self-start rounded-md px-1 py-2 text-xs font-semibold text-accent-text transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
-              {expanded ? "Show less" : "Read more"}
-              {title && <span className="sr-only"> about {title}</span>}
+              {expanded ? t.projects.showLess : t.projects.readMore}
+              {title && <span className="sr-only">{t.projects.about(title)}</span>}
             </button>
           )}
 
@@ -233,8 +235,7 @@ export function ProjectCard({
               this page only, and would be nonsense on a résumé. */}
           {isThisSite && (
             <p className="mt-3 text-sm font-medium text-accent-text">
-              This is the site you&apos;re browsing right now — the source below
-              is what builds this page.
+              {t.projects.thisSiteNote}
             </p>
           )}
 
@@ -273,7 +274,7 @@ export function ProjectCard({
                   className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-1 text-sm font-semibold text-accent-text transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   {/* The name is in the label so a screen reader hears which project. */}
-                  <span>Visit {title ?? "the live site"}</span>
+                  <span>{t.projects.visit(title)}</span>
                   <ArrowUpRight
                     className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none"
                     aria-hidden="true"
@@ -288,9 +289,7 @@ export function ProjectCard({
                   className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-1 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <Github className="size-4" aria-hidden="true" />
-                  <span>
-                    {title ? `${title} on GitHub` : "Source on GitHub"}
-                  </span>
+                  <span>{t.projects.onGitHub(title)}</span>
                 </a>
               )}
             </div>
@@ -320,7 +319,8 @@ function ProjectWindow({
   image: { src: string; alt: string };
   title?: string;
   href?: string;
-  destination: "Live" | "Source";
+  /** "Live" or "Source", in the page's language. */
+  destination: string;
   failed: boolean;
   onFail: () => void;
 }) {

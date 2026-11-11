@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useDictionary } from "@/components/DictionaryProvider";
+
 import { Cell, Flaps } from "./Flaps";
 import { flip, prefersReducedMotion, settle } from "./flip";
 import s from "./labs.module.css";
@@ -10,7 +12,7 @@ import s from "./labs.module.css";
 export interface LabsDemo {
   id: string;
   title: string;
-  /** The month the demo shipped, as the board shows it, e.g. "SEP 2026". */
+  /** The month the demo shipped, as the board shows it, e.g. "SEP 2026" or "SET 2026". */
   when: string;
   prose: string;
   href: string;
@@ -27,6 +29,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * titles run through a few letters and settle where they were.
  */
 export function LabsSlider({ demos }: { demos: LabsDemo[] }) {
+  const t = useDictionary();
   const track = useRef<HTMLOListElement>(null);
   const counter = useRef<HTMLSpanElement>(null);
   const [active, setActive] = useState(0);
@@ -135,10 +138,10 @@ export function LabsSlider({ demos }: { demos: LabsDemo[] }) {
   return (
     <div className={s.board}>
       <div className={s.boardBar}>
-        <span className={s.boardLabel}>Departures</span>
+        <span className={s.boardLabel}>{t.labs.departures}</span>
         <span className={`${s.flaps} ${s.counter}`} ref={counter}>
           <span className="sr-only" aria-live="polite">
-            {`Demo ${active + 1} of ${demos.length}: ${demos[active]?.title ?? ""}`}
+            {t.labs.position(active + 1, demos.length, demos[active]?.title ?? "")}
           </span>
           <span className={s.word} aria-hidden="true">
             {[...initial].map((g, i) => (
@@ -147,12 +150,12 @@ export function LabsSlider({ demos }: { demos: LabsDemo[] }) {
           </span>
         </span>
         <span className={s.controls}>
-          <button type="button" className={s.control} onClick={() => go(-1)} disabled={atStart} aria-label="Previous demo">
+          <button type="button" className={s.control} onClick={() => go(-1)} disabled={atStart} aria-label={t.labs.previous}>
             <svg viewBox="0 0 20 12" width="20" height="12" aria-hidden="true">
               <path d="M20 6H3M8 1L3 6l5 5" fill="none" stroke="currentColor" strokeWidth="2" />
             </svg>
           </button>
-          <button type="button" className={s.control} onClick={() => go(1)} disabled={atEnd} aria-label="Next demo">
+          <button type="button" className={s.control} onClick={() => go(1)} disabled={atEnd} aria-label={t.labs.next}>
             <svg viewBox="0 0 20 12" width="20" height="12" aria-hidden="true">
               <path d="M0 6h17M12 1l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="2" />
             </svg>
@@ -160,7 +163,7 @@ export function LabsSlider({ demos }: { demos: LabsDemo[] }) {
         </span>
       </div>
 
-      <ol ref={track} className={s.track} aria-label="Labs demos">
+      <ol ref={track} className={s.track} aria-label={t.labs.listAria}>
         {demos.map((demo) => (
           <li key={demo.id} className={s.slide} data-row="">
             <a href={demo.href} className={s.card} target="_blank" rel="noopener">
@@ -181,12 +184,12 @@ export function LabsSlider({ demos }: { demos: LabsDemo[] }) {
               <span className={s.cardBody}>
                 <Flaps text={demo.title} size="lg" />
                 <span className={s.meta}>
-                  <span className={s.metaLabel}>Shipped</span>
+                  <span className={s.metaLabel}>{t.labs.shipped}</span>
                   <Flaps text={demo.when} size="md" />
                 </span>
                 <span className={s.prose}>{demo.prose}</span>
                 <span className={s.status} aria-hidden="true">
-                  Open demo
+                  {t.labs.open}
                   <svg viewBox="0 0 20 12" width="20" height="12">
                     <path d="M0 6h17M12 1l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="2" />
                   </svg>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useDictionary } from "@/components/DictionaryProvider";
+import { Emphasized } from "@/components/ui/Emphasized";
 import type { MindsetSlide } from "@/lib/mindset";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,6 +11,7 @@ import { useEffect, useState } from "react";
 const SLIDE_MS = 2500;
 
 export function BentoMindset({ slides }: { slides: MindsetSlide[] }) {
+  const t = useDictionary();
   const [index, setIndex] = useState(0);
 
   // Paused while the tab is hidden: the browser freezes the fade there but not
@@ -44,9 +47,9 @@ export function BentoMindset({ slides }: { slides: MindsetSlide[] }) {
       className="col-span-1 row-span-2 bg-surface rounded-3xl border border-border p-6 flex flex-col justify-between overflow-hidden relative group shadow-2xl order-4 lg:order-3 lg:col-start-1 lg:row-start-2"
     >
       <div>
-        <h3 className="text-3xl font-bold mb-3">Mindset</h3>
+        <h3 className="text-3xl font-bold mb-3">{t.bento.mindsetTitle}</h3>
         <p className="text-muted-foreground text-base leading-snug">
-          <span className="text-foreground font-semibold">Building more than software.</span> My passions provide the <span className="text-foreground font-semibold">discipline and focus</span> I need to grow.
+          <Emphasized text={t.bento.mindsetLead} className="text-foreground font-semibold" />
         </p>
       </div>
 
@@ -94,7 +97,7 @@ export function BentoMindset({ slides }: { slides: MindsetSlide[] }) {
 
           <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10" />
           <div className="absolute bottom-4 left-4 right-4 z-20 flex items-end justify-between gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Focus & Discipline</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white">{t.bento.mindsetCaption}</span>
             {slides.length > 1 && (
               <div className="flex gap-1" aria-hidden>
                 {slides.map((s, i) => (
@@ -111,7 +114,7 @@ export function BentoMindset({ slides }: { slides: MindsetSlide[] }) {
           </div>
         </div>
         <p className="mt-4 text-muted-foreground text-base leading-snug">
-          Mastering body and mind is my path to <span className="text-foreground font-semibold">excellence.</span>
+          <Emphasized text={t.bento.mindsetClose} className="text-foreground font-semibold" />
         </p>
       </div>
     </motion.div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useChatAnswers } from "@/components/ChatAnswersProvider";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useChatStore } from "@/store/useChatStore";
 import { useChatMutation } from '@/hooks/useChatMutation';
 import { motion } from "framer-motion";
@@ -58,6 +59,7 @@ function QuickAction({ icon, label, color, delay, onClick }: QuickActionProps) {
 
 export function AIInput() {
   const answers = useChatAnswers();
+  const t = useDictionary();
   const router = useRouter();
   const localeHref = useLocaleHref();
   const { addMessage, setInitialQuery } = useChatStore();
@@ -119,11 +121,11 @@ export function AIInput() {
   const [inputText, setInputText] = useState('');
 
   const actions = [
-    { icon: <Smile size={20} />, id: "me", label: "Me", color: "emerald", delay: 1.4 },
-    { icon: <Briefcase size={20} />, id: "projects", label: "Projects", color: "green", delay: 1.5 },
-    { icon: <Layers size={20} />, id: "skills", label: "Skills", color: "violet", delay: 1.6 },
-    { icon: <Bot size={20} />, id: "site", label: "This site", color: "pink", delay: 1.7 },
-    { icon: <UserSearch size={20} />, id: "contact", label: "Contact", color: "amber", delay: 1.8 },
+    { icon: <Smile size={20} />, id: "me", label: t.questions.me.label, color: "emerald", delay: 1.4 },
+    { icon: <Briefcase size={20} />, id: "projects", label: t.questions.projects.label, color: "green", delay: 1.5 },
+    { icon: <Layers size={20} />, id: "skills", label: t.questions.skills.label, color: "violet", delay: 1.6 },
+    { icon: <Bot size={20} />, id: "site", label: t.questions.site.label, color: "pink", delay: 1.7 },
+    { icon: <UserSearch size={20} />, id: "contact", label: t.questions.contact.label, color: "amber", delay: 1.8 },
   ];
 
   return (
@@ -142,12 +144,12 @@ export function AIInput() {
             type="text"
             value={inputText}
             onChange={e => setInputText(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleAction(inputText || 'Hi')}
+            onKeyDown={e => e.key === 'Enter' && handleAction(inputText || t.aiInput.emptyQuestion)}
             placeholder={placeholder}
             className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground text-lg selection:bg-accent/30"
           />
           <button
-            onClick={() => handleAction(inputText || 'Hi')}
+            onClick={() => handleAction(inputText || t.aiInput.emptyQuestion)}
             className="ml-4 p-2.5 rounded-full bg-accent text-white hover:bg-accent/80 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-accent/20 cursor-pointer"
           >
             <ArrowRight size={20} />

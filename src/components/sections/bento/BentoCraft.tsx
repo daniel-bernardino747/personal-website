@@ -1,5 +1,7 @@
 "use client";
 
+import { useDictionary } from "@/components/DictionaryProvider";
+import { Emphasized } from "@/components/ui/Emphasized";
 import { stack } from "@/data/stack";
 import { motion } from "framer-motion";
 import { CircuitBoard } from "@/components/animate-ui/icons/circuit-board";
@@ -8,6 +10,7 @@ import { useMemo, useState } from "react";
 import { InfiniteMarquee } from "../../ui/InfiniteMarquee";
 
 export function BentoCraft() {
+  const t = useDictionary();
   const [isStacksHovered, setIsStacksHovered] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const rowSpeeds = useMemo(() => stack.map(() => 25 + Math.random() * 15), []);
@@ -24,18 +27,18 @@ export function BentoCraft() {
     >
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-           <h3 className="text-3xl font-bold">Craft</h3>
+           <h3 className="text-3xl font-bold">{t.bento.craftTitle}</h3>
            <CircuitBoard animate={isHovered} size={20} className="text-accent/60" />
         </div>
         <div className="h-1 w-10 bg-accent/60 rounded-full mb-3" />
         <p className="text-muted-foreground text-sm leading-snug">
-          Building scalable <span className="text-foreground font-semibold">apps, websites, and automations.</span>
+          <Emphasized text={t.bento.craftLead} className="text-foreground font-semibold" />
         </p>
       </div>
       
       <div className="mb-4">
         <p className="text-muted-foreground text-[13px] leading-relaxed">
-          I understand what advantages modern tech can provide, helping me advise on the solutions a business actually needs.
+          {t.bento.craftBody}
         </p>
       </div>
 
@@ -79,7 +82,7 @@ export function BentoCraft() {
 
       <div className="flex items-center gap-2 bg-emerald-500/5 border border-emerald-500/10 p-2.5 rounded-xl group/status">
         <div className="w-2 h-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
-        <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-500/80 group-hover/status:text-emerald-500 transition-colors">Open to collaboration</span>
+        <span className="text-[9px] font-bold uppercase tracking-widest text-emerald-500/80 group-hover/status:text-emerald-500 transition-colors">{t.bento.openToCollaboration}</span>
       </div>
     </motion.div>
   );

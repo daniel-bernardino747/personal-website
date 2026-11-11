@@ -58,3 +58,6 @@ export function localeHref(locale: Locale, href: string): string {
   if (href.startsWith('/#')) return `/en${href.slice(1)}`;
   return `/en${href}`;
 }
+
+/** The BCP 47 tag `Intl` formats dates and numbers with, per language. */
+export const INTL_LOCALE: Record<Locale, string> = { pt: 'pt-BR', en: 'en-US' };
