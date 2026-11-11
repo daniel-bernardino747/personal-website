@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "identity": {
     "name": "Ada Lovelace",
     "initials": "AL",
@@ -96,5 +96,12 @@
       "featured": false,
       "isDraft": true
     }
-  ]
+  ],
+  "translations": {
+    "pt": {
+      "texts": {},
+      "missing": [],
+      "stale": []
+    }
+  }
 }

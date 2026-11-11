@@ -1,6 +1,6 @@
 # 05 — `career`: the Identity speaks to local clients, and the Encaixai enters the Corpus
 
-**Status:** ready-for-agent (in `career`)
+**Status:** partly done, 11/11/2026. The Identity is done; the Encaixai capture is pending (Daniel, in a session in `career`)
 
 **Blocked by:** nothing (it ships together with the `SITE_JSON_VERSION` bump in 03)
 
@@ -19,3 +19,14 @@
 
 - [ ] Nothing in the Identity is invented: every field comes from Daniel or from `contratos/empresa.yaml`
 - [ ] The tests in `career` cover the new fields and the WhatsApp gate
+
+## Comments
+
+11/11/2026. In `career`: `34a83a6` (schema) and `d9b21da` (data).
+
+- `social.whatsapp` is a separate field from `phone`, chosen by Daniel: `phone` (added the same morning for the résumé header) stays stripped from `site:json`, and `whatsapp` is published.
+- The Identity has `services` (in English, per ADR-0005; the Portuguese comes from the translation), `serviceArea: Criciúma and the surrounding region`, `inPerson: true`, and `business` (name, legal name, CNPJ, no address). `workMode` is now "Remote, or in person in Criciúma and the surrounding region".
+- The site's schema accepts the new fields. Nothing renders them yet: that is ticket 06.
+- **Pending:**
+  - [ ] Capture the Encaixai (`capture` in `career`), with its image from `encaixa/promo/encaixai`, marked Featured.
+  - [ ] A Portuguese cal.com event: a `bookingUrlPt` (or similar) once Daniel creates it.
