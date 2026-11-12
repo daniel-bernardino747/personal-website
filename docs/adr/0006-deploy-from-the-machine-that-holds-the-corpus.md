@@ -1,5 +1,7 @@
 # The site deploys from the machine that holds the Corpus
 
+> **Superseded by [ADR-0016](./0016-a-push-to-master-deploys-from-the-private-repository.md)** for where the build runs: since ADR-0013 the Corpus lives in a private repository, and the build runs in that repository's Actions.
+
 > **Superseded by [ADR-0007](./0007-the-site-gains-a-runtime-on-railway.md).** The
 > reasoning below still holds and is why ADR-0007 is shaped the way it is — only
 > the host changed, from Vercel to Railway. What survives verbatim is the rule:

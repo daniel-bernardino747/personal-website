@@ -1,0 +1,23 @@
+# A push to master asks the private `career` repository to build and ship the
+# site (ADR-0016). Nothing is built here: this repository is public, so its
+# Actions logs are public, and the build reads the whole Corpus.
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+permissions: {}
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask career to build this commit
+        env:
+          # Fine-grained token, `career` only, Contents: read and write.
+          GH_TOKEN: ${{ secrets.CAREER_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/daniel-bernardino747/career/dispatches \
+            -f event_type=site-push \
+            -f "client_payload[sha]=${{ github.sha }}"
