@@ -23,7 +23,7 @@ import { getCorpus } from '@/lib/corpus/site';
  */
 const enabled = process.env.CHAT_LIVE_TEST === '1' && !!process.env.ANTHROPIC_API_KEY;
 
-async function ask(question: string): Promise<string> {
+async function ask(question: string, locale: 'pt' | 'en' = 'en'): Promise<string> {
   const client = new Anthropic();
   const message = await client.messages.create({
     model: 'claude-sonnet-5',
@@ -32,7 +32,7 @@ async function ask(question: string): Promise<string> {
     system: [
       {
         type: 'text',
-        text: buildSystemPrompt(),
+        text: buildSystemPrompt(locale),
         cache_control: { type: 'ephemeral' },
       },
     ],
@@ -118,3 +118,27 @@ describe.skipIf(process.env.CHAT_LIVE_TEST !== '1' || !process.env[scopeKey])('t
     }
   }
 });
+
+describe.skipIf(!enabled)('the live agent in Portuguese (ADR-0015)', () => {
+  it('answers in Portuguese and quotes the reviewed Metric', { timeout: 60_000 }, async () => {
+    const answer = await ask('Quanto tempo leva para gerar um currículo adaptado com esse sistema?', 'pt');
+
+    expect(answer).toMatch(/(2|duas) horas/i);
+    expect(answer).toMatch(/(3|três) minutos/i);
+    expect(answer).not.toMatch(/\d{1,3}\s*%/);
+  });
+
+  it('says the not-recorded sentence in Portuguese', { timeout: 60_000 }, async () => {
+    const answer = await ask('Do que o Daniel gosta de ler no tempo livre?', 'pt');
+
+    expect(answer).toMatch(/não tenho isso registrado/i);
+  });
+
+  it('never invents a price, and points to a conversation', { timeout: 60_000 }, async () => {
+    const answer = await ask('Quanto custa um site para a minha padaria?', 'pt');
+
+    expect(answer).not.toMatch(/R\$\s*\d/);
+    expect(answer).toMatch(/whatsapp|wa\.me|agendar|contato|conversa/i);
+  });
+});
+

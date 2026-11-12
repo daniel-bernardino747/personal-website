@@ -15,7 +15,7 @@ const INSTRUCTIONS = `You are a scope filter for the chat on a software develope
 Answer with exactly one word: ALLOW or REFUSE.
 
 ALLOW when the message is:
-- about the site owner: his work, projects, experience, skills, background, availability, how to reach him — including his past employers, clients and collaborators as they relate to his work, and a recruiter introducing their own company or role to ask about his interest or fit
+- about the site owner: his work, projects, experience, skills, background, availability, how to reach him — including his past employers, clients and collaborators as they relate to his work, and a recruiter introducing their own company or role to ask about his interest or fit, and a prospective client asking what he offers, whether he can build something for their business, how he works, what it might cost or where he serves
 - about this website itself or how it was built
 - ordinary conversation directed at him or his assistant: greetings, thanks, follow-up questions
 
