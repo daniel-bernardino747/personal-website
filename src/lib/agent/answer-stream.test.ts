@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { answerStream, REFUSAL } from './answer-stream';
+import { answerStream, REFUSAL, STREAM_TEXT } from './answer-stream';
 import type { Classification } from './classification';
 
 /**
@@ -123,6 +123,17 @@ describe('answerStream', () => {
     expect(text).toBe(REFUSAL);
     expect(record).toHaveBeenCalledTimes(1);
     expect(record).toHaveBeenCalledWith(REFUSAL, 'task');
+  });
+
+  it('refuses in Portuguese on a Portuguese page (ADR-0015)', async () => {
+    const record = vi.fn();
+    const text = await readAll(
+      answerStream({ stream: model(['def f():'], { hang: true }), classification: said('refuse', 'task'), record, locale: 'pt' }),
+    );
+    await settle();
+
+    expect(text).toBe(STREAM_TEXT.pt.refusal);
+    expect(record).toHaveBeenCalledWith(STREAM_TEXT.pt.refusal, 'task');
   });
 
   it('leaves no unhandled rejection behind when it aborts the model on a refusal', async () => {
