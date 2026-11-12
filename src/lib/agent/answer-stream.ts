@@ -2,8 +2,29 @@ import type { MessageStream } from '@anthropic-ai/sdk/lib/MessageStream';
 
 import type { Classification } from './classification';
 
-export const REFUSAL =
-  "I only answer questions about Daniel — his work, his projects, and how to reach him. I can't help with anything else here.";
+import type { Locale } from '@/i18n/routing';
+
+/** What the stream itself says, in the page's language (ADR-0015). */
+export const STREAM_TEXT = {
+  en: {
+    refusal:
+      "I only answer questions about Daniel — his work, his projects, and how to reach him. I can't help with anything else here.",
+    stopped: '\n\n(I had to stop there.)',
+    declined: 'I am not able to answer that one.',
+    interrupted: '\n\n(Something interrupted me mid-answer.)',
+    failed: 'Something went wrong reaching the model, so I would rather not guess.',
+  },
+  pt: {
+    refusal:
+      'Eu só respondo perguntas sobre o Daniel: o trabalho dele, os projetos e como falar com ele. Não consigo ajudar com outra coisa por aqui.',
+    stopped: '\n\n(Precisei parar por aqui.)',
+    declined: 'Não consigo responder essa.',
+    interrupted: '\n\n(Algo me interrompeu no meio da resposta.)',
+    failed: 'Algo deu errado ao falar com o modelo, e prefiro não chutar uma resposta.',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export const REFUSAL = STREAM_TEXT.en.refusal;
 
 /**
  * The chat's response body: waits for the scope verdict, then either refuses or
@@ -19,11 +40,14 @@ export function answerStream({
   stream,
   classification,
   record,
+  locale = 'en',
 }: {
   stream: MessageStream;
   classification: Promise<Classification>;
   record: (answer: string, label: string) => void;
+  locale?: Locale;
 }): ReadableStream<Uint8Array> {
+  const say = STREAM_TEXT[locale];
   const encoder = new TextEncoder();
   let answer = '';
   let over = false;
@@ -58,7 +82,7 @@ export function answerStream({
           stream.abort();
           // Out-of-scope attempts are worth keeping: they are the only signal
           // that someone is probing the endpoint.
-          answer = REFUSAL;
+          answer = say.refusal;
           send(answer);
           return;
         }
@@ -86,14 +110,10 @@ export function answerStream({
         );
 
         if (final.stop_reason === 'refusal') {
-          send(answer ? '\n\n(I had to stop there.)' : 'I am not able to answer that one.');
+          send(answer ? say.stopped : say.declined);
         }
       } catch {
-        send(
-          answer
-            ? '\n\n(Something interrupted me mid-answer.)'
-            : 'Something went wrong reaching the model, so I would rather not guess.',
-        );
+        send(answer ? say.interrupted : say.failed);
       } finally {
         // Recorded before the response is closed, so nothing the close does can
         // skip it. Best-effort, and deliberately not awaited into the response

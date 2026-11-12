@@ -189,6 +189,7 @@ export async function POST(request: NextRequest) {
     const body = answerStream({
       stream,
       classification,
+      locale,
       record: (answer, label) => recordExchange(visitor, question, answer, label),
     });
 

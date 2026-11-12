@@ -12,9 +12,25 @@ import { localeAlternates, shareImage } from './seo';
  * `SITE_URL` overrides it for a preview deploy; the default is the one domain
  * the site is served on, with www, since the apex redirects there.
  */
-export const SITE_URL = new URL(
-  process.env.SITE_URL ?? 'https://www.teamdbsolutions.com',
-);
+const DEFAULT_SITE_URL = 'https://www.teamdbsolutions.com';
+
+export const SITE_URL = siteUrl(process.env.SITE_URL);
+
+/**
+ * `SITE_URL` as configured, or the default when it is empty, lacks a scheme or
+ * does not parse. It is read at import, and the chat route imports it: one bad
+ * value in the host's environment used to take the whole route down with
+ * "Invalid URL" (12/11/2026), while the prerendered pages looked fine.
+ */
+export function siteUrl(configured: string | undefined): URL {
+  const value = configured?.trim();
+  if (!value) return new URL(DEFAULT_SITE_URL);
+  try {
+    return new URL(/^https?:\/\//i.test(value) ? value : `https://${value}`);
+  } catch {
+    return new URL(DEFAULT_SITE_URL);
+  }
+}
 
 /**
  * Metadata for a page below the root. Next merges metadata one key deep, so a
