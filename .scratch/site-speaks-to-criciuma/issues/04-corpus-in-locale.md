@@ -17,4 +17,4 @@ Done 12/11/2026.
 - A project's prose is replaced and the English "Built with / Live: / Repo:" tail is re-attached, so `parseStatement` still produces the chips and the links. Checked on the page: the plaid-sync-ledger card is in Portuguese and keeps its chips.
 - An Affiliation's `organisation` became translatable in `career` (`f7292cc`), because "Folhas Que Salvam ("Leaves That Save")" carried an English gloss. Pointed out by Daniel in a screenshot of the timeline.
 - The fallback is not marked in development (no `data-fallback`): `corpus:fetch` already lists what is missing or stale, and today everything is translated (95/95).
-- The `/achievements` page still shows a full statement; with the Portuguese, any English "Built with" tail would appear there. None of today's Featured non-projects has that tail.
+- `/achievements` used to show the whole statement, so the English "Built with … Live: …" tail would follow the Portuguese prose. 6 of the 8 Featured records have that tail. The page now shows the prose, then the stack and the links, as the project cards do (in English too).

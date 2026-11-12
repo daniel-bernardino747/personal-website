@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Trophy } from "lucide-react";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
+import { parseStatement } from "@/lib/corpus/statement";
 import { pageMetadata } from "@/lib/site-url";
 import { getDictionary } from "@/i18n/dictionary";
 import { isLocale, localeHref } from "@/i18n/routing";
@@ -85,9 +86,34 @@ export default async function AchievementsPage({ params }: Params) {
                     {accomplishment.metric}
                   </p>
                 )}
-                <p className="text-muted-foreground leading-relaxed">
-                  {accomplishment.statement}
-                </p>
+                {(() => {
+                  // The prose, then the stack and links the statement closes
+                  // with, as on the project cards. Rendered whole, the English
+                  // "Built with … Live: …" tail would follow the Portuguese prose.
+                  const { prose, tech, liveUrl, repoUrl } = parseStatement(accomplishment.statement);
+                  return (
+                    <>
+                      <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{prose}</p>
+                      {tech.length > 0 && (
+                        <p className="mt-4 font-mono text-xs text-muted-foreground">{tech.join(" · ")}</p>
+                      )}
+                      {(liveUrl || repoUrl) && (
+                        <p className="mt-2 flex gap-4 text-sm">
+                          {liveUrl && (
+                            <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                              {t.projects.live}
+                            </a>
+                          )}
+                          {repoUrl && (
+                            <a href={repoUrl} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                              {t.projects.source}
+                            </a>
+                          )}
+                        </p>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </article>
           ))}
