@@ -15,7 +15,10 @@ export const pt: Dictionary = {
     labs: 'Labs',
     achievements: 'Conquistas',
     chat: 'Chat',
-    booking: 'Tirar do papel',
+    services: 'Serviços',
+    process: 'Como funciona',
+    contact: 'Contato',
+    booking: 'Agendar conversa',
   },
 
   footer: {

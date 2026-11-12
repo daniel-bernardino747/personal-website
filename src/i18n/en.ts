@@ -19,6 +19,10 @@ export const en = {
     labs: 'Labs',
     achievements: 'Achievements',
     chat: 'Chat',
+    /** Portuguese-only links (the local offer); English never shows them. */
+    services: 'Services',
+    process: 'How it works',
+    contact: 'Contact',
     booking: 'Get it off the ground',
   },
 

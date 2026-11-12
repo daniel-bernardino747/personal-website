@@ -14,14 +14,29 @@ import { useEffect, useState } from "react";
 // Every link must land somewhere the home actually renders. "Skills" and "Other"
 // used to point at `/#skills` and `/#other` — anchors no page carries — while
 // /achievements and /chat, the two pages with the proof, had no link at all.
-const navLinks = [
-  { key: "home", href: "/" },
-  { key: "about", href: "/#about" },
-  { key: "projects", href: "/#projects" },
-  { key: "labs", href: "/#labs" },
-  { key: "achievements", href: "/achievements" },
-  { key: "chat", href: "/chat" },
-] as const;
+const navLinks = {
+  en: [
+    { key: "home", href: "/" },
+    { key: "about", href: "/#about" },
+    { key: "projects", href: "/#projects" },
+    { key: "labs", href: "/#labs" },
+    { key: "achievements", href: "/achievements" },
+    { key: "chat", href: "/chat" },
+  ],
+  // The Portuguese home speaks to a local business first (ADR-0015): its links
+  // follow the offer, then the proof.
+  pt: [
+    { key: "home", href: "/" },
+    { key: "services", href: "/#servicos" },
+    { key: "process", href: "/#como-funciona" },
+    { key: "projects", href: "/#projects" },
+    { key: "chat", href: "/chat" },
+    { key: "contact", href: "/#contato" },
+  ],
+} as const;
+
+/** Booking: the Portuguese event behind our own /agendar, the English one as before. */
+const bookingHref = (locale: "pt" | "en", english: string) => (locale === "pt" ? "/agendar" : english);
 
 const containerVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -106,7 +121,7 @@ export function Navbar() {
           className="flex min-w-0 items-center gap-1 md:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_80%,transparent)] lg:[mask-image:none]"
           role="list"
         >
-          {navLinks.map((link) => (
+          {navLinks[locale].map((link) => (
             <motion.li key={link.href} variants={itemVariants}>
               <Link
                 href={localeHref(locale, link.href)}
@@ -136,7 +151,7 @@ export function Navbar() {
         </motion.div>
 
         <motion.div variants={itemVariants} className="shrink-0">
-          <a href={identity.bookingUrl} target="_blank" rel="noopener noreferrer">
+          <a href={bookingHref(locale, identity.bookingUrl)} target="_blank" rel="noopener noreferrer">
             <Button
               size="sm"
               className="rounded-full bg-accent text-white border border-accent/20 hover:bg-accent/80 flex gap-2 items-center shadow-lg shadow-accent/20 transition-all active:scale-95"
