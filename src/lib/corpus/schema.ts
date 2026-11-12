@@ -97,6 +97,9 @@ export const siteJsonSchema = z.object({
 
 export type Translations = z.infer<typeof translationSchema>;
 
+/** `site:json` as parsed, before the Corpus is built from it. */
+export type SiteJson = z.infer<typeof siteJsonSchema>;
+
 /**
  * The organisation or institution an Accomplishment happened inside. Holds where
  * and when plus the stack involved; holds no claims. Referenced by its stable

@@ -25,7 +25,7 @@ export default async function AchievementsPage({ params }: Params) {
   const locale = isLocale(param) ? param : "pt";
   const t = getDictionary(locale);
   const home = localeHref(locale, "/");
-  const { featured } = getCorpus();
+  const { featured } = getCorpus(locale);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">

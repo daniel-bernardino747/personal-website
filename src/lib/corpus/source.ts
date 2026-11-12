@@ -3,6 +3,9 @@ import 'server-only';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import type { Locale } from '@/i18n/routing';
+
+import { localizeSiteJson } from './localize';
 import {
   type Accomplishment,
   type Affiliation,
@@ -54,16 +57,20 @@ export function siteJsonPath(): string {
   return process.env.SITE_JSON ?? join(process.cwd(), '.corpus', 'site.json');
 }
 
-export function readCorpus(path: string = siteJsonPath()): Corpus {
+export function readCorpus(path: string = siteJsonPath(), locale: Locale = 'en'): Corpus {
   if (!existsSync(path)) {
     throw new CorpusError(
       `No site.json at ${path}. Run \`npm run corpus:fetch\`, which reads it from the career checkout (CORPUS_REPO, default ../career).`,
     );
   }
-  return fromSiteJson(JSON.parse(readFileSync(path, 'utf8')));
+  return fromSiteJson(JSON.parse(readFileSync(path, 'utf8')), locale);
 }
 
-export function fromSiteJson(input: unknown): Corpus {
+/**
+ * `locale` picks the language of every text field (ADR-0015): the reviewed
+ * translation where `career` shipped a current one, the English otherwise.
+ */
+export function fromSiteJson(input: unknown, locale: Locale = 'en'): Corpus {
   const version = (input as { version?: unknown } | null)?.version;
   if (version !== SITE_JSON_VERSION) {
     throw new CorpusError(
@@ -79,10 +86,11 @@ export function fromSiteJson(input: unknown): Corpus {
     throw new CorpusError(`site.json does not match the contract: ${issues}`);
   }
 
-  const { identity, affiliations } = parsed.data;
+  const localized = localizeSiteJson(parsed.data, locale);
+  const { identity, affiliations } = localized;
   const affiliationsById = new Map(affiliations.map((a) => [a.id, a]));
 
-  const all: Accomplishment[] = parsed.data.accomplishments.map((a) => {
+  const all: Accomplishment[] = localized.accomplishments.map((a) => {
     const affiliation = a.affiliationId ? affiliationsById.get(a.affiliationId) : undefined;
     if (a.affiliationId && !affiliation) {
       throw new CorpusError(

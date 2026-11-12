@@ -49,7 +49,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const { locale } = await params;
-  const identity = getIdentity();
+  const identity = getIdentity(isLocale(locale) ? locale : "pt");
   const title = `${identity.name} — ${identity.role[0]}`;
 
   return {
@@ -84,8 +84,8 @@ export default async function RootLayout({
 }> & LocaleParams) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const identity = getIdentity();
-  const chatAnswers = buildChatAnswers(getCorpus(), locale);
+  const identity = getIdentity(locale);
+  const chatAnswers = buildChatAnswers(getCorpus(locale), locale);
   const t = getDictionary(locale);
 
   return (

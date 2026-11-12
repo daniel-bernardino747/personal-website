@@ -12,8 +12,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const corpus = getCorpus();
+  const { locale: param } = await params;
+  const locale = isLocale(param) ? param : "pt";
+  const corpus = getCorpus(locale);
   // A Labs demo shows once, in the Labs section, not also in the gallery.
   const { labs, rest } = splitLabs(corpus.byKind("project", { includeDrafts: true }));
 
@@ -27,7 +28,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* The gallery shows projects without a Metric too — that gate exists so a
           résumé never implies an unmeasured result, not to hide shipped work. */}
       <Projects projects={rest} />
-      <Labs demos={labs} locale={isLocale(locale) ? locale : "pt"} />
+      <Labs demos={labs} locale={locale} />
     </>
   );
 }
