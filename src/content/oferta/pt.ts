@@ -11,6 +11,13 @@
 export const CONTRACT_TEMPLATE_VERSION = "0.1.0";
 
 export const oferta = {
+  /** What a search result and a shared link say about the Portuguese home. */
+  seo: {
+    title: "Desenvolvedor de software em Criciúma, SC",
+    description:
+      "Software sob medida, aplicativos, automações, agentes de IA e sites para empresas de Criciúma e região. Atendimento presencial, contrato com garantia e o andamento do projeto em tempo real.",
+  },
+
   hero: {
     eyebrow: "Desenvolvedor de software em Criciúma, SC",
     title: "Software sob medida para empresas de Criciúma e região.",

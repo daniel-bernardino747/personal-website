@@ -6,8 +6,9 @@ import { pageMetadata } from "@/lib/site-url";
 // The page is a Client Component and cannot export metadata; this layout
 // exists only to give /chat its own title and share preview.
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
-  const t = getDictionary(isLocale(locale) ? locale : "pt");
+  const { locale: param } = await params;
+  const locale = isLocale(param) ? param : "pt";
+  const t = getDictionary(locale);
   const { name } = getIdentity();
   return pageMetadata({
     title: t.chat.metaTitle,
@@ -15,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     path: "/chat",
     owner: name,
     imageAlt: t.meta.imageAlt(name),
+    locale,
   });
 }
 

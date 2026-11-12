@@ -9,8 +9,9 @@ import { isLocale, localeHref } from "@/i18n/routing";
 type Params = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Params) {
-  const { locale } = await params;
-  const t = getDictionary(isLocale(locale) ? locale : "pt");
+  const { locale: param } = await params;
+  const locale = isLocale(param) ? param : "pt";
+  const t = getDictionary(locale);
   const owner = getIdentity().name;
   return pageMetadata({
     title: t.achievements.metaTitle,
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: Params) {
     path: "/achievements",
     owner,
     imageAlt: t.meta.imageAlt(owner),
+    locale,
   });
 }
 

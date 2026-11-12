@@ -2,21 +2,19 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
+import { oferta } from "@/content/oferta/pt";
+import type { Locale } from "@/i18n/routing";
 import { getIdentity } from "@/lib/corpus/site";
 import { SITE_URL } from "@/lib/site-url";
 
 /**
- * The card a link to the site unfolds into on LinkedIn, WhatsApp, X and Slack.
- * It applies to every route — pages only change the title and description
- * beside it — and it is drawn from the Identity, so a new role or headline
- * reaches the preview with a Corpus edit in `career` and a deploy, never a redesign.
- *
- * Rendered once at build: nothing here reads the request.
+ * The card a link to the site unfolds into on LinkedIn, WhatsApp, X and Slack,
+ * one per language (served by `app/og/[file]`). Pages only change the title and
+ * description beside it. It is drawn from the Identity, so a new role reaches
+ * the preview with a Corpus edit in `career` and a deploy, never a redesign.
+ * The Portuguese card carries the local pitch (ADR-0015); the English one the roles.
  */
-export const dynamic = "force-static";
-export const alt = "Daniel Bernardino de Souza — portfolio";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+const size = { width: 1200, height: 630 };
 
 // The site's own palette, as hex: `next/og` does not parse oklch.
 const BACKGROUND = "#09090b";
@@ -24,8 +22,9 @@ const FOREGROUND = "#fafafa";
 const MUTED = "#a1a1aa";
 const ACCENT = "#00bc7d";
 
-export default async function OpengraphImage() {
-  const identity = getIdentity();
+export async function renderShareCard(locale: Locale) {
+  const identity = getIdentity(locale);
+  const pt = locale === "pt";
 
   // `next/og` bundles only a regular Noto Sans, and the name needs the Hero's
   // weight. Static Geist cuts sit beside the variable fonts the site loads,
@@ -53,19 +52,25 @@ export default async function OpengraphImage() {
       >
         <div style={{ display: "flex", flexDirection: "column", flex: 1, paddingRight: 48 }}>
           <div style={{ display: "flex", flexDirection: "column", fontSize: 76, fontWeight: 700, lineHeight: 1.02, letterSpacing: "-0.035em" }}>
-            <span>Hi, I&apos;m</span>
+            <span>{pt ? "Oi, eu sou" : "Hi, I’m"}</span>
             <span style={{ color: ACCENT }}>{identity.name}</span>
           </div>
 
-          {/* One unbreakable span per role, so a line wraps between roles and
-              never inside one. The separator trails its role, so no line opens with a dot. */}
-          <div style={{ display: "flex", flexWrap: "wrap", marginTop: 36, fontSize: 30, color: MUTED }}>
-            {identity.role.map((role, index) => (
-              <span key={role} style={{ whiteSpace: "nowrap", marginRight: 12 }}>
-                {index < identity.role.length - 1 ? `${role} ·` : role}
-              </span>
-            ))}
-          </div>
+          {pt ? (
+            <div style={{ display: "flex", marginTop: 36, fontSize: 34, lineHeight: 1.25, color: FOREGROUND, fontWeight: 700 }}>
+              {oferta.hero.title}
+            </div>
+          ) : (
+            // One unbreakable span per role, so a line wraps between roles and
+            // never inside one. The separator trails its role, so no line opens with a dot.
+            <div style={{ display: "flex", flexWrap: "wrap", marginTop: 36, fontSize: 30, color: MUTED }}>
+              {identity.role.map((role, index) => (
+                <span key={role} style={{ whiteSpace: "nowrap", marginRight: 12 }}>
+                  {index < identity.role.length - 1 ? `${role} ·` : role}
+                </span>
+              ))}
+            </div>
+          )}
 
           <div style={{ display: "flex", alignItems: "center", marginTop: 56, fontSize: 24, color: MUTED }}>
             <div style={{ width: 10, height: 10, borderRadius: 999, background: ACCENT, marginRight: 14 }} />

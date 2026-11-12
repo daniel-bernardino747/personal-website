@@ -13,9 +13,10 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Pages only. The API, Next's own files and the share image keep one address
-  // for both languages; files with an extension are let through by `routePath`.
+  // Pages only. The API and Next's own files keep one address for both
+  // languages; files with an extension (the share images `/og/pt.png`,
+  // `/resume.pdf`, images) are let through by `routePath`.
   // (An escaped dot does not survive the matcher's compilation: `\.` became
   // `.`, and the matcher then skipped every path but `/`.)
-  matcher: ['/((?!api|_next|opengraph-image).*)'],
+  matcher: ['/((?!api|_next).*)'],
 };

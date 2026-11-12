@@ -7,6 +7,8 @@ import { PageTransitionLayout } from "@/components/layout/PageTransitionLayout";
 import { buildChatAnswers } from "@/lib/chat/answers";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { SITE_URL } from "@/lib/site-url";
+import { localeAlternates, shareImage } from "@/lib/seo";
+import { oferta } from "@/content/oferta/pt";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n/dictionary";
@@ -35,9 +37,10 @@ const geistMono = localFont({
 
 /**
  * The share preview is drawn from the Identity, like everything else: title,
- * description and the image in `opengraph-image.tsx` all change with a
- * Corpus edit in `career`. Pages set only `title` and `description`; the template and
- * the Open Graph fields below carry them into the preview.
+ * description and the image (`/og/<locale>.png`) all change with a Corpus edit
+ * in `career`. In Portuguese the home speaks to a business in Criciúma
+ * (ADR-0015), so its title and description name the city and the services.
+ * Pages set their own canonical, hreflang and share fields through `pageMetadata`.
  */
 type LocaleParams = { params: Promise<{ locale: string }> };
 
@@ -48,26 +51,35 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
-  const { locale } = await params;
-  const identity = getIdentity(isLocale(locale) ? locale : "pt");
-  const title = `${identity.name} — ${identity.role[0]}`;
+  const { locale: param } = await params;
+  const locale: Locale = isLocale(param) ? param : "pt";
+  const identity = getIdentity(locale);
+  const pt = locale === "pt";
+  const title = `${identity.name} — ${pt ? oferta.seo.title : identity.role[0]}`;
+  const description = pt ? oferta.seo.description : identity.bio;
+  const image = shareImage(locale, getDictionary(locale).meta.imageAlt(identity.name));
+  const alternates = localeAlternates("/", locale);
 
   return {
     metadataBase: SITE_URL,
     title: { default: title, template: `%s — ${identity.name}` },
-    description: identity.bio,
+    description,
+    alternates,
     openGraph: {
       type: "website",
       siteName: identity.name,
       title,
-      description: identity.bio,
-      url: "/",
-      locale: OG_LOCALE[locale as Locale] ?? OG_LOCALE.pt,
+      description,
+      url: alternates.canonical,
+      locale: OG_LOCALE[locale],
+      alternateLocale: LOCALES.filter((l) => l !== locale).map((l) => OG_LOCALE[l]),
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title,
-      description: identity.bio,
+      description,
+      images: [image],
     },
     icons: {
       icon: "/images/avatar.png",

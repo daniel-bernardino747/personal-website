@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 
+import { OG_LOCALE, LOCALES, type Locale } from '@/i18n/routing';
+
+import { localeAlternates, shareImage } from './seo';
+
 /**
  * The canonical origin every absolute URL is built from — share previews,
  * canonical links, the sitemap. Crawlers and link unfurlers (LinkedIn, WhatsApp,
@@ -25,6 +29,7 @@ export function pageMetadata({
   path,
   owner,
   imageAlt,
+  locale,
 }: {
   title: string;
   description: string;
@@ -33,19 +38,24 @@ export function pageMetadata({
   owner: string;
   /** The share image's alt text, in the page's language. */
   imageAlt: string;
+  /** The page's language: its canonical, hreflang alternates and share image (ADR-0015). */
+  locale: Locale;
 }): Metadata {
   const shareTitle = `${title} — ${owner}`;
-  const image = { url: '/opengraph-image', width: 1200, height: 630, alt: imageAlt };
+  const image = shareImage(locale, imageAlt);
+  const alternates = localeAlternates(path, locale);
   return {
     title,
     description,
-    alternates: { canonical: path },
+    alternates,
     openGraph: {
       type: 'website',
       siteName: owner,
       title: shareTitle,
       description,
-      url: path,
+      url: alternates.canonical,
+      locale: OG_LOCALE[locale],
+      alternateLocale: LOCALES.filter((l) => l !== locale).map((l) => OG_LOCALE[l]),
       images: [image],
     },
     twitter: { card: 'summary_large_image', title: shareTitle, description, images: [image] },

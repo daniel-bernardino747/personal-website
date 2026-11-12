@@ -12,11 +12,17 @@ import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { listMindsetSlides } from "@/lib/mindset";
 import { splitLabs } from "@/lib/projects/labs";
 import { isLocale } from "@/i18n/routing";
+import { localBusinessJsonLd, localeAlternates } from "@/lib/seo";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+type Params = { params: Promise<{ locale: string }> };
 
-export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const { locale } = await params;
+  return { alternates: localeAlternates("/", isLocale(locale) ? locale : "pt") };
+}
+
+export default async function Home({ params }: Params) {
   const { locale: param } = await params;
   const locale = isLocale(param) ? param : "pt";
   const corpus = getCorpus(locale);
@@ -51,6 +57,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const identity = getIdentity(locale);
   return (
     <>
+      {/* Schema.org for search: a service-area business in Criciúma, no address. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessJsonLd(identity, oferta.seo.description)).replace(/</g, "\\u003c"),
+        }}
+      />
       <LocalHero identity={identity} />
       {identity.services && <Services services={identity.services} />}
       <HowItWorks />
