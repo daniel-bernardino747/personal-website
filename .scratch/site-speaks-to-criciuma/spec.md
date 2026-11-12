@@ -56,3 +56,8 @@ Daniel wants to be the developer local businesses in Criciúma (SC) think of fir
 - The Elo's own landing page, which already exists in the `elo` repo. The site points to it; it does not duplicate it.
 - Translating the guestbook or user content.
 - Automatic redirects by browser language.
+
+## Also decided along the way
+
+- **The project gallery is a curved band** (12/11/2026, Daniel). A `/spike` compared three curvatures: a convex cylinder, the inside of a cinema screen ("IMAX") and a flat fan. Daniel chose the IMAX screen with 400×480 cards and a 56px gap, sitting close to the year filters. The prototype with all three variants is on the `spike/curved-band` branch (`8a222ce`). The real gallery is `src/components/sections/projects/CurvedGallery.tsx`, with its geometry in `src/lib/projects/curved-band.ts`. It replaced the two-column grid, and `packRows` went with it.
+

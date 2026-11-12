@@ -81,6 +81,14 @@ export const pt: Dictionary = {
     about: (title) => ` sobre ${title}`,
     visit: (title) => (title ? `Visitar ${title}` : 'Visitar o site'),
     onGitHub: (title) => (title ? `${title} no GitHub` : 'Código no GitHub'),
+    carousel: 'Projetos, um de cada vez',
+    slide: (index, total, title) => `Projeto ${index} de ${total}: ${title}`,
+    previous: 'Projeto anterior',
+    next: 'Próximo projeto',
+    pause: 'Pausar a rotação',
+    play: 'Retomar a rotação',
+    open: (title) => `Abrir ${title}`,
+    close: 'Fechar',
   },
 
   labs: {

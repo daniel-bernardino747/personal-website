@@ -89,6 +89,15 @@ export const en = {
     about: (title: string) => ` about ${title}`,
     visit: (title?: string) => `Visit ${title ?? 'the live site'}`,
     onGitHub: (title?: string) => (title ? `${title} on GitHub` : 'Source on GitHub'),
+    /** The curved gallery (a carousel, to assistive tech). */
+    carousel: 'Projects, one at a time',
+    slide: (index: number, total: number, title: string) => `Project ${index} of ${total}: ${title}`,
+    previous: 'Previous project',
+    next: 'Next project',
+    pause: 'Pause the rotation',
+    play: 'Resume the rotation',
+    open: (title: string) => `Open ${title}`,
+    close: 'Close',
   },
 
   labs: {

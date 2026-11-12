@@ -1,13 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 
 import { useDictionary } from "@/components/DictionaryProvider";
 import type { Accomplishment } from "@/lib/corpus/schema";
 import { displayYear } from "@/lib/corpus/statement";
-import { packRows } from "@/lib/projects/pack";
-import { ProjectCard } from "./projects/ProjectCard";
+import { CurvedGallery } from "./projects/CurvedGallery";
 
 /**
  * The Projects section renders project-kind Accomplishments from the Corpus.
@@ -28,7 +27,6 @@ const THIS_SITE_ID = "personal-website";
 
 export function Projects({ projects }: { projects: Accomplishment[] }) {
   const t = useDictionary();
-  const prefersReducedMotion = useReducedMotion();
   const [activeYear, setActiveYear] = useState<string>(ALL);
 
   // Newest first, and years derived from the content rather than hardcoded, so a
@@ -51,32 +49,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
     [ordered, activeYear],
   );
 
-  // Rows are decided here, not by CSS, so the order a keyboard walks is the
-  // order on screen. The index numeral counts only the cards that show it.
-  const cells = useMemo(() => {
-    let numeral = 0;
-    return packRows(
-      visible.map((project) => ({
-        project,
-        featured: project.featured,
-        hasImage: project.image !== undefined,
-      })),
-    )
-      .flat()
-      .map((cell) => ({
-        ...cell,
-        numeral: cell.item.hasImage ? undefined : ++numeral,
-      }));
-  }, [visible]);
-
   const filters = years.length > 1 ? [ALL, ...years] : [];
-
-  const gridVariants = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: prefersReducedMotion ? 0 : 0.04 },
-    },
-  };
 
   return (
     <section id="projects" className="px-6 py-24 md:py-32">
@@ -144,31 +117,9 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
         )}
 
         {ordered.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            {t.projects.empty}
-          </p>
+          <p className="text-sm text-muted-foreground">{t.projects.empty}</p>
         ) : (
-          <motion.div
-            layout
-            variants={gridVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-          >
-            <AnimatePresence mode="popLayout">
-              {cells.map(({ item: { project }, wide, numeral }) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  numeral={numeral}
-                  featured={project.featured}
-                  wide={wide}
-                  isThisSite={project.id === THIS_SITE_ID}
-                />
-              ))}
-            </AnimatePresence>
-          </motion.div>
+          <CurvedGallery projects={visible} thisSiteId={THIS_SITE_ID} />
         )}
 
         {/* Announced politely so a filter change isn't silent to a screen reader. */}
