@@ -5,7 +5,6 @@ import { Emphasized } from "@/components/ui/Emphasized";
 import { stack } from "@/data/stack";
 import { motion } from "framer-motion";
 import { CircuitBoard } from "@/components/animate-ui/icons/circuit-board";
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { InfiniteMarquee } from "../../ui/InfiniteMarquee";
 
@@ -62,14 +61,18 @@ export function BentoCraft() {
                   key={techIndex} 
                   className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-surface backdrop-blur-sm hover:border-accent/40 transition-colors group cursor-default"
                 >
-                  <div className="relative w-4 h-4 grayscale group-hover:grayscale-0 transition-all duration-300">
-                    <Image
-                      src={tech.iconImage}
-                      alt={tech.name}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
+                  {/* The SVG is a mask, so every logo takes the text colour: one
+                      consistent set in both themes, brighter on hover. */}
+                  <span
+                    aria-hidden="true"
+                    className="size-4 shrink-0 bg-muted-foreground transition-colors duration-300 group-hover:bg-foreground"
+                    style={{
+                      maskImage: `url(${tech.iconImage})`,
+                      maskSize: "contain",
+                      maskRepeat: "no-repeat",
+                      maskPosition: "center",
+                    }}
+                  />
                   <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                     {tech.name}
                   </span>
