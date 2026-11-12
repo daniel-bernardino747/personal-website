@@ -16,7 +16,9 @@ const RADIUS = 3.5;
 const PULL_BACK = 0.55; // how far the centre card sits behind the screen plane
 const PERSPECTIVE = 3;
 /** Cards farther than this from the centre are faded out (and inert). */
-export const VISIBLE_SLOTS = 3.6;
+export const VISIBLE_SLOTS = 3.2;
+/** Over how many slots a card fades out before VISIBLE_SLOTS. */
+const FADE_SLOTS = 1;
 /** The band repeats a short list until it has this many slots, so it never runs dry. */
 const MIN_SLOTS = 8;
 
@@ -31,7 +33,7 @@ export function bandMetrics(cardWidth: number) {
     cardHeight,
     perspective: cardWidth * PERSPECTIVE,
     // Tall enough for the edge cards, which curve towards the viewer and grow.
-    bandHeight: Math.round(cardHeight * 1.21),
+    bandHeight: Math.round(cardHeight * 1.12),
   };
 }
 
@@ -68,7 +70,9 @@ export function placeOnBand(d: number, cardWidth: number): Placement {
   const ad = Math.abs(d);
   return {
     transform: `translateZ(${r - cardWidth * PULL_BACK}px) rotateY(${-angle}deg) translateZ(${-r}px)`,
-    opacity: ad >= VISIBLE_SLOTS ? 0 : Math.min(1, (VISIBLE_SLOTS - ad) / 0.8),
+    // The far cards curve towards the viewer and grow past the band's height;
+    // by then they are nearly transparent, so the band can stay short.
+    opacity: ad >= VISIBLE_SLOTS ? 0 : Math.min(1, (VISIBLE_SLOTS - ad) / FADE_SLOTS),
     zIndex: Math.round(100 - ad * 10),
   };
 }

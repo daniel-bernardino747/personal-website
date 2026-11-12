@@ -148,15 +148,18 @@ export function CurvedGallery({
   if (count === 0) return null;
 
   return (
-    <div className="relative -mx-6 -mt-6 md:-mx-24">
+    <div className="relative -mx-6 -mt-6 xl:-mx-24">
       <div
         ref={regionRef}
         role="region"
         aria-roledescription="carousel"
         aria-label={t.projects.carousel}
         tabIndex={0}
-        className="relative cursor-grab touch-pan-y select-none overflow-hidden rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
-        style={{ height: metrics.bandHeight, perspective: `${metrics.perspective}px`, perspectiveOrigin: "50% 50%" }}
+        className="relative cursor-grab touch-pan-y select-none rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
+        // Clipped at the sides only: the cards two slots out curve towards the
+        // viewer and grow a little past the band, which stays short so it sits
+        // close to the filters.
+        style={{ height: metrics.bandHeight, overflowX: "clip", overflowY: "visible", perspective: `${metrics.perspective}px`, perspectiveOrigin: "50% 50%" }}
         // Keyboard focus stops the rotation (you are reading it); a mouse click
         // focuses the band too, and must not freeze it until the next click away.
         onFocus={(e) => {
@@ -214,8 +217,8 @@ export function CurvedGallery({
         }}
       >
         {/* The band curves away into the page rather than being cut at the edge. */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 z-[200] w-16 bg-linear-to-r from-background to-transparent md:w-24" />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 z-[200] w-16 bg-linear-to-l from-background to-transparent md:w-24" />
+        <div aria-hidden="true" className="pointer-events-none absolute -inset-y-10 left-0 z-[200] w-16 bg-linear-to-r from-background to-transparent md:w-24" />
+        <div aria-hidden="true" className="pointer-events-none absolute -inset-y-10 right-0 z-[200] w-16 bg-linear-to-l from-background to-transparent md:w-24" />
 
         <div className="absolute left-1/2 top-1/2" style={{ transformStyle: "preserve-3d" }}>
           {slots.map((project, i) => {

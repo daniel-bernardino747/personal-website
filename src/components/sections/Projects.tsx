@@ -52,7 +52,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
   const filters = years.length > 1 ? [ALL, ...years] : [];
 
   return (
-    <section id="projects" className="px-6 py-24 md:py-32">
+    <section id="projects" className="px-6 pt-8 pb-24 md:pt-12 md:pb-32">
       <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -85,7 +85,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
           <div
             role="group"
             aria-label={t.projects.filterAria}
-            className="mb-10 flex flex-wrap gap-2"
+            className="mb-4 flex flex-wrap gap-2"
           >
             {filters.map((filter) => {
               const isActive = filter === activeYear;
