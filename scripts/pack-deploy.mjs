@@ -79,7 +79,12 @@ if (stray.length > 0 || leaked.length > 0) {
 rmSync(staging, { recursive: true, force: true });
 mkdirSync(staging, { recursive: true });
 
-cpSync(standalone, staging, { recursive: true });
+// `dereference`: Turbopack reaches external packages through links such as
+// `.next/node_modules/pg-<hash>` → the real `node_modules/pg`. On Windows they
+// are copied as folders; on Linux (GitHub Actions) they stay symlinks pointing
+// outside the artefact, and the container died on the first chat request with
+// "Cannot find package 'pg-…'" (12/11/2026). Copy what they point at instead.
+cpSync(standalone, staging, { recursive: true, dereference: true });
 cpSync(join(root, '.next', 'static'), join(staging, '.next', 'static'), {
   recursive: true,
 });
