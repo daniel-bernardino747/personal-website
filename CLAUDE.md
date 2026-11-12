@@ -1,12 +1,12 @@
 # personal-website
 
-Portfolio pessoal — Next.js 16 (App Router, React 19, TypeScript, Tailwind v4, `output: 'standalone'`, servidor no Railway — ADR-0007).
+Portfolio pessoal — Next.js 16 (App Router, React 19, TypeScript, Tailwind v4, `output: 'standalone'`, servidor numa VPS com Coolify, como imagem Docker no GHCR; antes era o Railway, ADR-0007).
 
 ## Corpus
 
 O Corpus e tudo que se gera dele moram no repo privado `career`, irmão deste checkout (`CORPUS_REPO`, padrão `../career`). Este site é só um leitor (ADR-0013): nunca faz parse do markdown. `npm run corpus:fetch` (rodado antes de `dev`, `build` e `test`; no `test`, só o JSON) grava em `.corpus/` o `site:json` (só o que o site publica: o filtro fica no `career`) e o `resume.pdf`. No deploy, `SITE_JSON` aponta o recorte Featured embutido pelo `bake-corpus`. Depois de editar o Corpus, rode `corpus:fetch` de novo ou reinicie o `dev`. Mudar o formato do `site:json` é mudar os dois repos juntos: `SITE_JSON_VERSION` em `src/lib/corpus/schema.ts` aqui e em `src/corpus/site-export.ts` lá.
 
-**Deploy só por `npm run deploy` (ou `npm run build` antes de `railway up`), nunca `next build && railway up` à mão.** O `next build` sozinho rastreia o `.corpus/` inteiro para o artefato; o `bake-corpus` reduz ao recorte Featured e o `pack-deploy` recusa o pacote se sobrar algo (ADR-0008).
+**Deploy só por `npm run deploy`, nunca `next build` seguido de `docker build` à mão.** O `deploy` faz o build, monta a imagem a partir do `deploy.tar`, publica no GHCR (`latest` e uma tag com a data) e termina pedindo o redeploy, que o Daniel dispara no Coolify. Precisa do Docker rodando e de `docker login ghcr.io`. O Railway foi desligado em 11/11/2026: `railway up` não publica mais nada. O `next build` sozinho rastreia o `.corpus/` inteiro para o artefato; o `bake-corpus` reduz ao recorte Featured e o `pack-deploy` recusa o pacote se sobrar algo (ADR-0008).
 
 ## Agent skills
 

@@ -1,7 +1,7 @@
 # personal-website
 
 Daniel Bernardino's portfolio — Next.js 16 (App Router, React 19, TypeScript,
-Tailwind v4), running as a standalone Next server on Railway (ADR-0007).
+Tailwind v4), running as a standalone Next server in a Docker image on a Coolify VPS (ADR-0007; it moved off Railway in October 2026).
 
 The site does not hardcode career facts. It renders from a **career Corpus**
 that lives in the private `career` repository and is also the single source for
@@ -39,7 +39,7 @@ runs it by path.
 | `npm run dev` | development server on :3000 |
 | `npm run corpus:fetch` | `site:json` and the complete résumé from `career`, into `.corpus/` |
 | `npm run build` | fetch, standalone build, the Featured slice baked in, packed into `deploy.tar` |
-| `npm run deploy` | build here and upload to Railway (ADR-0007) |
+| `npm run deploy` | build here, push the image to GHCR (`latest` + a dated tag); then redeploy in Coolify |
 | `npm test` | Vitest |
 | `npm run project:image -- <id>` | acquire a project card's image into `public/projects/` |
 
