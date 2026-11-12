@@ -157,7 +157,11 @@ export function CurvedGallery({
         tabIndex={0}
         className="relative cursor-grab touch-pan-y select-none overflow-hidden rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing"
         style={{ height: metrics.bandHeight, perspective: `${metrics.perspective}px`, perspectiveOrigin: "50% 50%" }}
-        onFocus={() => setFocused(true)}
+        // Keyboard focus stops the rotation (you are reading it); a mouse click
+        // focuses the band too, and must not freeze it until the next click away.
+        onFocus={(e) => {
+          if (e.target.matches(":focus-visible")) setFocused(true);
+        }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false);
         }}
