@@ -73,3 +73,30 @@ describe('the agent system prompt', () => {
     expect(buildSystemPrompt()).toBe(prompt);
   });
 });
+
+describe('the agent system prompt in Portuguese (ADR-0015)', () => {
+  const prompt = buildSystemPrompt('pt');
+  const corpus = getCorpus('pt');
+
+  it('quotes every Featured Metric as its reviewed Portuguese string', () => {
+    const withMetrics = corpus.featured.filter((record) => record.metric);
+    expect(withMetrics.length).toBeGreaterThan(0);
+    for (const record of withMetrics) expect(prompt).toContain(record.metric!);
+  });
+
+  it('asks for Portuguese and says the not-recorded sentence in Portuguese', () => {
+    expect(prompt).toContain('Answer in Brazilian');
+    expect(prompt).toContain('Não tenho isso registrado.');
+    expect(prompt).not.toContain("I don't have that recorded.");
+  });
+
+  it('offers the WhatsApp and the Portuguese booking page', () => {
+    expect(prompt).toContain('https://wa.me/');
+    expect(prompt).toContain('/agendar');
+  });
+
+  it('leaves the English prompt without a language section', () => {
+    expect(buildSystemPrompt('en')).not.toContain('## Language');
+  });
+});
+

@@ -1,6 +1,8 @@
 import 'server-only';
 
+import type { Locale } from '@/i18n/routing';
 import type { Accomplishment, Identity } from '@/lib/corpus/schema';
+import { SITE_URL } from '@/lib/site-url';
 import { getCorpus } from '@/lib/corpus/site';
 import { displayTitle, parseStatement } from '@/lib/corpus/statement';
 
@@ -13,21 +15,26 @@ import { displayTitle, parseStatement } from '@/lib/corpus/statement';
  * not filtered later, never loaded at all — which is why a prompt cannot talk
  * the agent into revealing them.
  *
- * The prompt is fixed for the life of a deployment. That is what makes it worth
- * caching, and the reason nothing volatile (a timestamp, a request id, the
- * visitor's question) may be interpolated into it.
+ * The prompt is fixed for the life of a deployment, one per language. That is
+ * what makes it worth caching, and the reason nothing volatile (a timestamp, a
+ * request id, the visitor's question) may be interpolated into it.
+ *
+ * In Portuguese (ADR-0015) the record is the reviewed Portuguese slice, so a
+ * Metric is quoted as its Portuguese string, never translated by the model; the
+ * rules stay in English, the language the model follows them best in.
  */
-export function buildSystemPrompt(): string {
-  const { identity, featured } = getCorpus();
+export function buildSystemPrompt(locale: Locale = 'en'): string {
+  const { identity, featured } = getCorpus(locale);
 
   return [
     persona(identity),
-    RULES,
+    language(locale),
+    RULES.replace(NOT_RECORDED.en, NOT_RECORDED[locale]),
     '## The record',
     featured.length > 0
       ? featured.map(record).join('\n\n')
       : 'No Accomplishments are currently featured. Say so plainly if asked what he has shipped.',
-    identity ? contactBlock(identity) : '',
+    identity ? contactBlock(identity, locale) : '',
   ]
     .filter(Boolean)
     .join('\n\n');
@@ -44,7 +51,37 @@ He is a ${identity.role.join(', ')} based in ${identity.location}.${
     identity.headline ? ` ${identity.headline}` : ''
   }
 
-His own summary: ${identity.bio}`;
+His own summary: ${identity.bio}${offerBlock(identity)}`;
+}
+
+/** The sentence the agent says when the record is silent, in each language. */
+const NOT_RECORDED: Record<Locale, string> = {
+  en: "I don't have that recorded.",
+  pt: 'Não tenho isso registrado.',
+};
+
+function language(locale: Locale): string {
+  if (locale === 'en') return '';
+  return `## Language
+
+The visitor is on the Portuguese version of the site. Answer in Brazilian
+Portuguese, plainly, as you would to a small-business owner in Criciúma. The
+record below is already in Portuguese: quote it, and every Metric, exactly as
+written there; never translate a figure back or forth.`;
+}
+
+/**
+ * What a business can hire him for, as the Identity records it. Prices are not
+ * recorded, so a question about cost gets the contact routes, never a figure.
+ */
+function offerBlock(identity: Identity): string {
+  const lines: string[] = [];
+  if (identity.services?.length) lines.push(`Services he offers: ${identity.services.join('; ')}.`);
+  if (identity.serviceArea) {
+    lines.push(`He works remotely and ${identity.inPerson ? 'meets clients in person' : 'serves clients'} in ${identity.serviceArea}.`);
+  }
+  if (identity.business) lines.push(`His company: ${identity.business.name}.`);
+  return lines.length ? `\n\n${lines.join('\n')}` : '';
 }
 
 /**
@@ -111,13 +148,19 @@ function record(accomplishment: Accomplishment): string {
   return lines.join('\n');
 }
 
-function contactBlock(identity: Identity): string {
+function contactBlock(identity: Identity, locale: Locale): string {
+  // The Portuguese page books through our own /agendar (the Portuguese event).
+  const booking = locale === 'pt' ? new URL('/agendar', SITE_URL).toString() : identity.bookingUrl;
+  const whatsapp = identity.social.whatsapp
+    ? `WhatsApp: https://wa.me/${identity.social.whatsapp.replace(/\D/g, '')}
+`
+    : '';
   return `${availabilityBlock(identity)}## Getting in touch
 
-Email: ${identity.social.email}
+${whatsapp}Email: ${identity.social.email}
 LinkedIn: ${identity.social.linkedin}
 GitHub: ${identity.social.github}
-Booking a call: ${identity.bookingUrl}
+Booking a call: ${booking}
 
 Offer these when someone asks how to reach him, or when you cannot answer their
 question from the record above.`;

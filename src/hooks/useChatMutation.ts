@@ -2,6 +2,7 @@
 
 import { useTurnstile } from '@/components/chat/useTurnstile';
 import { useDictionary } from '@/components/DictionaryProvider';
+import { useLocale } from '@/i18n/client';
 import { useChatStore } from '@/store/useChatStore';
 import { useCallback, useState } from 'react';
 
@@ -21,6 +22,8 @@ export function useChatMutation() {
   const appendToMessage = useChatStore((state) => state.appendToMessage);
   const getTurnstileToken = useTurnstile();
   const { chat } = useDictionary();
+  // The agent answers in the page's language (ADR-0015).
+  const locale = useLocale();
   const [isPending, setIsPending] = useState(false);
 
   const mutate = useCallback(
@@ -55,7 +58,7 @@ export function useChatMutation() {
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question, turnstileToken }),
+          body: JSON.stringify({ question, turnstileToken, locale }),
         });
 
         // Every non-OK path from the route is a plain-text honest message —
@@ -91,7 +94,7 @@ export function useChatMutation() {
         setIsPending(false);
       }
     },
-    [addMessage, appendToMessage, getTurnstileToken, chat],
+    [addMessage, appendToMessage, getTurnstileToken, chat, locale],
   );
 
   return { mutate, isPending };

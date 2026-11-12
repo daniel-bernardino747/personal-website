@@ -21,7 +21,7 @@ const INSTRUCTIONS =
 
 const SCOPE = {
   about_owner:
-    'Asks about the site owner: his work, projects, experience, skills, background, availability or how to contact him. Includes his past employers, clients and collaborators as they relate to his work, and a recruiter introducing their own company or role to ask about his interest or fit.',
+    'Asks about the site owner: his work, projects, experience, skills, background, availability or how to contact him. Includes his past employers, clients and collaborators as they relate to his work, and a recruiter introducing their own company or role to ask about his interest or fit. Also a prospective client asking what he offers, whether he can build something for their business, how he works, what it might cost or where he serves.',
   about_site: 'Asks about this website itself or how it was built.',
   small_talk:
     'Ordinary conversation addressed to the owner or his assistant: a greeting, thanks, or a follow-up to what was said.',
