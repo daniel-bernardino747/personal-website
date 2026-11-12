@@ -17,26 +17,13 @@ export const KINDS = [
 export type Kind = (typeof KINDS)[number];
 
 /**
- * Human-readable label per Kind. Keyed by `Kind` so adding a Kind to `KINDS`
- * forces a label here rather than silently rendering a raw enum value.
- */
-export const KIND_LABELS: Record<Kind, string> = {
-  engineering: 'Engineering',
-  talk: 'Talk',
-  'open-source': 'Open Source',
-  project: 'Project',
-  education: 'Education',
-  writing: 'Writing',
-};
-
-/**
  * The `site:json` contract (ADR-0013): what the `career` repository hands this
  * site, and the only way the site learns anything about the Corpus. The gate is
  * on the other side: `career` emits only what may be published, so this schema
  * validates shape, not visibility. A mismatched `version` is refused before
  * parsing, because the producer lives in another repository.
  */
-export const SITE_JSON_VERSION = 1;
+export const SITE_JSON_VERSION = 2;
 
 const affiliationSchema = z.object({
   id: z.string().min(1),
@@ -70,6 +57,7 @@ const identitySchema = z.object({
     github: z.string().min(1),
     linkedin: z.string().min(1),
     email: z.string().min(1),
+    whatsapp: z.string().min(1).optional(),
   }),
   availability: z
     .object({
@@ -78,7 +66,25 @@ const identitySchema = z.object({
       hours: z.string().min(1),
     })
     .optional(),
+  services: z.array(z.string().min(1)).min(1).optional(),
+  serviceArea: z.string().min(1).optional(),
+  inPerson: z.boolean().optional(),
+  business: z
+    .object({ name: z.string().min(1), legalName: z.string().min(1), cnpj: z.string().min(1) })
+    .optional(),
   bio: z.string().min(1),
+});
+
+/**
+ * One language's translations of the published fields (ADR-0015), keyed like
+ * `identity.bio` or `accomplishment:<id>.prose`. `texts` holds only current
+ * translations; `missing` and `stale` are shown in English. A statement is
+ * translated as its prose only: the stack and links still come from the English.
+ */
+const translationSchema = z.object({
+  texts: z.record(z.string(), z.string()),
+  missing: z.array(z.string()),
+  stale: z.array(z.string()),
 });
 
 export const siteJsonSchema = z.object({
@@ -86,7 +92,13 @@ export const siteJsonSchema = z.object({
   identity: identitySchema.nullable(),
   affiliations: z.array(affiliationSchema),
   accomplishments: z.array(accomplishmentSchema),
+  translations: z.object({ pt: translationSchema }),
 });
+
+export type Translations = z.infer<typeof translationSchema>;
+
+/** `site:json` as parsed, before the Corpus is built from it. */
+export type SiteJson = z.infer<typeof siteJsonSchema>;
 
 /**
  * The organisation or institution an Accomplishment happened inside. Holds where
@@ -147,12 +159,20 @@ export interface Identity {
   /** A one-line professional summary, if recorded. */
   headline?: string;
   bookingUrl: string;
-  social: { github: string; linkedin: string; email: string };
+  /** `whatsapp` is the main contact for local clients (ADR-0015). */
+  social: { github: string; linkedin: string; email: string; whatsapp?: string };
   /**
    * The terms Daniel takes work on, if recorded. Anything outside them is a
    * conversation, not a no — every Render Target says so alongside it.
    */
   availability?: { engagement: string[]; workMode: string; hours: string };
+  /** What a local business can hire Daniel for. */
+  services?: string[];
+  /** Where he meets clients in person. */
+  serviceArea?: string;
+  inPerson?: boolean;
+  /** The company that signs the contracts. */
+  business?: { name: string; legalName: string; cnpj: string };
   /** The bio prose — the markdown body of `identity.md`. */
   bio: string;
 }

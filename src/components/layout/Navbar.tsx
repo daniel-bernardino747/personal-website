@@ -1,25 +1,42 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useIdentity } from "@/components/IdentityProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { usePathname } from "next/navigation";
+import { localeHref, LOCALES } from "@/i18n/routing";
+import { useLocale, useSitePath } from "@/i18n/client";
 import { useEffect, useState } from "react";
 
 // Every link must land somewhere the home actually renders. "Skills" and "Other"
 // used to point at `/#skills` and `/#other` — anchors no page carries — while
 // /achievements and /chat, the two pages with the proof, had no link at all.
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Labs", href: "/#labs" },
-  { label: "Achievements", href: "/achievements" },
-  { label: "Chat", href: "/chat" },
-];
+const navLinks = {
+  en: [
+    { key: "home", href: "/" },
+    { key: "about", href: "/#about" },
+    { key: "projects", href: "/#projects" },
+    { key: "labs", href: "/#labs" },
+    { key: "achievements", href: "/achievements" },
+    { key: "chat", href: "/chat" },
+  ],
+  // The Portuguese home speaks to a local business first (ADR-0015): its links
+  // follow the offer, then the proof.
+  pt: [
+    { key: "home", href: "/" },
+    { key: "services", href: "/#servicos" },
+    { key: "process", href: "/#como-funciona" },
+    { key: "projects", href: "/#projects" },
+    { key: "chat", href: "/chat" },
+    { key: "contact", href: "/#contato" },
+  ],
+} as const;
+
+/** Booking: the Portuguese event behind our own /agendar, the English one as before. */
+const bookingHref = (locale: "pt" | "en", english: string) => (locale === "pt" ? "/agendar" : english);
 
 const containerVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -44,15 +61,18 @@ const itemVariants = {
 
 export function Navbar() {
   const identity = useIdentity();
+  const t = useDictionary();
   const { theme, setTheme } = useTheme();
-  const pathname = usePathname();
+  const locale = useLocale();
+  const path = useSitePath();
+  const otherLocale = LOCALES.find((l) => l !== locale)!;
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (pathname === "/chat") return null;
+  if (path === "/chat") return null;
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -67,7 +87,7 @@ export function Navbar() {
     >
       <nav
         className="flex items-center gap-2 md:gap-4 px-3 md:px-4 py-2 max-w-full border rounded-full bg-surface backdrop-blur-md border-border shadow-navbar"
-        aria-label="Main navigation"
+        aria-label={t.nav.ariaLabel}
       >
         <motion.div 
           variants={itemVariants}
@@ -101,17 +121,17 @@ export function Navbar() {
           className="flex min-w-0 items-center gap-1 md:gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,black_80%,transparent)] lg:[mask-image:none]"
           role="list"
         >
-          {navLinks.map((link) => (
+          {navLinks[locale].map((link) => (
             <motion.li key={link.href} variants={itemVariants}>
               <Link
-                href={link.href}
+                href={localeHref(locale, link.href)}
                 className={`block whitespace-nowrap px-3 md:px-4 py-1.5 text-sm rounded-full transition-all ${
-                  link.href === pathname
+                  link.href === path
                     ? "bg-muted text-foreground"
                     : "text-muted-foreground hover:text-foreground hover:bg-surface-hover"
                 }`}
               >
-                {link.label}
+                {t.nav[link.key]}
               </Link>
             </motion.li>
           ))}
@@ -119,14 +139,25 @@ export function Navbar() {
 
         <motion.div variants={itemVariants} className="h-4 w-px bg-border mx-1 hidden md:block" />
 
+        {/* The same page in the other language (ADR-0015). */}
         <motion.div variants={itemVariants} className="shrink-0">
-          <a href={identity.bookingUrl} target="_blank" rel="noopener noreferrer">
+          <Link
+            href={localeHref(otherLocale, path)}
+            hrefLang={otherLocale === "pt" ? "pt-BR" : "en"}
+            className="block px-2 py-1.5 text-xs font-mono uppercase text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {otherLocale}
+          </Link>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="shrink-0">
+          <a href={bookingHref(locale, identity.bookingUrl)} target="_blank" rel="noopener noreferrer">
             <Button
               size="sm"
               className="rounded-full bg-accent text-white border border-accent/20 hover:bg-accent/80 flex gap-2 items-center shadow-lg shadow-accent/20 transition-all active:scale-95"
             >
               <Calendar size={14} />
-              <span className="hidden md:inline">Get it off the ground</span>
+              <span className="hidden md:inline">{t.nav.booking}</span>
             </Button>
           </a>
         </motion.div>

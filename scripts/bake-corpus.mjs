@@ -36,6 +36,23 @@ if (featured.length === 0) {
 
 const needed = new Set(featured.map((a) => a.affiliationId).filter(Boolean));
 
+// The translations travel with the slice, and only for what the slice carries:
+// a key for a withheld record would name it in the deployed image (ADR-0008).
+const keep = (key) =>
+  key.startsWith('identity.') ||
+  needed.has(key.match(/^affiliation:([^.]+)\./)?.[1]) ||
+  featured.some((a) => key.startsWith(`accomplishment:${a.id}.`));
+const translations = Object.fromEntries(
+  Object.entries(site.translations).map(([locale, { texts, missing, stale }]) => [
+    locale,
+    {
+      texts: Object.fromEntries(Object.entries(texts).filter(([key]) => keep(key))),
+      missing: missing.filter(keep),
+      stale: stale.filter(keep),
+    },
+  ]),
+);
+
 for (const traced of ['.corpus', 'content', 'corpus']) {
   rmSync(join(standalone, traced), { recursive: true, force: true });
 }
@@ -48,6 +65,7 @@ writeFileSync(
       identity: site.identity,
       affiliations: site.affiliations.filter((a) => needed.has(a.id)),
       accomplishments: featured,
+      translations,
     },
     null,
     2,

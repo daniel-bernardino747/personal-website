@@ -1,11 +1,13 @@
 "use client";
 
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useIdentity } from "@/components/IdentityProvider";
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, MessageSquare } from "lucide-react";
 
 export function BentoSocials() {
   const identity = useIdentity();
+  const t = useDictionary();
 
   return (
     <motion.div 
@@ -22,7 +24,7 @@ export function BentoSocials() {
        </div>
        <div className="flex items-center gap-2 text-muted-foreground/30">
          <MessageSquare size={12} />
-         <span className="text-[9px] font-bold uppercase tracking-[0.2em]">Let&apos;s talk</span>
+         <span className="text-[9px] font-bold uppercase tracking-[0.2em]">{t.bento.letsTalk}</span>
        </div>
     </motion.div>
   );

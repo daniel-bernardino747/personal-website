@@ -1,13 +1,14 @@
 "use client";
 
 import { FileText, Github, Linkedin, Mail } from "lucide-react";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useIdentity } from "@/components/IdentityProvider";
-import { usePathname } from "next/navigation";
+import { useSitePath } from "@/i18n/client";
 
 export function Footer() {
   const identity = useIdentity();
-  const pathname = usePathname();
-  if (pathname === "/chat") return null;
+  const t = useDictionary();
+  if (useSitePath() === "/chat") return null;
 
   return (
     <footer className="border-t border-border py-10">
@@ -15,7 +16,7 @@ export function Footer() {
         <div className="flex items-center gap-3">
           <span className="font-mono font-bold text-sm">{identity.initials}•</span>
           <span className="text-sm text-muted-foreground">
-            Built with Next.js &amp; Tailwind CSS
+            {t.footer.builtWith}
           </span>
         </div>
 
@@ -24,7 +25,7 @@ export function Footer() {
             href={identity.social.github}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="GitHub profile"
+            aria-label={t.footer.github}
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
           >
             <Github size={18} strokeWidth={2} aria-hidden="true" />
@@ -33,7 +34,7 @@ export function Footer() {
             href={identity.social.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="LinkedIn profile"
+            aria-label={t.footer.linkedin}
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
           >
             <Linkedin size={18} strokeWidth={2} aria-hidden="true" />
@@ -42,14 +43,14 @@ export function Footer() {
             href="/resume.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Résumé (PDF)"
+            aria-label={t.footer.resume}
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
           >
             <FileText size={18} strokeWidth={2} aria-hidden="true" />
           </a>
           <a
             href={`mailto:${identity.social.email}`}
-            aria-label="Send email"
+            aria-label={t.footer.email}
             className="text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded"
           >
             <Mail size={18} strokeWidth={2} aria-hidden="true" />

@@ -40,6 +40,21 @@ if (version !== SITE_JSON_VERSION) {
 }
 writeFileSync(join(out, 'site.json'), json);
 
+// What the Portuguese pages still show in English (ADR-0015). Not an error: a
+// field falls back to English until its translation is written and reviewed in
+// `career` (`npm run translations` there).
+const { translations } = JSON.parse(json);
+const { missing, stale } = translations.pt;
+if (missing.length + stale.length > 0) {
+  console.warn(
+    `fetch-corpus: pt shows English for ${missing.length} untranslated and ${stale.length} stale fields.` +
+      (stale.length > 0 ? `
+  stale: ${stale.join(', ')}` : '') +
+      `
+  Run \`npm run translations\` in career for the list.`,
+  );
+}
+
 if (!process.argv.includes('--json-only')) {
   runCareer('resume:pdf', ['--out-dir', out]);
 }

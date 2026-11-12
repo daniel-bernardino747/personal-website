@@ -58,11 +58,14 @@ export function careerTimeline(
     });
 }
 
-/** "2020–22", "2025–now", "2023", or "" when the period is unrecorded. */
-export function displayPeriod(period: Affiliation['period']): string {
+/**
+ * "2020–22", "2025–now", "2023", or "" when the period is unrecorded. `now` is
+ * the page's word for a period still running (the dictionary's `bento.now`).
+ */
+export function displayPeriod(period: Affiliation['period'], now: string): string {
   if (!period) return '';
   const start = period.start.slice(0, 4);
-  if (!period.end) return `${start}–now`;
+  if (!period.end) return `${start}–${now}`;
   const end = period.end.slice(0, 4);
   if (end === start) return start;
   return start.slice(0, 2) === end.slice(0, 2)

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { getIdentity } from './site';
+import { SITE_JSON_VERSION } from './schema';
 import { CorpusError, fromSiteJson, readCorpus } from './source';
 
 const FIXTURE = fileURLToPath(new URL('./__fixtures__/site.json', import.meta.url));
@@ -39,7 +40,8 @@ describe('reading site:json', () => {
   });
 
   it('refuses another contract version before reading anything', () => {
-    expect(() => fromSiteJson({ ...fixture(), version: 2 })).toThrow(/version 2/);
+    const other = SITE_JSON_VERSION + 1;
+    expect(() => fromSiteJson({ ...fixture(), version: other })).toThrow(new RegExp(`version ${other}`));
   });
 
   it('refuses a record that does not match the contract', () => {

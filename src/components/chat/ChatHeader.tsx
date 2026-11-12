@@ -2,22 +2,26 @@
 
 import { AvatarVideo } from '@/components/AvatarVideo';
 import { Button } from '@/components/ui/Button';
+import { useDictionary } from '@/components/DictionaryProvider';
 import { useIdentity } from '@/components/IdentityProvider';
 import { ArrowLeft, Calendar, Github, Linkedin, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { useLocaleHref } from '@/i18n/client';
 
 export function ChatHeader() {
   const identity = useIdentity();
+  const t = useDictionary();
+  const localeHref = useLocaleHref();
 
   return (
     <div className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
         <Link
-          href="/"
+          href={localeHref("/")}
           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer mr-2"
         >
           <ArrowLeft size={16} />
-          <span>Home</span>
+          <span>{t.chat.home}</span>
         </Link>
         
         <AvatarVideo
@@ -31,7 +35,7 @@ export function ChatHeader() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
             </span>
-            <span className="text-xs text-emerald-400">Online</span>
+            <span className="text-xs text-emerald-400">{t.chat.online}</span>
           </div>
         </div>
 
@@ -42,7 +46,7 @@ export function ChatHeader() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="GitHub"
+              aria-label={t.chat.github}
             >
               <Github size={18} />
             </a>
@@ -51,14 +55,14 @@ export function ChatHeader() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="LinkedIn"
+              aria-label={t.chat.linkedin}
             >
               <Linkedin size={18} />
             </a>
             <a
               href={`mailto:${identity.social.email}`}
               className="text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Email"
+              aria-label={t.chat.email}
             >
               <Mail size={18} />
             </a>
@@ -70,7 +74,7 @@ export function ChatHeader() {
               className="rounded-full bg-accent text-white border border-accent/20 hover:bg-accent/80 flex gap-2 items-center shadow-lg shadow-accent/20 transition-all active:scale-95 text-xs h-8"
             >
               <Calendar size={14} />
-              <span className="hidden sm:inline">Get it off the ground</span>
+              <span className="hidden sm:inline">{t.nav.booking}</span>
             </Button>
           </a>
         </div>

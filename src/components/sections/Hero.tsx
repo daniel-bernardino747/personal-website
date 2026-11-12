@@ -1,6 +1,7 @@
 "use client";
 
 import { AvatarVideo } from "@/components/AvatarVideo";
+import { useDictionary } from "@/components/DictionaryProvider";
 import { useIdentity } from "@/components/IdentityProvider";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -11,6 +12,7 @@ import { ScrollMessage } from "./ScrollMessage";
 
 export function Hero() {
   const identity = useIdentity();
+  const t = useDictionary();
   const prefersReducedMotion = useReducedMotion();
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -66,10 +68,14 @@ export function Hero() {
           <motion.h1 
             layout
             transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
-            className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] mb-6 min-h-[1.2em] flex items-center justify-center"
+            className="text-4xl md:text-[clamp(2.25rem,3.7vw,3.5rem)] font-bold tracking-tight leading-[1.1] mb-6 min-h-[1.2em] flex flex-wrap md:flex-nowrap items-center justify-center gap-x-3 md:whitespace-nowrap"
           >
-            <span className="text-foreground mr-3">Hi, I&apos;m </span>
-            <div className="relative h-[1.2em] flex items-center justify-center overflow-visible">
+            {/* One line from tablet up: "Oi, eu sou Daniel Bernardino de Souza" is
+                wider than "Hi, I'm …", so the size follows the viewport instead of
+                letting either half break. On a phone there is no width for one
+                line at a readable size, and the name drops below the greeting. */}
+            <span className="text-foreground whitespace-nowrap">{t.hero.greeting}</span>
+            <div className="relative min-h-[1.2em] max-w-full md:max-w-none flex items-center justify-center overflow-visible text-center text-balance md:text-wrap">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={currentIndex}

@@ -1,5 +1,7 @@
 import 'server-only';
 
+import type { Locale } from '@/i18n/routing';
+
 import type { Identity } from './schema';
 import { type Corpus, CorpusError, readCorpus, siteJsonPath } from './source';
 
@@ -9,8 +11,8 @@ import { type Corpus, CorpusError, readCorpus, siteJsonPath } from './source';
  * import keeps this out of client bundles. Client components receive Corpus
  * data as props or through a provider seeded here.
  */
-export function getCorpus(): Corpus {
-  return readCorpus();
+export function getCorpus(locale: Locale = 'en'): Corpus {
+  return readCorpus(siteJsonPath(), locale);
 }
 
 /**
@@ -18,8 +20,8 @@ export function getCorpus(): Corpus {
  * one, so its absence halts the build rather than shipping a header with no
  * name (spec story 34, 35).
  */
-export function getIdentity(): Identity {
-  const { identity } = readCorpus();
+export function getIdentity(locale: Locale = 'en'): Identity {
+  const { identity } = readCorpus(siteJsonPath(), locale);
   if (!identity) {
     throw new CorpusError(
       `The site requires an Identity, but ${siteJsonPath()} carries none. Does the career checkout have corpus/identity.md?`,

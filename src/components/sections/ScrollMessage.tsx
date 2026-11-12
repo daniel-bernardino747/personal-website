@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import { Mouse } from "lucide-react";
+import { useDictionary } from "@/components/DictionaryProvider";
 
 export function ScrollMessage() {
+  const t = useDictionary();
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -29,7 +31,7 @@ export function ScrollMessage() {
       </div>
       
       <span className="text-[10px] uppercase tracking-[0.2em] font-medium [writing-mode:vertical-rl] mt-2">
-        Scroll
+        {t.hero.scroll}
       </span>
     </motion.div>
   );

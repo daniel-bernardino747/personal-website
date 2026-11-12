@@ -1,12 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 
+import { useDictionary } from "@/components/DictionaryProvider";
 import type { Accomplishment } from "@/lib/corpus/schema";
 import { displayYear } from "@/lib/corpus/statement";
-import { packRows } from "@/lib/projects/pack";
-import { ProjectCard } from "./projects/ProjectCard";
+import { CurvedGallery } from "./projects/CurvedGallery";
 
 /**
  * The Projects section renders project-kind Accomplishments from the Corpus.
@@ -15,7 +15,8 @@ import { ProjectCard } from "./projects/ProjectCard";
  * yet: the card states what the thing is and claims nothing numeric. The page
  * opts into that with `byKind('project', { includeDrafts: true })`.
  */
-const ALL = "All";
+// The "every year" filter's state value; its label comes from the dictionary.
+const ALL = "all";
 
 /**
  * The Corpus id of the project that is this website. Lives here rather than in
@@ -25,7 +26,7 @@ const ALL = "All";
 const THIS_SITE_ID = "personal-website";
 
 export function Projects({ projects }: { projects: Accomplishment[] }) {
-  const prefersReducedMotion = useReducedMotion();
+  const t = useDictionary();
   const [activeYear, setActiveYear] = useState<string>(ALL);
 
   // Newest first, and years derived from the content rather than hardcoded, so a
@@ -48,35 +49,10 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
     [ordered, activeYear],
   );
 
-  // Rows are decided here, not by CSS, so the order a keyboard walks is the
-  // order on screen. The index numeral counts only the cards that show it.
-  const cells = useMemo(() => {
-    let numeral = 0;
-    return packRows(
-      visible.map((project) => ({
-        project,
-        featured: project.featured,
-        hasImage: project.image !== undefined,
-      })),
-    )
-      .flat()
-      .map((cell) => ({
-        ...cell,
-        numeral: cell.item.hasImage ? undefined : ++numeral,
-      }));
-  }, [visible]);
-
   const filters = years.length > 1 ? [ALL, ...years] : [];
 
-  const gridVariants = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: prefersReducedMotion ? 0 : 0.04 },
-    },
-  };
-
   return (
-    <section id="projects" className="px-6 py-24 md:py-32">
+    <section id="projects" className="px-6 pt-8 pb-24 md:pt-12 md:pb-32">
       <div className="mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -86,10 +62,10 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
           className="mb-10"
         >
           <p className="mb-3 text-[10px] font-bold uppercase tracking-widest text-accent-text">
-            Selected work
+            {t.projects.eyebrow}
           </p>
           <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-            Projects
+            {t.projects.title}
           </h2>
           {/* Draws itself in on scroll — motion that marks the section starting. */}
           <motion.div
@@ -101,16 +77,15 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
             className="mt-3 h-1 w-16 rounded-full bg-accent/60"
           />
           <p className="mt-5 max-w-2xl text-lg text-muted-foreground">
-            Things I&apos;ve built — side projects, open source contributions,
-            and professional work.
+            {t.projects.lede}
           </p>
         </motion.div>
 
         {filters.length > 0 && (
           <div
             role="group"
-            aria-label="Filter projects by year"
-            className="mb-10 flex flex-wrap gap-2"
+            aria-label={t.projects.filterAria}
+            className="mb-4 flex flex-wrap gap-2"
           >
             {filters.map((filter) => {
               const isActive = filter === activeYear;
@@ -134,7 +109,7 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
                       className="absolute inset-0 rounded-full bg-accent/15"
                     />
                   )}
-                  <span className="relative">{filter}</span>
+                  <span className="relative">{filter === ALL ? t.projects.all : filter}</span>
                 </button>
               );
             })}
@@ -142,36 +117,14 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
         )}
 
         {ordered.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            Projects are being written up — check back soon.
-          </p>
+          <p className="text-sm text-muted-foreground">{t.projects.empty}</p>
         ) : (
-          <motion.div
-            layout
-            variants={gridVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-          >
-            <AnimatePresence mode="popLayout">
-              {cells.map(({ item: { project }, wide, numeral }) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  numeral={numeral}
-                  featured={project.featured}
-                  wide={wide}
-                  isThisSite={project.id === THIS_SITE_ID}
-                />
-              ))}
-            </AnimatePresence>
-          </motion.div>
+          <CurvedGallery projects={visible} thisSiteId={THIS_SITE_ID} />
         )}
 
         {/* Announced politely so a filter change isn't silent to a screen reader. */}
         <p aria-live="polite" className="sr-only">
-          {`${visible.length} project${visible.length === 1 ? "" : "s"} shown`}
+          {t.projects.shown(visible.length)}
         </p>
       </div>
     </section>

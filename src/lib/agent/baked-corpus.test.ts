@@ -52,6 +52,24 @@ describe.skipIf(!existsSync(BAKED) || !existsSync(SOURCE))('the baked Corpus', (
     expect(baked.affiliations.map((a) => a.id).sort()).toEqual([...referenced].sort());
   });
 
+  it('carries translation keys only for the records it carries (ADR-0015)', () => {
+    const baked = JSON.parse(readFileSync(BAKED, 'utf8')) as {
+      affiliations: { id: string }[];
+      accomplishments: Record[];
+      translations: { pt: { texts: object; missing: string[]; stale: string[] } };
+    };
+    const ids = new Set([
+      ...baked.affiliations.map((a) => `affiliation:${a.id}`),
+      ...baked.accomplishments.map((a) => `accomplishment:${a.id}`),
+    ]);
+    const { texts, missing, stale } = baked.translations.pt;
+
+    for (const key of [...Object.keys(texts), ...missing, ...stale]) {
+      if (key.startsWith('identity.')) continue;
+      expect(ids.has(key.slice(0, key.indexOf('.'))), `${key} names a withheld record`).toBe(true);
+    }
+  });
+
   it('leaves no traced copy of the Corpus beside the server', () => {
     for (const stray of ['.corpus', 'content']) {
       expect(existsSync(join(STANDALONE, stray)), `${stray}/ travelled`).toBe(false);

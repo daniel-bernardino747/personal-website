@@ -1,5 +1,6 @@
 "use client";
 
+import { useDictionary } from "@/components/DictionaryProvider";
 import { type CareerStop, displayPeriod } from "@/lib/corpus/career";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -15,6 +16,7 @@ import { ArrowUpRight } from "lucide-react";
  * every record, in the complete résumé (ADR-0009).
  */
 export function BentoExperiences({ stops }: { stops: CareerStop[] }) {
+  const t = useDictionary();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -46,7 +48,7 @@ export function BentoExperiences({ stops }: { stops: CareerStop[] }) {
                   isCurrent ? "text-accent" : "text-muted-foreground/70",
                 )}
               >
-                {displayPeriod(affiliation.period)}
+                {displayPeriod(affiliation.period, t.bento.now)}
               </span>
               {/* Each stop draws the track on to the next one, across the column
                     gap, so the line runs node to node without crossing a label.
@@ -88,7 +90,7 @@ export function BentoExperiences({ stops }: { stops: CareerStop[] }) {
         rel="noopener noreferrer"
         className="relative z-10 self-end mt-3 inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
       >
-        Full résumé
+        {t.bento.fullResume}
         <ArrowUpRight size={12} aria-hidden="true" />
       </a>
     </motion.div>

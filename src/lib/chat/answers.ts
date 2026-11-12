@@ -3,6 +3,8 @@ import 'server-only';
 import type { Corpus } from '@/lib/corpus/source';
 import type { Accomplishment, Identity } from '@/lib/corpus/schema';
 import { displayTitle, parseStatement } from '@/lib/corpus/statement';
+import { getDictionary } from '@/i18n/dictionary';
+import type { Locale } from '@/i18n/routing';
 
 import type { ChatAnswer } from './types';
 
@@ -24,27 +26,31 @@ import type { ChatAnswer } from './types';
  * `/achievements` renders, per ADR-0008. Nothing here may read `accomplishments`
  * or `drafts`.
  */
-export function buildChatAnswers(corpus: Corpus): ChatAnswer[] {
+export function buildChatAnswers(corpus: Corpus, locale: Locale = 'en'): ChatAnswer[] {
   const { identity, featured } = corpus;
+  // The question is interface text, in the page's language (ADR-0015). The
+  // responses stay English: only the development mock (`CHAT_MOCK`) reads them,
+  // and the agent answering in the page's language is a later ticket.
+  const { questions } = getDictionary(locale);
 
   return [
-    { id: 'me', phrase: 'Tell me about Daniel...', response: aboutMe(identity) },
+    { id: 'me', phrase: questions.me.phrase, response: aboutMe(identity) },
     {
       id: 'projects',
-      phrase: 'What has he actually shipped?',
+      phrase: questions.projects.phrase,
       response: projects(featured),
     },
     {
       id: 'skills',
-      phrase: 'What does he work with?',
+      phrase: questions.skills.phrase,
       response: skills(featured),
     },
     {
       id: 'site',
-      phrase: 'How was this site built?',
+      phrase: questions.site.phrase,
       response: thisSite(featured),
     },
-    { id: 'contact', phrase: 'Is he available for hire?', response: contact(identity) },
+    { id: 'contact', phrase: questions.contact.phrase, response: contact(identity) },
   ];
 }
 

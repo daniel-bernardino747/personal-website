@@ -1,6 +1,7 @@
 'use client';
 
 import { useTurnstile } from '@/components/chat/useTurnstile';
+import { useDictionary } from '@/components/DictionaryProvider';
 import { useChatStore } from '@/store/useChatStore';
 import { useCallback, useState } from 'react';
 
@@ -19,6 +20,7 @@ export function useChatMutation() {
   const addMessage = useChatStore((state) => state.addMessage);
   const appendToMessage = useChatStore((state) => state.appendToMessage);
   const getTurnstileToken = useTurnstile();
+  const { chat } = useDictionary();
   const [isPending, setIsPending] = useState(false);
 
   const mutate = useCallback(
@@ -61,9 +63,7 @@ export function useChatMutation() {
         // the reply, because that is what it is.
         if (!response.ok || !response.body) {
           const message = (await response.text().catch(() => '')).trim();
-          write(
-            message || 'Something went wrong, and I would rather say so than guess.',
-          );
+          write(message || chat.error);
           return;
         }
 
@@ -83,17 +83,15 @@ export function useChatMutation() {
         // A stream that closed without a single token still needs a reply in the
         // thread rather than an empty bubble or silence.
         if (bubbleId === null) {
-          write('I came back with nothing to say, which is a bug.');
+          write(chat.emptyReply);
         }
       } catch {
-        write(
-          'I could not reach the server just now. Worth trying again in a moment.',
-        );
+        write(chat.unreachable);
       } finally {
         setIsPending(false);
       }
     },
-    [addMessage, appendToMessage, getTurnstileToken],
+    [addMessage, appendToMessage, getTurnstileToken, chat],
   );
 
   return { mutate, isPending };
