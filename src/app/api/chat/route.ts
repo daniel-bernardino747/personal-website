@@ -151,9 +151,15 @@ export async function POST(request: NextRequest) {
     if (!verdict.allowed) {
       return honestly(verdict.reason === 'visitor' ? say.visitorQuota : say.siteQuota, 429, locale);
     }
-  } catch {
+  } catch (error) {
     // The limiter is the thing standing between a public endpoint and a paid
     // API. If it cannot be consulted, the request does not proceed.
+    // Logged, because the visitor's message cannot say which of the causes it
+    // was — no salt, no DATABASE_URL, an unreachable host, missing tables — and
+    // the first outage on Coolify (13/11/2026) left nothing to read. The
+    // message names hosts and tables, never the connection string.
+    const err = error as { name?: string; code?: string; message?: string };
+    console.error(`[chat] limiter unavailable: ${err?.name ?? 'Error'} ${err?.code ?? ''} ${err?.message ?? error}`);
     return honestly(say.limiter, 503, locale);
   }
 
