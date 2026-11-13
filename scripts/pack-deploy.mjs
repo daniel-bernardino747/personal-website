@@ -22,8 +22,11 @@ import { execFileSync } from 'node:child_process';
 import {
   cpSync,
   existsSync,
+  lstatSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   statSync,
 } from 'node:fs';
@@ -85,6 +88,34 @@ mkdirSync(staging, { recursive: true });
 // outside the artefact, and the container died on the first chat request with
 // "Cannot find package 'pg-…'" (12/11/2026). Copy what they point at instead.
 cpSync(standalone, staging, { recursive: true, dereference: true });
+
+// `dereference` alone was not enough on Linux: the same error came back from
+// the CI image (13/11/2026). So each package is resolved from the build's own
+// `.next/node_modules` and copied as a real directory, whatever form the link
+// took in the standalone tree (relative, absolute, or missing altogether).
+const externals = join(root, '.next', 'node_modules');
+if (existsSync(externals)) {
+  const target = join(staging, '.next', 'node_modules');
+  mkdirSync(target, { recursive: true });
+  for (const name of readdirSync(externals)) {
+    const real = realpathSync(join(externals, name));
+    rmSync(join(target, name), { recursive: true, force: true });
+    cpSync(real, join(target, name), { recursive: true, dereference: true });
+  }
+  // Refuse rather than ship a chat that dies on its first question.
+  const broken = readdirSync(target).filter((name) => {
+    const path = join(target, name);
+    return lstatSync(path).isSymbolicLink() || !existsSync(join(path, 'package.json'));
+  });
+  if (broken.length > 0) {
+    console.error(
+      'pack-deploy: external packages are still links or empty in the artefact:\n' +
+        broken.map((name) => `  .next/node_modules/${name}`).join('\n'),
+    );
+    process.exit(1);
+  }
+  console.log(`pack-deploy: external packages copied: ${readdirSync(target).join(', ')}`);
+}
 cpSync(join(root, '.next', 'static'), join(staging, '.next', 'static'), {
   recursive: true,
 });
