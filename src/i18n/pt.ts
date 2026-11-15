@@ -13,6 +13,7 @@ export const pt: Dictionary = {
     about: 'Sobre',
     projects: 'Projetos',
     labs: 'Labs',
+    agents: 'Agentes',
     achievements: 'Conquistas',
     chat: 'Chat',
     services: 'Serviços',
@@ -91,6 +92,31 @@ export const pt: Dictionary = {
     screen: (index, total) => `Tela ${index} de ${total}`,
     previousScreen: 'Tela anterior',
     nextScreen: 'Próxima tela',
+  },
+
+  agents: {
+    eyebrow: 'Agentes de IA',
+    title: 'Sistemas que trabalham sozinhos',
+    lede: 'Nem tudo que eu construo tem tela. Estes rodam em segundo plano: lembram, vigiam, conferem. Veja o que cada um faz.',
+    technical: 'Detalhes técnicos',
+    technicalAria: (title) => `Detalhes técnicos de ${title}`,
+    stepsAria: (title) => `O que o ${title} faz, passo a passo`,
+    scholia: {
+      summary:
+        'Um segundo cérebro para a IA. Ele guarda o que você decidiu numa conversa e, quando você pergunta de novo dias depois, ele lembra.',
+      steps: ['Você conversa', 'Ele guarda o que importa', 'Dias depois, você pergunta', 'Ele lembra'],
+      scene: {
+        chat: 'Conversa',
+        notes: 'Notas',
+        you1: 'Comparei três gráficas para o cardápio. Qual fecho?',
+        ai1: 'A Gráfica Sul: a mais barata, e entrega em 2 dias.',
+        note: 'Gráfica Sul para o cardápio: mais barata, entrega em 2 dias',
+        later: '3 dias depois',
+        you2: 'Qual gráfica eu escolhi para o cardápio?',
+        ai2: 'A Gráfica Sul — a mais barata, e entrega em 2 dias.',
+        older: ['Horário: 7h às 18h', 'Fornecedor de café: entrega às terças', 'Logo: a versão verde'],
+      },
+    },
   },
 
   labs: {

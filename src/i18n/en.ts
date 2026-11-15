@@ -17,6 +17,7 @@ export const en = {
     about: 'About',
     projects: 'Projects',
     labs: 'Labs',
+    agents: 'Agents',
     achievements: 'Achievements',
     chat: 'Chat',
     /** Portuguese-only links (the local offer); English never shows them. */
@@ -104,6 +105,36 @@ export const en = {
     screen: (index: number, total: number) => `Screen ${index} of ${total}`,
     previousScreen: 'Previous screen',
     nextScreen: 'Next screen',
+  },
+
+  /**
+   * The Agents section: projects with no screen of their own, each explained by
+   * an animation. The summary and the scene's words are written for someone who
+   * has never heard of an MCP server; the Metric still comes from the Corpus.
+   */
+  agents: {
+    eyebrow: 'AI agents',
+    title: 'Systems that work on their own',
+    lede: 'Not everything I build has a screen. These run in the background: they remember, watch and check. Here is what each one does.',
+    technical: 'Technical details',
+    technicalAria: (title: string) => `Technical details of ${title}`,
+    stepsAria: (title: string) => `What ${title} does, step by step`,
+    scholia: {
+      summary:
+        'A second brain for AI. It keeps what you decided in a conversation, and when you ask again days later, it remembers.',
+      steps: ['You talk it through', 'It keeps what matters', 'Days later, you ask', 'It remembers'],
+      scene: {
+        chat: 'Chat',
+        notes: 'Notes',
+        you1: 'I compared three print shops for the menu. Which one?',
+        ai1: 'Print Sul: the cheapest, and it delivers in 2 days.',
+        note: 'Print Sul for the menu: cheapest, 2-day delivery',
+        later: '3 days later',
+        you2: 'Which print shop did I pick for the menu?',
+        ai2: 'Print Sul — the cheapest, and it delivers in 2 days.',
+        older: ['Opening hours: 7am–6pm', 'Coffee supplier: delivers on Tuesdays', 'Logo: the green version'],
+      },
+    },
   },
 
   labs: {

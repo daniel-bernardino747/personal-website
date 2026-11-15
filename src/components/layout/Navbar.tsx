@@ -19,6 +19,7 @@ const navLinks = {
     { key: "home", href: "/" },
     { key: "about", href: "/#about" },
     { key: "projects", href: "/#projects" },
+    { key: "agents", href: "/#agents" },
     { key: "labs", href: "/#labs" },
     { key: "achievements", href: "/achievements" },
     { key: "chat", href: "/chat" },

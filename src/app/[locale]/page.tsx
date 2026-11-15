@@ -5,11 +5,13 @@ import { FirstDelivery, LocalContact } from "@/components/sections/local/FirstDe
 import { LocalHero } from "@/components/sections/local/LocalHero";
 import { EloPortal, Guarantees, HowItWorks, Services } from "@/components/sections/local/OfferSections";
 import { StickyWhatsApp } from "@/components/sections/local/StickyWhatsApp";
+import { Agents } from "@/components/sections/agents/Agents";
 import { Projects } from "@/components/sections/Projects";
 import { oferta } from "@/content/oferta/pt";
 import { careerTimeline } from "@/lib/corpus/career";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { listMindsetSlides } from "@/lib/mindset";
+import { splitAgents } from "@/lib/projects/agents";
 import { splitLabs } from "@/lib/projects/labs";
 import { isLocale } from "@/i18n/routing";
 import { localBusinessJsonLd, localeAlternates } from "@/lib/seo";
@@ -27,8 +29,10 @@ export default async function Home({ params }: Params) {
   const locale = isLocale(param) ? param : "pt";
   const corpus = getCorpus(locale);
   const projects = corpus.byKind("project", { includeDrafts: true });
-  // A Labs demo shows once, in the Labs section, not also in the gallery.
-  const { labs, rest } = splitLabs(projects);
+  // A Labs demo shows once, in the Labs section, and an agent once, in the
+  // Agents section; neither also appears among the projects.
+  const { labs, rest: notLabs } = splitLabs(projects);
+  const { agents, rest } = splitAgents(notLabs);
 
   const proof = (
     <>
@@ -39,6 +43,7 @@ export default async function Home({ params }: Params) {
       {/* The gallery shows projects without a Metric too — that gate exists so a
           résumé never implies an unmeasured result, not to hide shipped work. */}
       <Projects projects={rest} />
+      <Agents agents={agents} />
       <Labs demos={labs} locale={locale} />
     </>
   );
