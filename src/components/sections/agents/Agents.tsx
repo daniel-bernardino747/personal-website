@@ -11,6 +11,7 @@ import { displayTitle } from "@/lib/corpus/statement";
 import type { AgentId } from "@/lib/projects/agents";
 import { ProjectDialog } from "../projects/ProjectDialog";
 import { scholiaStory } from "./ScholiaScene";
+import { forgetStory } from "./ForgetScene";
 import { squareStory } from "./SquareScene";
 import type { Story } from "./StoryPlayer";
 import { StoryPlayer } from "./StoryPlayer";
@@ -26,6 +27,7 @@ const STORIES: Record<
 > = {
   "scholia-mcp": { story: scholiaStory, words: (t) => t.agents.scholia },
   "permit-compliance-analysis": { story: squareStory, words: (t) => t.agents.square },
+  "dont-let-me-forget": { story: forgetStory, words: (t) => t.agents.forget },
 };
 
 /**

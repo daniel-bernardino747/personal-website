@@ -140,6 +140,24 @@ export const pt: Dictionary = {
         decision: 'Decide: pedir correção',
       },
     },
+    forget: {
+      summary:
+        'Para ideias que você não quer perder, mas não tem tempo agora. Ele guarda em um segundo e traz de volta depois de 1 dia, 3 dias, 1 semana, 2 semanas e 4 semanas, até você fazer ou arquivar.',
+      steps: ['Você guarda a ideia em um segundo', 'Ela volta para você, de novo e de novo', 'No fim, chega ao Muro', 'Você faz, ou arquiva'],
+      scene: {
+        now: 'Agora',
+        task: 'Montando o orçamento de um cliente',
+        idea: 'Ideia: ler sobre como precificar serviços',
+        kept: 'Guardada. De volta ao orçamento.',
+        queue: 'Fila',
+        short: 'Precificação',
+        stops: ['1 dia', '3 dias', '1 sem', '2 sem', '4 sem', 'Muro'],
+        postponed: (times) => `adiada ${times}×`,
+        doIt: 'Fazer',
+        archive: 'Arquivar',
+        done: 'Virou tarefa',
+      },
+    },
   },
 
   labs: {

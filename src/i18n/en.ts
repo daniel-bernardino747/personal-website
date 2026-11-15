@@ -158,6 +158,24 @@ export const en = {
         decision: 'Decides: ask for a correction',
       },
     },
+    forget: {
+      summary:
+        "For ideas you don't want to lose but have no time for right now. It keeps one in a second and brings it back after 1 day, 3 days, 1 week, 2 weeks and 4 weeks, until you either do it or archive it.",
+      steps: ['You keep the idea in a second', 'It comes back to you, again and again', 'In the end it reaches the Wall', 'You do it, or you archive it'],
+      scene: {
+        now: 'Now',
+        task: "Putting together a client's quote",
+        idea: 'Idea: read about how to price services',
+        kept: 'Kept. Back to the quote.',
+        queue: 'Queue',
+        short: 'Pricing',
+        stops: ['1 day', '3 days', '1 wk', '2 wks', '4 wks', 'Wall'],
+        postponed: (times: number) => `put off ${times}×`,
+        doIt: 'Do it',
+        archive: 'Archive',
+        done: 'Became a task',
+      },
+    },
   },
 
   labs: {
