@@ -14,6 +14,7 @@ import { ContactButtons, SectionHeader } from "./parts";
 export function FirstDelivery({ project }: { project?: Accomplishment }) {
   if (!project) return null;
   const title = displayTitle(project) ?? project.id;
+  const cover = project.images?.[0];
   const { prose, tech } = parseStatement(project.statement);
 
   return (
@@ -21,9 +22,9 @@ export function FirstDelivery({ project }: { project?: Accomplishment }) {
       <div className="mx-auto max-w-5xl">
         <SectionHeader eyebrow={oferta.firstDelivery.eyebrow} title={title} />
         <article className="grid overflow-hidden rounded-3xl border border-border bg-surface md:grid-cols-2">
-          {project.image && (
+          {cover && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={project.image.src} alt={project.image.alt} loading="lazy" className="h-full w-full object-cover" />
+            <img src={cover.src} alt={cover.alt} loading="lazy" className="h-full w-full object-cover" />
           )}
           <div className="flex flex-col p-8">
             <p className="leading-relaxed text-muted-foreground">{prose}</p>

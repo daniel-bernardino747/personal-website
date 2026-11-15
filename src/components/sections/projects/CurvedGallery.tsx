@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Pause, Play, X } from "lucide-react";
-import { Dialog } from "radix-ui";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Github, Pause, Play } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useDictionary } from "@/components/DictionaryProvider";
@@ -17,7 +16,6 @@ import {
   slotDistance,
   VISIBLE_SLOTS,
 } from "@/lib/projects/curved-band";
-import { ProjectCard } from "./ProjectCard";
 
 /** Cards per second while idle, and while the pointer rests on the band. */
 const SPEED = 0.18;
@@ -30,7 +28,9 @@ const DRAG_THRESHOLD = 6;
  * inside (geometry in `lib/projects/curved-band.ts`). It turns on its own,
  * slows under the pointer, and stops while focused, while a project is open,
  * when paused, or for anyone who prefers reduced motion. A side card is brought
- * to the centre by clicking it; the centre card opens the full project card.
+ * to the centre by clicking it; the centre card opens the project dialog, which
+ * the section owns. A card is the project's cover, its name and year, and
+ * nothing to read: the words are in the dialog.
  *
  * To assistive tech it is a carousel (the APG pattern): one slide exposed at a
  * time, arrow keys and buttons to move, and a pause control for the rotation.
@@ -38,10 +38,14 @@ const DRAG_THRESHOLD = 6;
  */
 export function CurvedGallery({
   projects,
-  thisSiteId,
+  onOpen,
+  holding,
 }: {
+  /** Projects with a cover; the card is the picture. */
   projects: Accomplishment[];
-  thisSiteId: string;
+  onOpen: (project: Accomplishment) => void;
+  /** True while a project is open elsewhere (the dialog), which stops the band. */
+  holding: boolean;
 }) {
   const t = useDictionary();
   const regionRef = useRef<HTMLDivElement>(null);
@@ -60,7 +64,6 @@ export function CurvedGallery({
   const [paused, setPaused] = useState(false);
   const [focused, setFocused] = useState(false);
   const [reduced, setReduced] = useState(false);
-  const [open, setOpen] = useState<Accomplishment | null>(null);
   const [announcement, setAnnouncement] = useState("");
 
   const count = projects.length;
@@ -69,14 +72,7 @@ export function CurvedGallery({
     [projects, count],
   );
   const metrics = bandMetrics(cardWidth);
-  const running = !paused && !focused && !reduced && open === null;
-
-  // A filter change starts the band over at its first project.
-  useEffect(() => {
-    motion.current.offset = 0;
-    motion.current.target = null;
-    setCentre(0);
-  }, [projects]);
+  const running = !paused && !focused && !reduced && !holding;
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -177,7 +173,7 @@ export function CurvedGallery({
             move(1);
           } else if ((e.key === "Enter" || e.key === " ") && e.target === e.currentTarget) {
             e.preventDefault();
-            setOpen(slots[centre]);
+            onOpen(slots[centre]);
           }
         }}
         onPointerEnter={() => (motion.current.hover = true)}
@@ -238,7 +234,7 @@ export function CurvedGallery({
                 hidden={!isCentre}
                 clickable={near}
                 onActivate={() => {
-                  if (isCentre) setOpen(project);
+                  if (isCentre) onOpen(project);
                   else move(Math.round(slotDistance(i, motion.current.offset, slots.length)));
                 }}
               />
@@ -265,33 +261,6 @@ export function CurvedGallery({
         {announcement}
       </p>
 
-      <Dialog.Root open={open !== null} onOpenChange={(next) => !next && setOpen(null)}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-[300] bg-black/70 backdrop-blur-sm" />
-          <Dialog.Content
-            aria-describedby={undefined}
-            className="fixed left-1/2 top-1/2 z-[301] max-h-[88vh] w-[min(720px,92vw)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-3xl focus:outline-none"
-          >
-            {open && (
-              <>
-                <Dialog.Title className="sr-only">{displayTitle(open) ?? open.id}</Dialog.Title>
-                <ProjectCard
-                  project={open}
-                  featured={open.featured}
-                  wide={false}
-                  isThisSite={open.id === thisSiteId}
-                />
-                <Dialog.Close
-                  aria-label={t.projects.close}
-                  className="absolute right-3 top-3 z-10 grid size-10 cursor-pointer place-items-center rounded-full bg-background/80 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                >
-                  <X size={18} aria-hidden="true" />
-                </Dialog.Close>
-              </>
-            )}
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
     </div>
   );
 }
@@ -335,9 +304,9 @@ function BandCard({
   ref: (el: HTMLElement | null) => void;
 }) {
   const t = useDictionary();
-  const { prose, tech } = useMemo(() => parseStatement(project.statement), [project.statement]);
+  const { liveUrl, repoUrl } = useMemo(() => parseStatement(project.statement), [project.statement]);
   const title = displayTitle(project) ?? project.id;
-  const image = project.image;
+  const cover = project.images?.[0];
 
   return (
     <article
@@ -352,44 +321,36 @@ function BandCard({
       } ${clickable ? "cursor-pointer" : "pointer-events-none"}`}
       style={{ width, height, opacity: 0 }}
     >
-      {image && (
+      {cover && (
         // The project's own picture, decoded lazily: most of the band is off screen.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={image.src} alt={image.alt} loading="lazy" draggable={false} className="aspect-[1200/630] w-full shrink-0 object-cover" />
+        <img src={cover.src} alt={cover.alt} loading="lazy" draggable={false} className="aspect-[1200/630] w-full shrink-0 object-cover" />
       )}
-      <div className="flex min-h-0 flex-1 flex-col p-6">
-        <div className="mb-3 flex items-center gap-2">
+      <div className="flex min-h-0 flex-1 flex-col justify-center gap-2 px-5 py-4">
+        <div className="flex items-center gap-2">
           <span className="font-mono text-xs text-muted-foreground">{displayYear(project)}</span>
-          {project.featured && (
-            <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-text">
-              {t.projects.featured}
+          {(liveUrl || repoUrl) && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {liveUrl ? <ArrowUpRight className="size-3" aria-hidden="true" /> : <Github className="size-3" aria-hidden="true" />}
+              {liveUrl ? t.projects.live : t.projects.source}
             </span>
           )}
         </div>
-        <h3 className="mb-3 text-xl font-bold tracking-tight">{title}</h3>
-        <p className={`text-sm leading-relaxed text-muted-foreground ${image ? "line-clamp-3" : "line-clamp-6"}`}>{prose}</p>
-        <div className="mt-auto pt-4">
-          {project.metric && <p className="mb-3 line-clamp-2 text-xs font-medium text-accent-text">{project.metric}</p>}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {tech.slice(0, 4).map((name) => (
-              <span key={name} className="rounded-full border border-border px-2.5 py-0.5 text-[11px] text-muted-foreground">
-                {name}
-              </span>
-            ))}
-            {isCentre && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onActivate();
-                }}
-                aria-label={t.projects.open(title)}
-                className="ml-auto cursor-pointer rounded-full text-xs font-medium text-accent-text hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-              >
-                {t.projects.readMore}
-              </button>
-            )}
-          </div>
+        <div className="flex items-center gap-3">
+          <h3 className="min-w-0 flex-1 truncate text-lg font-bold tracking-tight">{title}</h3>
+          {isCentre && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onActivate();
+              }}
+              aria-label={t.projects.open(title)}
+              className="shrink-0 cursor-pointer rounded-full text-xs font-medium text-accent-text hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              {t.projects.view}
+            </button>
+          )}
         </div>
       </div>
     </article>

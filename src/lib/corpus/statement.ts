@@ -49,6 +49,14 @@ function urlAfter(text: string, at: number, marker: string): string | undefined 
   return candidate ? safeUrl(candidate) : undefined;
 }
 
+/**
+ * A comma or " and " that separates two stack entries, but not one inside an
+ * entry's own parenthetical: "PostgreSQL (pgvector, full-text search)" is one
+ * entry. The lookahead accepts a separator only when no ")" follows before the
+ * next "(", which holds for the single level of parentheses the Corpus writes.
+ */
+const OUTSIDE_PARENS_SEPARATOR = /(?:,|\sand\s)(?![^(]*\))/;
+
 export function parseStatement(statement: string): ParsedStatement {
   const trimmed = statement.trim();
 
@@ -77,7 +85,7 @@ export function parseStatement(statement: string): ParsedStatement {
     tech = trimmed
       .slice(builtAt + BUILT_WITH.length, end)
       .replace(/[.\s]+$/, '')
-      .split(/,|\sand\s/)
+      .split(OUTSIDE_PARENS_SEPARATOR)
       .map((entry) => entry.trim().replace(/\.$/, ''))
       .filter(Boolean);
   }

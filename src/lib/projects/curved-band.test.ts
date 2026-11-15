@@ -14,7 +14,7 @@ describe('the curved band', () => {
     expect(cardWidthFor(1600)).toBe(400);
     expect(cardWidthFor(390)).toBe(304);
     expect(cardWidthFor(200)).toBe(260);
-    expect(bandMetrics(400)).toMatchObject({ cardHeight: 480, perspective: 1200 });
+    expect(bandMetrics(400)).toMatchObject({ cardHeight: 304, perspective: 1200 });
   });
 
   it('loops: the slot after the last is the first', () => {

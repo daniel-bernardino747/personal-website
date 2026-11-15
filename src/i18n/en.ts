@@ -77,20 +77,17 @@ export const en = {
     eyebrow: 'Selected work',
     title: 'Projects',
     lede: "Things I've built — side projects, open source contributions, and professional work.",
-    all: 'All',
-    filterAria: 'Filter projects by year',
     empty: 'Projects are being written up — check back soon.',
-    shown: (count: number) => `${count} project${count === 1 ? '' : 's'} shown`,
+    /** The list under the gallery, of projects with no picture yet. */
+    others: 'Other projects',
     live: 'Live',
     source: 'Source',
     featured: 'Featured',
     thisSite: "You're looking at it",
     thisSiteNote:
       "This is the site you're browsing right now — the source below is what builds this page.",
-    readMore: 'Read more',
-    showLess: 'Show less',
-    /** Read after "Read more" by a screen reader only, with a leading space. */
-    about: (title: string) => ` about ${title}`,
+    /** The centre card's call to open the project. */
+    view: 'View project',
     visit: (title?: string) => `Visit ${title ?? 'the live site'}`,
     onGitHub: (title?: string) => (title ? `${title} on GitHub` : 'Source on GitHub'),
     /** The curved gallery (a carousel, to assistive tech). */
@@ -102,6 +99,11 @@ export const en = {
     play: 'Resume the rotation',
     open: (title: string) => `Open ${title}`,
     close: 'Close',
+    /** The screens carousel in the project dialog. */
+    screens: (title: string) => `Screens of ${title}`,
+    screen: (index: number, total: number) => `Screen ${index} of ${total}`,
+    previousScreen: 'Previous screen',
+    nextScreen: 'Next screen',
   },
 
   labs: {

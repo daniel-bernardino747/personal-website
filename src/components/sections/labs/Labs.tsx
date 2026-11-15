@@ -52,7 +52,7 @@ export function Labs({ demos, locale }: { demos: Accomplishment[]; locale: Local
     const { prose, liveUrl } = parseStatement(demo.statement);
     const title = displayTitle(demo);
     if (!liveUrl || !title) return [];
-    return [{ id: demo.id, title, when: boardMonth(demo.date, locale), prose, href: liveUrl, image: demo.image }];
+    return [{ id: demo.id, title, when: boardMonth(demo.date, locale), prose, href: liveUrl, image: demo.images?.[0] }];
   });
   if (board.length === 0) return null;
 

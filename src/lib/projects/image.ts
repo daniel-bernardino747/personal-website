@@ -14,9 +14,58 @@ export const IMAGE_HEIGHT = 630;
  */
 export const RATIO_TOLERANCE = 0.03;
 
-/** The site path an image for `id` is recorded under, and served from. */
-export function imageSrc(id: string): string {
-  return `/projects/${id}.webp`;
+/** The name of a project's first image, the cover its card shows (ADR-0017). */
+export const COVER = 'cover';
+
+/** The site path a project's image is recorded under, and served from. */
+export function imageSrc(id: string, name: string = COVER): string {
+  return `/projects/${id}/${name}.webp`;
+}
+
+/** The file name of an image without its extension: `cover` for `/projects/x/cover.webp`. */
+export function imageName(src: string): string {
+  return src.slice(src.lastIndexOf('/') + 1).replace(/\.webp$/, '');
+}
+
+/** A portrait extra screen is stored at this size: one phone per image (ADR-0017). */
+export const PORTRAIT_WIDTH = 630;
+export const PORTRAIT_HEIGHT = 1200;
+
+/**
+ * The portraits accepted, from 9:21 to 9:16 — the span of phone screenshots, on
+ * either side of 630:1200. A portrait screen is never cropped to size: it is
+ * fitted inside the canvas and the rest is left transparent, which shows the
+ * page's own background in either theme.
+ */
+export const PORTRAIT_MIN_RATIO = 9 / 21;
+export const PORTRAIT_MAX_RATIO = 9 / 16;
+
+/** The name a screen file may take: it becomes part of a site path and a translation key. */
+export const SCREEN_NAME = /^[\w-]+$/;
+
+export interface ScreenFit {
+  width: number;
+  height: number;
+  /** `cover` trims at most a few pixels; `contain` trims nothing and pads. */
+  fit: 'cover' | 'contain';
+}
+
+/**
+ * How an extra screen of `width`×`height` is stored, or undefined when it is
+ * refused: landscape close to 1200×630, or a portrait from 9:21 to 9:16.
+ * Anything else — a square, a 16:9 desktop capture — is refused, never cropped.
+ */
+export function screenFit(width: number, height: number): ScreenFit | undefined {
+  if (fitsRatio(width, height)) return { width: IMAGE_WIDTH, height: IMAGE_HEIGHT, fit: 'cover' };
+  if (width <= 0 || height <= 0) return undefined;
+  const ratio = width / height;
+  if (
+    ratio >= PORTRAIT_MIN_RATIO * (1 - RATIO_TOLERANCE) &&
+    ratio <= PORTRAIT_MAX_RATIO * (1 + RATIO_TOLERANCE)
+  ) {
+    return { width: PORTRAIT_WIDTH, height: PORTRAIT_HEIGHT, fit: 'contain' };
+  }
+  return undefined;
 }
 
 /** True when `width`×`height` is close enough to 1.91:1 to be resized to it. */

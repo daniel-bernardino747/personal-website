@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import type { Locale } from '@/i18n/routing';
 
-import { localizeSiteJson } from './localize';
+import { localizeSiteJson } from './localize.ts';
 import {
   type Accomplishment,
   type Affiliation,

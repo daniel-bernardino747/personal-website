@@ -48,6 +48,19 @@ describe('parseStatement', () => {
     expect(repoUrl).toBe('https://github.com/acme/thing');
   });
 
+  it('keeps a parenthetical with its own commas as one stack entry', () => {
+    const { tech } = parseStatement(
+      'A second brain. Built with Python, PostgreSQL (pgvector, full-text search), Voyage AI and OpenAI embeddings, Docker. Repo: https://github.com/x/y',
+    );
+    expect(tech).toEqual([
+      'Python',
+      'PostgreSQL (pgvector, full-text search)',
+      'Voyage AI',
+      'OpenAI embeddings',
+      'Docker',
+    ]);
+  });
+
   it('reads both links regardless of the order they are written in', () => {
     const written = [
       'A thing. Built with React. Live: https://thing.dev Repo: https://github.com/acme/thing',

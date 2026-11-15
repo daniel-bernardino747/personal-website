@@ -15,3 +15,5 @@ Every image is normalised when it is acquired: WebP, exactly 1200×630, around q
 The image is site presentation. The résumé, the LinkedIn blocks and the Letter ignore it, and `corpus:json` leaves it out, so the contract with `prospect-me` ([ADR-0011](./0011-recon-leaves-for-its-own-repository.md)) is unchanged. Adding it there would be a deliberate, versioned change.
 
 An image can go stale when the project changes. Re-running `project:image` and approving the result again is how a stale image gets refreshed. Nothing refreshes it automatically, for the same reason nothing fetches at build.
+
+[ADR-0017](./0017-a-project-carries-several-screens.md) extends this to several screens per project: `image` became `images`, the first is the cover, and files moved to `public/projects/<id>/`.

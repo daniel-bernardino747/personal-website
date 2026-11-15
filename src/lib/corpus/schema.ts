@@ -23,7 +23,7 @@ export type Kind = (typeof KINDS)[number];
  * validates shape, not visibility. A mismatched `version` is refused before
  * parsing, because the producer lives in another repository.
  */
-export const SITE_JSON_VERSION = 2;
+export const SITE_JSON_VERSION = 3;
 
 const affiliationSchema = z.object({
   id: z.string().min(1),
@@ -40,7 +40,10 @@ const accomplishmentSchema = z.object({
   kind: z.enum(KINDS),
   metric: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
-  image: z.object({ src: z.string().regex(/^\/projects\/[\w.-]+$/), alt: z.string().min(1) }).optional(),
+  images: z
+    .array(z.object({ src: z.string().regex(/^\/projects\/[\w-]+\/[\w-]+\.webp$/), alt: z.string().min(1) }))
+    .min(1)
+    .optional(),
   statement: z.string().min(1),
   featured: z.boolean(),
   isDraft: z.boolean(),
@@ -135,10 +138,12 @@ export interface Accomplishment {
    */
   title?: string;
   /**
-   * The image a project card shows, 1200×630 WebP under `public/projects/`.
-   * Absent for most Accomplishments, and for projects with nothing to show yet.
+   * The pictures of a project, WebP under `public/projects/<id>/` (ADR-0017).
+   * The first is the cover the card shows (1200×630); the rest are extra screens
+   * for the project dialog, 1200×630 or 630×1200. Absent for most
+   * Accomplishments, and for projects with nothing to show yet.
    */
-  image?: { src: string; alt: string };
+  images?: { src: string; alt: string }[];
   /** The prose statement — the markdown body of the file. */
   statement: string;
   featured: boolean;

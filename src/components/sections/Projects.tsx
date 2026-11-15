@@ -5,51 +5,29 @@ import { useMemo, useState } from "react";
 
 import { useDictionary } from "@/components/DictionaryProvider";
 import type { Accomplishment } from "@/lib/corpus/schema";
-import { displayYear } from "@/lib/corpus/statement";
+import { displayTitle, displayYear, parseStatement } from "@/lib/corpus/statement";
+import { splitGallery } from "@/lib/projects/gallery";
 import { CurvedGallery } from "./projects/CurvedGallery";
+import { ProjectDialog } from "./projects/ProjectDialog";
+
+/** How many technologies a row of the "Other projects" list names. */
+const LIST_TECH = 3;
 
 /**
- * The Projects section renders project-kind Accomplishments from the Corpus.
+ * The Projects section renders project-kind Accomplishments from the Corpus,
+ * pictures first (`.scratch/projects-and-agents/`): the gallery shows only
+ * projects with a cover, and every other project is listed in text below it, so
+ * nothing shipped disappears. Both open the same dialog, where the screens and
+ * the words are.
+ *
  * Unlike a résumé — which shows only Records, so it never implies a number it
- * cannot back — the gallery includes projects whose metrics aren't recovered
- * yet: the card states what the thing is and claims nothing numeric. The page
- * opts into that with `byKind('project', { includeDrafts: true })`.
+ * cannot back — the section includes projects whose metrics aren't recovered
+ * yet. The page opts into that with `byKind('project', { includeDrafts: true })`.
  */
-// The "every year" filter's state value; its label comes from the dictionary.
-const ALL = "all";
-
-/**
- * The Corpus id of the project that is this website. Lives here rather than in
- * the Corpus because "you are on it" is true of this page only — a résumé
- * rendered from the same statement must not claim it.
- */
-const THIS_SITE_ID = "personal-website";
-
 export function Projects({ projects }: { projects: Accomplishment[] }) {
   const t = useDictionary();
-  const [activeYear, setActiveYear] = useState<string>(ALL);
-
-  // Newest first, and years derived from the content rather than hardcoded, so a
-  // captured project appears in the filter without a code change.
-  const ordered = useMemo(
-    () => [...projects].sort((a, b) => b.date.localeCompare(a.date)),
-    [projects],
-  );
-
-  const years = useMemo(
-    () => [...new Set(ordered.map(displayYear))],
-    [ordered],
-  );
-
-  const visible = useMemo(
-    () =>
-      activeYear === ALL
-        ? ordered
-        : ordered.filter((project) => displayYear(project) === activeYear),
-    [ordered, activeYear],
-  );
-
-  const filters = years.length > 1 ? [ALL, ...years] : [];
+  const [open, setOpen] = useState<Accomplishment | null>(null);
+  const { pictured, textOnly } = useMemo(() => splitGallery(projects), [projects]);
 
   return (
     <section id="projects" className="px-6 pt-8 pb-24 md:pt-12 md:pb-32">
@@ -81,52 +59,69 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
           </p>
         </motion.div>
 
-        {filters.length > 0 && (
-          <div
-            role="group"
-            aria-label={t.projects.filterAria}
-            className="mb-4 flex flex-wrap gap-2"
-          >
-            {filters.map((filter) => {
-              const isActive = filter === activeYear;
-              return (
-                <button
-                  key={filter}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => setActiveYear(filter)}
-                  className={`relative min-h-11 cursor-pointer rounded-full border px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-                    isActive
-                      ? "border-accent/40 text-foreground"
-                      : "border-border text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="project-filter-pill"
-                      transition={{ type: "spring", stiffness: 320, damping: 30 }}
-                      aria-hidden="true"
-                      className="absolute inset-0 rounded-full bg-accent/15"
-                    />
-                  )}
-                  <span className="relative">{filter === ALL ? t.projects.all : filter}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {ordered.length === 0 ? (
+        {projects.length === 0 && (
           <p className="text-sm text-muted-foreground">{t.projects.empty}</p>
-        ) : (
-          <CurvedGallery projects={visible} thisSiteId={THIS_SITE_ID} />
         )}
 
-        {/* Announced politely so a filter change isn't silent to a screen reader. */}
-        <p aria-live="polite" className="sr-only">
-          {t.projects.shown(visible.length)}
-        </p>
+        {pictured.length > 0 && (
+          <CurvedGallery projects={pictured} onOpen={setOpen} holding={open !== null} />
+        )}
+
+        {textOnly.length > 0 && (
+          <OtherProjects projects={textOnly} onOpen={setOpen} />
+        )}
       </div>
+
+      <ProjectDialog project={open} onClose={() => setOpen(null)} />
     </section>
+  );
+}
+
+/**
+ * Projects with no picture yet, as a quiet list: name, year and a few
+ * technologies, which say what kind of work it was where a cut-off sentence
+ * would not. A row opens the same dialog as a gallery card.
+ */
+function OtherProjects({
+  projects,
+  onOpen,
+}: {
+  projects: Accomplishment[];
+  onOpen: (project: Accomplishment) => void;
+}) {
+  const t = useDictionary();
+
+  return (
+    <div className="mt-16">
+      <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        {t.projects.others}
+      </h3>
+      <ul className="divide-y divide-border border-y border-border">
+        {projects.map((project) => {
+          const title = displayTitle(project) ?? project.id;
+          const tech = parseStatement(project.statement).tech.slice(0, LIST_TECH);
+          return (
+            <li key={project.id}>
+              <button
+                type="button"
+                onClick={() => onOpen(project)}
+                aria-label={t.projects.open(title)}
+                className="group grid min-h-14 w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-1 py-3 text-left transition-colors hover:bg-foreground/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
+              >
+                <span className="truncate font-semibold text-foreground transition-colors group-hover:text-accent-text">
+                  {title}
+                </span>
+                <span className="col-start-1 row-start-2 truncate text-xs text-muted-foreground sm:col-start-2 sm:row-start-1">
+                  {tech.join(" · ")}
+                </span>
+                <span className="col-start-2 row-span-2 row-start-1 font-mono text-xs text-muted-foreground sm:col-start-3 sm:row-span-1">
+                  {displayYear(project)}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

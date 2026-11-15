@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { findOgImage, fitsRatio, imageSrc } from './image';
+import { findOgImage, fitsRatio, imageName, imageSrc, screenFit, SCREEN_NAME } from './image';
 
 describe('findOgImage', () => {
   const page = 'https://labs.example.com/demo/thing';
@@ -69,7 +69,43 @@ describe('fitsRatio', () => {
 });
 
 describe('imageSrc', () => {
-  it('is a site path under /projects/, as the schema requires', () => {
-    expect(imageSrc('latente')).toBe('/projects/latente.webp');
+  it('is a site path in the project folder, as the schema requires, the cover by default', () => {
+    expect(imageSrc('latente')).toBe('/projects/latente/cover.webp');
+    expect(imageSrc('latente', 'detail')).toBe('/projects/latente/detail.webp');
+  });
+});
+
+describe('imageName', () => {
+  it('is the file name without its extension, the key an alt is translated under', () => {
+    expect(imageName('/projects/latente/cover.webp')).toBe('cover');
+    expect(imageName(imageSrc('latente', 'mobile-home'))).toBe('mobile-home');
+  });
+});
+
+describe('screenFit', () => {
+  it('stores a landscape screen at the cover size', () => {
+    expect(screenFit(2400, 1260)).toEqual({ width: 1200, height: 630, fit: 'cover' });
+  });
+
+  it('fits a phone screenshot into the portrait canvas without cropping it', () => {
+    expect(screenFit(1170, 2532)).toEqual({ width: 630, height: 1200, fit: 'contain' });
+    expect(screenFit(1080, 1920)).toEqual({ width: 630, height: 1200, fit: 'contain' });
+    expect(screenFit(630, 1200)).toEqual({ width: 630, height: 1200, fit: 'contain' });
+  });
+
+  it('refuses a square, a 16:9 capture or anything taller than 9:21', () => {
+    expect(screenFit(1000, 1000)).toBeUndefined();
+    expect(screenFit(1920, 1080)).toBeUndefined();
+    expect(screenFit(500, 1500)).toBeUndefined();
+    expect(screenFit(0, 100)).toBeUndefined();
+  });
+});
+
+describe('SCREEN_NAME', () => {
+  it('takes words and dashes, nothing that could leave the folder', () => {
+    expect(SCREEN_NAME.test('mobile-home')).toBe(true);
+    expect(SCREEN_NAME.test('../cover')).toBe(false);
+    expect(SCREEN_NAME.test('a b')).toBe(false);
+    expect(SCREEN_NAME.test('x.webp')).toBe(false);
   });
 });

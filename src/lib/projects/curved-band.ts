@@ -5,9 +5,11 @@
  * farthest point; neighbours curve towards the viewer.
  *
  * Every length scales with the card width, so the band keeps the approved shape
- * (a 400×480 card, a 56px gap, a 1400px radius) when a phone shrinks the card.
+ * (a 56px gap, a 1400px radius at a 400px card) when a phone shrinks the card.
+ * The card was 400×480 while it carried prose; it is now a 1200:630 cover over a
+ * name and a year, so it is 400×304.
  */
-export const CARD_RATIO = 1.2; // height / width
+export const CARD_RATIO = 0.76; // height / width
 export const MAX_CARD_WIDTH = 400;
 export const MIN_CARD_WIDTH = 260;
 

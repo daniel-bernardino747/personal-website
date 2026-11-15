@@ -68,20 +68,15 @@ export const pt: Dictionary = {
     eyebrow: 'Trabalhos selecionados',
     title: 'Projetos',
     lede: 'O que eu já construí — projetos pessoais, contribuições open source e trabalhos profissionais.',
-    all: 'Todos',
-    filterAria: 'Filtrar projetos por ano',
     empty: 'Os projetos estão sendo documentados — volte em breve.',
-    shown: (count) =>
-      count === 1 ? '1 projeto exibido' : `${count} projetos exibidos`,
+    others: 'Outros projetos',
     live: 'Site',
     source: 'Código',
     featured: 'Destaque',
     thisSite: 'Você está aqui',
     thisSiteNote:
       'Este é o site que você está vendo agora — o código abaixo é o que monta esta página.',
-    readMore: 'Ler mais',
-    showLess: 'Ler menos',
-    about: (title) => ` sobre ${title}`,
+    view: 'Ver projeto',
     visit: (title) => (title ? `Visitar ${title}` : 'Visitar o site'),
     onGitHub: (title) => (title ? `${title} no GitHub` : 'Código no GitHub'),
     carousel: 'Projetos, um de cada vez',
@@ -92,6 +87,10 @@ export const pt: Dictionary = {
     play: 'Retomar a rotação',
     open: (title) => `Abrir ${title}`,
     close: 'Fechar',
+    screens: (title) => `Telas de ${title}`,
+    screen: (index, total) => `Tela ${index} de ${total}`,
+    previousScreen: 'Tela anterior',
+    nextScreen: 'Próxima tela',
   },
 
   labs: {

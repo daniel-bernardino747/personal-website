@@ -1,7 +1,9 @@
 import type { Locale } from '@/i18n/routing';
 
+import { imageName } from '../projects/image.ts';
+
 import type { SiteJson } from './schema';
-import { parseStatement } from './statement';
+import { parseStatement } from './statement.ts';
 
 /**
  * The Corpus in the page's language (ADR-0015). `career` translates what it
@@ -49,7 +51,11 @@ export function localizeSiteJson(site: SiteJson, locale: Locale): SiteJson {
       ...a,
       title: pickOptional(key('title'), a.title),
       metric: pickOptional(key('metric'), a.metric),
-      image: a.image && { ...a.image, alt: pick(key('imageAlt'), a.image.alt) },
+      // Each alt is keyed by its file name, so reordering screens keeps them.
+      images: a.images?.map((image) => ({
+        ...image,
+        alt: pick(key(`imageAlt:${imageName(image.src)}`), image.alt),
+      })),
       statement: withProse(a.statement, texts[key('prose')]),
     };
   });

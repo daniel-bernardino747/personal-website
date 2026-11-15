@@ -5,7 +5,7 @@ import type { SiteJson } from './schema';
 import { parseStatement } from './statement';
 
 const site: SiteJson = {
-  version: 2,
+  version: 3,
   identity: {
     name: 'Ada Lovelace',
     initials: 'AL',
@@ -26,7 +26,10 @@ const site: SiteJson = {
       kind: 'project',
       title: 'Side Project',
       metric: '30 screens in 10 weeks',
-      image: { src: '/projects/app.webp', alt: 'The app' },
+      images: [
+        { src: '/projects/app/cover.webp', alt: 'The app' },
+        { src: '/projects/app/detail.webp', alt: 'A detail' },
+      ],
       statement: 'Shipped a scheduling app. Built with React and Hono. Live: https://example.com',
       featured: true,
       isDraft: false,
@@ -81,6 +84,9 @@ describe('localizeSiteJson', () => {
     expect(pt.identity?.name).toBe('Ada Lovelace');
     expect(pt.accomplishments[0].id).toBe('app');
     expect(pt.accomplishments[0].date).toBe('2026-10-21');
-    expect(pt.accomplishments[0].image?.src).toBe('/projects/app.webp');
+    expect(pt.accomplishments[0].images?.map((i) => i.src)).toEqual([
+      '/projects/app/cover.webp',
+      '/projects/app/detail.webp',
+    ]);
   });
 });
