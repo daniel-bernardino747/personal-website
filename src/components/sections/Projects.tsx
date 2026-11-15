@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 
 import { useDictionary } from "@/components/DictionaryProvider";
 import type { Accomplishment } from "@/lib/corpus/schema";
@@ -12,6 +12,8 @@ import { ProjectDialog } from "./projects/ProjectDialog";
 
 /** How many technologies a row of the "Other projects" list names. */
 const LIST_TECH = 3;
+/** How many rows the "Other projects" list shows before "See more". */
+const LIST_PREVIEW = 4;
 
 /**
  * The Projects section renders project-kind Accomplishments from the Corpus,
@@ -80,7 +82,8 @@ export function Projects({ projects }: { projects: Accomplishment[] }) {
 /**
  * Projects with no picture yet, as a quiet list: name, year and a few
  * technologies, which say what kind of work it was where a cut-off sentence
- * would not. A row opens the same dialog as a gallery card.
+ * would not. A row opens the same dialog as a gallery card. Only the newest
+ * few show at first, so the list does not outweigh the gallery above it.
  */
 function OtherProjects({
   projects,
@@ -90,14 +93,18 @@ function OtherProjects({
   onOpen: (project: Accomplishment) => void;
 }) {
   const t = useDictionary();
+  const [expanded, setExpanded] = useState(false);
+  const listId = useId();
+  const hidden = projects.length - LIST_PREVIEW;
+  const shown = expanded || hidden <= 0 ? projects : projects.slice(0, LIST_PREVIEW);
 
   return (
     <div className="mt-16">
       <h3 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
         {t.projects.others}
       </h3>
-      <ul className="divide-y divide-border border-y border-border">
-        {projects.map((project) => {
+      <ul id={listId} className="divide-y divide-border border-y border-border">
+        {shown.map((project) => {
           const title = displayTitle(project) ?? project.id;
           const tech = parseStatement(project.statement).tech.slice(0, LIST_TECH);
           return (
@@ -122,6 +129,17 @@ function OtherProjects({
           );
         })}
       </ul>
+      {hidden > 0 && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          aria-controls={listId}
+          onClick={() => setExpanded((open) => !open)}
+          className="mt-3 inline-flex min-h-11 cursor-pointer items-center rounded-xl px-1 text-sm font-semibold text-accent-text transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+        >
+          {expanded ? t.projects.seeLess : t.projects.seeMore(hidden)}
+        </button>
+      )}
     </div>
   );
 }

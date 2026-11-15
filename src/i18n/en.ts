@@ -81,6 +81,8 @@ export const en = {
     empty: 'Projects are being written up — check back soon.',
     /** The list under the gallery, of projects with no picture yet. */
     others: 'Other projects',
+    seeMore: (count: number) => `See more (${count})`,
+    seeLess: 'See less',
     live: 'Live',
     source: 'Source',
     featured: 'Featured',
@@ -133,6 +135,27 @@ export const en = {
         you2: 'Which print shop did I pick for the menu?',
         ai2: 'Print Sul — the cheapest, and it delivers in 2 days.',
         older: ['Opening hours: 7am–6pm', 'Coffee supplier: delivers on Tuesdays', 'Logo: the green version'],
+      },
+    },
+    square: {
+      summary:
+        "A first pass over building-permit applications. It checks the plan and the documents against the city's law and hands over a checklist with the evidence. Whether to approve is the engineer's call.",
+      steps: ['The application arrives', 'It checks each item against the law', 'It shows where the problem is', 'The engineer decides'],
+      scene: {
+        request: 'Permit application',
+        docs: ['Floor plan (DWG)', 'Site plan', 'Deed'],
+        rooms: { living: 'Living', bedroom: 'Bedroom', bath: 'Bath', balcony: 'Balcony' },
+        depth: '1.80 m',
+        checklist: 'Checklist',
+        items: [
+          'Site coverage: 58% (max 60%)',
+          'Balcony: 1.80 m deep (max 1.20 m)',
+          'Parking for the disabled: not applicable',
+          'Bathroom: dimension unreadable on the plan',
+        ],
+        suggested: 'Suggested opinion: ask for the balcony to be fixed',
+        engineer: 'Engineer',
+        decision: 'Decides: ask for a correction',
       },
     },
   },

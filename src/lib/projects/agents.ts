@@ -12,7 +12,7 @@ import type { Accomplishment } from '../corpus/schema';
  * the section never shows an agent it cannot animate; until then the project
  * stays in the "Other projects" list.
  */
-export const AGENT_IDS = ['scholia-mcp'] as const;
+export const AGENT_IDS = ['scholia-mcp', 'permit-compliance-analysis'] as const;
 
 export type AgentId = (typeof AGENT_IDS)[number];
 
