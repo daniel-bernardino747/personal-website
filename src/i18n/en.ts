@@ -176,6 +176,29 @@ export const en = {
         done: 'Became a task',
       },
     },
+    radar: {
+      summary:
+        "A bot that gathers the tech events of southern Santa Catarina, scattered today across Meetup, Sympla and college calendars, into a single Telegram channel: no repeats, and a reminder the day before.",
+      steps: ['The events are scattered', 'It filters them and merges repeats', 'It posts once to the channel', 'And reminds you the day before'],
+      scene: {
+        sources: 'Announcements',
+        channel: 'Telegram channel',
+        announcements: [
+          { source: 'Meetup', text: 'Dev Criciúma #12 — Friday 11/21, 7pm' },
+          { source: 'Sympla', text: 'DEV CRICIUMA 12 · nov 21 · 19:00 · free' },
+          { source: 'SATC', text: 'Talk: HR management — 11/22' },
+          { source: 'Meetup', text: 'Python Floripa — 11/25' },
+        ],
+        offTopic: 'not tech',
+        outOfRegion: 'out of region',
+        merged: (count: number) => `${count} announcements → 1`,
+        title: 'Dev Criciúma #12',
+        when: 'Fri, Nov 21 · 7pm',
+        where: 'Criciúma · free',
+        signUp: 'Sign up',
+        reminder: 'Tomorrow: Dev Criciúma #12, 7pm',
+      },
+    },
   },
 
   labs: {

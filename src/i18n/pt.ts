@@ -158,6 +158,29 @@ export const pt: Dictionary = {
         done: 'Virou tarefa',
       },
     },
+    radar: {
+      summary:
+        'Um robô que junta os eventos de tecnologia do sul de SC, hoje espalhados entre Meetup, Sympla e agendas de faculdade, num canal só do Telegram: sem repetidos, e com lembrete na véspera.',
+      steps: ['Os eventos estão espalhados', 'Ele filtra e junta os repetidos', 'Publica um post só no canal', 'E lembra na véspera'],
+      scene: {
+        sources: 'Anúncios',
+        channel: 'Canal no Telegram',
+        announcements: [
+          { source: 'Meetup', text: 'Dev Criciúma #12 — sexta 21/11, 19h' },
+          { source: 'Sympla', text: 'DEV CRICIUMA 12 · 21 nov · 19:00 · gratuito' },
+          { source: 'SATC', text: 'Palestra: gestão de RH — 22/11' },
+          { source: 'Meetup', text: 'Python Floripa — 25/11' },
+        ],
+        offTopic: 'fora do tema',
+        outOfRegion: 'fora da região',
+        merged: (count) => `${count} anúncios → 1`,
+        title: 'Dev Criciúma #12',
+        when: 'sex, 21/11 · 19h',
+        where: 'Criciúma · gratuito',
+        signUp: 'Inscrição',
+        reminder: 'Amanhã: Dev Criciúma #12, às 19h',
+      },
+    },
   },
 
   labs: {
