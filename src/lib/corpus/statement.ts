@@ -54,6 +54,7 @@ function urlAfter(text: string, at: number, marker: string): string | undefined 
  * entry's own parenthetical: "PostgreSQL (pgvector, full-text search)" is one
  * entry. The lookahead accepts a separator only when no ")" follows before the
  * next "(", which holds for the single level of parentheses the Corpus writes.
+ * Kept identical to the copy in career/src/corpus/statement.ts.
  */
 const OUTSIDE_PARENS_SEPARATOR = /(?:,|\sand\s)(?![^(]*\))/;
 
