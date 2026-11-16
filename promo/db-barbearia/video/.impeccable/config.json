@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "hero-eyebrow-chip",
+        "value": "*",
+        "files": [
+          "compositions/film.html"
+        ],
+        "createdAt": "2026-11-16T12:36:29.831Z",
+        "reason": "Claude: film.html recreates the shipped DB Barbearia demo UI (public/demos/db-barbearia) 1:1 per the confirmed promo PLAN.md; the eyebrow and chip padding are the product's own design"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "compositions/film.html"
+        ],
+        "createdAt": "2026-11-16T12:36:30.354Z",
+        "reason": "Claude: film.html recreates the shipped DB Barbearia demo UI (public/demos/db-barbearia) 1:1 per the confirmed promo PLAN.md; the eyebrow and chip padding are the product's own design"
+      }
+    ]
+  }
+}

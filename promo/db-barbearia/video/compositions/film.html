@@ -1,0 +1,414 @@
+<template>
+  <style>
+    @font-face { font-family: "Big Shoulders Display"; font-weight: 800; src: url("assets/fonts/bigshoulders-800.woff2") format("woff2"); }
+    @font-face { font-family: "Libre Caslon Text"; font-weight: 400; src: url("assets/fonts/librecaslon-400.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 400 800; src: url("assets/fonts/manrope.woff2") format("woff2"); }
+
+    #root {
+      position: absolute; inset: 0; overflow: hidden; background: #0b1f16;
+      --night: #102A1E; --navy: #1B3F2D; --navy-2: #234C38; --navy-3: #2C5842;
+      --steel: #728C7B; --silver: #D2D2D2; --mist: #B9CAC0; --mist-ad: #C3D2C9; --paper: #F2F5F3;
+      --lav: #8AD7B0; --lav-2: #A7E3C5; --warn: #F2B8A0;
+      --rule: rgba(210, 210, 210, .14); --rule-2: rgba(210, 210, 210, .26);
+      --display: "Big Shoulders Display", sans-serif; --serif: "Libre Caslon Text", serif; --ui: "Manrope", sans-serif;
+      font-family: var(--ui); color: var(--paper); -webkit-font-smoothing: antialiased;
+    }
+    #root * { box-sizing: border-box; }
+    #world { position: absolute; left: 0; top: 0; width: 2840px; height: 1472px; transform-origin: 0 0; background: #0b1f16; }
+
+    /* ---------- landing: hero ---------- */
+    #hero { position: absolute; left: 0; top: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--night); }
+    #hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 35%; }
+    #hero-shade { position: absolute; inset: 0; background:
+      radial-gradient(60% 55% at 72% 58%, rgba(138, 215, 176, .3), transparent 70%),
+      linear-gradient(180deg, rgba(16, 42, 30, .9) 0%, rgba(16, 42, 30, .72) 45%, rgba(27, 63, 45, .9) 100%); }
+    .topbar { position: absolute; left: 32px; top: 10px; width: 1136px; height: 64px; display: flex; align-items: center; gap: 14px; padding: 0 10px;
+      background: rgba(16, 42, 30, .82); border: 1px solid var(--rule); }
+    .topbar .brand { display: flex; align-items: center; gap: 10px; }
+    .topbar .brand img { width: 42px; height: 42px; }
+    .topbar .brand b { font: 700 14px/1.1 var(--ui); letter-spacing: .14em; text-transform: uppercase; }
+    .topbar .nav { display: flex; margin-left: auto; }
+    .topbar .nav span { font: 700 11px/1 var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--silver); padding: 12px 9px; }
+    .topbar .cta { display: flex; gap: 8px; margin-left: 8px; }
+    .lbtn { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 18px; font: 700 11.5px/1 var(--ui); letter-spacing: .1em; text-transform: uppercase;
+      border: 1px solid var(--rule-2); color: var(--paper); white-space: nowrap; }
+    .lbtn.solid { background: var(--silver); border-color: var(--silver); color: var(--night); }
+    .hero-copy { position: absolute; left: 32px; top: 104px; width: 600px; }
+    .eyebrow { font: 700 12px/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--lav); margin: 0 0 12px; }
+    .hero-copy h1 { margin: 0; font: 800 106px/.86 var(--display); text-transform: uppercase; letter-spacing: -.005em; }
+    .hero-copy h1 span { display: block; }
+    .hero-copy h1 .thin { color: var(--lav); }
+    .hero-copy .lede { margin: 20px 0 0; width: 540px; font: 400 17.5px/1.5 var(--serif); color: var(--mist); }
+    .hero-copy .acts { display: flex; gap: 10px; margin-top: 24px; }
+    #hero-team { position: absolute; left: 590px; top: 256px; width: 598px; height: auto; }
+
+    /* ---------- landing: booking ---------- */
+    #booking { position: absolute; left: 0; top: 630px; width: 1200px; height: 842px; background: #1a3d2c; }
+    .bpanel { position: absolute; top: 50px; height: 494px; background: var(--night); border: 1px solid var(--rule-2); }
+    #steps { left: 32px; width: 716px; padding: 18px 20px; }
+    .step + .step { margin-top: 12px; }
+    .legend { display: flex; align-items: center; gap: 12px; height: 32px; margin-bottom: 0; font: 400 20px/1 var(--serif); }
+    .legend i { font: 800 15px/1 var(--display); font-style: normal; color: var(--night); background: var(--lav); width: 26px; height: 26px; display: inline-grid; place-items: center; }
+    .chip { position: relative; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--rule-2); font: 600 15px/1.2 var(--ui); padding: 0 14px; overflow: hidden; }
+    .chip small { font-weight: 500; font-size: 11.5px; color: var(--mist); }
+    .chip .fill { position: absolute; inset: 0; background: var(--lav); opacity: 0; }
+    .chip .tx { position: relative; }
+    .chip.off { opacity: .35; text-decoration: line-through; }
+    .toggles { display: grid; grid-template-columns: repeat(3, 220px); gap: 8px; }
+    .toggles .chip { height: 46px; }
+    .barbers { display: flex; gap: 8px; overflow: hidden; width: 676px; }
+    .barbers .chip { flex: 0 0 92px; height: 96px; align-items: center; text-align: center; padding: 8px 4px; gap: 6px; font-size: 14px; }
+    .barbers .av { position: relative; width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 40%, #3d7a5c, #1d4a35); display: grid; place-items: center; font: 800 20px var(--display); color: var(--mist); }
+    .barbers .av img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+    .days { display: flex; gap: 8px; }
+    .days .chip { height: 50px; width: 66px; align-items: center; text-align: center; padding: 0 4px; font-size: 14px; }
+    .days .chip small { font-size: 10.5px; }
+    .days .chip.closed { width: 76px; opacity: .35; text-decoration: line-through; }
+    .times-wrap { position: relative; height: 44px; }
+    .times { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(8, 77.5px); gap: 8px; }
+    .times .chip { height: 44px; align-items: center; padding: 0; font-size: 14px; }
+    .times-msg { position: absolute; left: 0; top: 12px; font-size: 14px; color: var(--mist); }
+
+    #sum { left: 772px; width: 396px; padding: 22px 26px; transform-origin: 50% 50%; }
+    #sum .eyebrow { margin: 0 0 6px; font-size: 11.5px; }
+    .sumc dl { margin: 0; }
+    .sumc dl > div { display: flex; justify-content: space-between; align-items: center; height: 44px; border-bottom: 1px solid var(--rule); }
+    .sumc dt { color: var(--mist); font-size: 14px; }
+    .sumc dd { margin: 0; display: grid; justify-items: end; font-weight: 600; font-size: 15px; }
+    .sumc dd > span { grid-area: 1 / 1; white-space: nowrap; }
+    .sumc dd .v { opacity: 0; }
+    .sumc .total dd { font: 800 30px/1 var(--display); }
+    .sumc .note { margin: 14px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--mist); }
+    .gobtn { position: relative; margin-top: 14px; height: 48px; background: var(--lav); color: var(--night); display: grid; place-items: center;
+      font: 700 12.5px/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; }
+    .gobtn span { grid-area: 1 / 1; }
+    .gobtn .press { position: absolute; inset: 0; background: #0b1f16; opacity: 0; }
+
+    /* the booking, once it leaves the landing: a 2x copy of the panel's appointment card */
+    #ticket { position: absolute; left: 804.33px; top: 880px; width: 331.33px; height: 80px; transform-origin: 0 0; opacity: 0; z-index: 20;
+      background: #214232; border: 2px solid var(--lav); border-left-width: 8px; padding: 12px 20px; display: grid; align-content: start; }
+    #ticket .tm { font: 700 22px/1.35 var(--ui); color: var(--mist-ad); }
+    #ticket .nm { font: 700 26px/1.2 var(--ui); }
+    #ticket .tag { position: absolute; top: 12px; right: 16px; font: 700 20px/1 var(--ui); letter-spacing: .06em; text-transform: uppercase; color: var(--lav-2); opacity: 0; }
+
+    /* ---------- owner panel (admin.html, "Hoje") ---------- */
+    #admin { position: absolute; left: 1400px; top: 572px; width: 1440px; height: 900px; overflow: hidden; background: var(--night); font-size: 15px; line-height: 1.55; }
+    #admin .side { position: absolute; left: 0; top: 0; width: 232px; height: 900px; padding: 18px 14px; display: flex; flex-direction: column; gap: 6px; background: var(--navy); border-right: 1px solid rgba(210,210,210,.16); }
+    #admin .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; font: 700 15px/1.1 var(--ui); letter-spacing: .14em; text-transform: uppercase; }
+    #admin .brand img { width: 38px; height: 38px; }
+    #admin .brand small { display: block; font: 600 11px/1 var(--ui); letter-spacing: .08em; color: var(--mist-ad); text-transform: none; margin-top: 3px; }
+    .nav-a { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; color: var(--mist-ad); font-weight: 600; border: 1px solid transparent; }
+    .nav-a svg { width: 20px; height: 20px; flex: none; }
+    .nav-a.cur { color: var(--paper); background: rgba(138, 215, 176, .16); border-color: rgba(138, 215, 176, .4); }
+    .nav-a .soon { margin-left: auto; font: 700 10px/1 var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--mist-ad); border: 1px solid rgba(210,210,210,.3); padding: 4px 6px; }
+    #admin .foot { margin-top: auto; font-size: 12px; color: var(--mist-ad); padding: 8px; line-height: 1.8; }
+    #admin .foot u { color: var(--lav-2); }
+    #admin .top { position: absolute; left: 232px; top: 0; width: 1208px; height: 71px; display: flex; align-items: center; padding: 0 28px; background: rgba(16, 42, 30, .94); border-bottom: 1px solid rgba(210,210,210,.16); }
+    #admin .top h1 { margin: 0 auto 0 0; font: 800 30px/1 var(--display); text-transform: uppercase; }
+    .view-as { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mist-ad); }
+    .seg { display: inline-flex; border: 1px solid rgba(210,210,210,.3); }
+    .seg span { display: grid; place-items: center; height: 40px; padding: 0 12px; font-weight: 700; font-size: 13px; color: var(--mist-ad); }
+    .seg span + span { border-left: 1px solid rgba(210,210,210,.3); }
+    .seg span.on { background: var(--lav); color: var(--night); }
+    #admin .kpis { position: absolute; left: 260px; top: 95px; width: 1152px; height: 88px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .kpi { background: var(--navy); border: 1px solid rgba(210,210,210,.3); padding: 14px 16px; }
+    .kpi b { display: block; font: 800 35px/1 var(--display); }
+    .kpi span { color: var(--mist-ad); font-size: 13px; }
+    #admin .dpanel { position: absolute; left: 260px; top: 195px; width: 1152px; height: 760px; background: var(--navy); border: 1px solid rgba(210,210,210,.3); padding: 12px 18px; }
+    .ph-row { display: flex; align-items: center; height: 44px; margin-bottom: 11px; }
+    .ph { font: 700 12px/1.3 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--lav-2); margin-right: auto; }
+    .abtn { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; background: var(--lav); color: var(--night); font: 700 14px/1 var(--ui); }
+    .grid-wrap { border: 1px solid rgba(210,210,210,.3); background: var(--night); width: 1114px; }
+    .dgrid { display: grid; grid-template-columns: 64px repeat(6, 1fr); width: 1112px; }
+    .dgrid .hcol { background: var(--night); border-right: 1px solid rgba(210,210,210,.16); }
+    .dgrid .hcell { height: 44px; font-size: 12px; color: var(--mist-ad); padding: 2px 8px 0 4px; border-top: 1px solid rgba(210,210,210,.16); text-align: right; }
+    .dgrid .hcell.half { color: transparent; border-top-style: dashed; }
+    .dgrid .head { height: 58px; display: flex; align-items: center; gap: 8px; padding: 0 8px; overflow: hidden; background: var(--navy-2); border-bottom: 1px solid rgba(210,210,210,.3); border-right: 1px solid rgba(210,210,210,.16); font-weight: 700; line-height: 1.3; }
+    .dgrid .head small { display: block; font-weight: 500; color: var(--mist-ad); font-size: 12px; }
+    .dgrid .av { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: var(--navy-3); display: grid; place-items: center; font: 800 16px var(--display); flex: none; }
+    .dgrid .av img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+    .bcol { position: relative; height: 1012px; border-right: 1px solid rgba(210,210,210,.16);
+      background: repeating-linear-gradient(180deg, rgba(210,210,210,.16) 0 1px, transparent 1px 44px); }
+    .ap { position: absolute; left: 4px; right: 4px; padding: 6px 10px; border: 1px solid var(--lav); border-left-width: 4px; background: rgba(138, 215, 176, .14); overflow: hidden; display: grid; align-content: start; }
+    .ap .tm { font-size: 11px; color: var(--mist-ad); font-weight: 700; line-height: 1.55; }
+    .ap .nm { font-weight: 700; font-size: 13px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ap .sv { font-size: 12px; color: var(--mist-ad); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.55; }
+    .ap .tag { position: absolute; top: 6px; right: 8px; font: 700 10px/1 var(--ui); letter-spacing: .06em; text-transform: uppercase; }
+    .ap.from-app .tag { color: var(--lav-2); }
+    .blk { position: absolute; left: 4px; right: 4px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--mist-ad);
+      background: repeating-linear-gradient(135deg, rgba(210, 210, 210, .08) 0 6px, transparent 6px 12px); border: 1px solid rgba(210,210,210,.16); }
+    .nowline { position: absolute; left: 0; right: 0; height: 2px; background: var(--warn); z-index: 2; }
+    .nowline::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--warn); }
+    #pulse-clip { position: absolute; left: 1918.67px; top: 894px; width: 173.67px; height: 578px; overflow: hidden; z-index: 15; }
+    #pulse { position: absolute; left: 0; top: 0; width: 100%; height: 160px; opacity: 0;
+      background: linear-gradient(180deg, transparent, rgba(138, 215, 176, .34) 50%, transparent); }
+
+    /* ---------- cursor and captions ---------- */
+    #cursor { position: absolute; left: 0; top: 0; width: 34px; height: 46px; z-index: 30; transform-origin: 2px 2px; opacity: 0; }
+    .cap { position: absolute; right: 60px; padding: 8px 22px 10px; background: var(--night); color: var(--paper); font: 600 36px/1.2 var(--ui); letter-spacing: -.01em; white-space: nowrap; }
+    #cap1 { top: 540px; }
+    #cap2 { top: 470px; }
+  </style>
+
+  <div id="root" data-composition-id="film" data-width="1200" data-height="630">
+    <div id="world">
+
+      <!-- landing (index.html): hero -->
+      <section id="hero">
+        <img id="hero-bg" src="assets/img/hero-bg.jpg" alt="" />
+        <div id="hero-shade"></div>
+        <div class="topbar">
+          <div class="brand"><img src="assets/img/selo-branco.svg" alt="" /><b>DB Barbearia</b></div>
+          <div class="nav"><span>Equipe</span><span>Serviços</span><span>Clube</span><span>Instagram</span><span>Produtos</span><span>Endereço</span></div>
+          <div class="cta"><span class="lbtn solid">Agendar</span><span class="lbtn">Ligar</span></div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">DB Barbearia · Centro</p>
+          <h1><span>Sente.</span><span>Relaxe.</span><span class="thin">Saia outro.</span></h1>
+          <p class="lede">Cabelo, barba na navalha e toalha quente, com TV na sua cadeira. Escolha o seu barbeiro e garanta o horário em menos de um minuto.</p>
+          <div class="acts"><span class="lbtn solid">Agendar horário</span><span class="lbtn">Ver a equipe</span><span class="lbtn">Ver preços</span></div>
+        </div>
+        <img id="hero-team" src="assets/img/hero.png" alt="" />
+      </section>
+
+      <!-- landing (index.html): booking -->
+      <section id="booking">
+        <div class="bpanel" id="steps">
+          <div class="step">
+            <div class="legend"><i>1</i>O que você vai fazer hoje?</div>
+            <div class="toggles">
+              <div class="chip" id="c-cabelo"><span class="fill"></span><span class="tx">Cabelo</span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Barba</span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Sobrancelha</span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Pelos do nariz<br /><small>Cera quente</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Hidratação</span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Pintar a barba</span></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="legend"><i>2</i>Barbeiro</div>
+            <div class="barbers">
+              <div class="chip"><span class="fill"></span><span class="av">?</span><span class="tx">Tanto faz</span></div>
+              <div class="chip"><span class="fill"></span><span class="av"><img src="assets/img/rafael.webp" alt="" /></span><span class="tx">Rafael</span></div>
+              <div class="chip" id="c-bruno"><span class="fill"></span><span class="av"><img src="assets/img/bruno.webp" alt="" /></span><span class="tx">Bruno</span></div>
+              <div class="chip"><span class="fill"></span><span class="av"><img src="assets/img/caio.webp" alt="" /></span><span class="tx">Caio</span></div>
+              <div class="chip"><span class="fill"></span><span class="av"><img src="assets/img/bigode.webp" alt="" /></span><span class="tx">Bigode</span></div>
+              <div class="chip"><span class="fill"></span><span class="av"><img src="assets/img/leo.webp" alt="" /></span><span class="tx">Léo</span></div>
+              <div class="chip"><span class="fill"></span><span class="av">V</span><span class="tx">Vini</span></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="legend"><i>3</i>Dia</div>
+            <div class="days">
+              <div class="chip" id="c-hoje"><span class="fill"></span><span class="tx">Hoje<br /><small>16/11</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Amanhã<br /><small>17/11</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Qua<br /><small>18/11</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Qui<br /><small>19/11</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Sex<br /><small>20/11</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Sáb<br /><small>21/11</small></span></div>
+              <div class="chip closed"><span class="fill"></span><span class="tx">Dom<br /><small>22/11 · fechado</small></span></div>
+              <div class="chip"><span class="fill"></span><span class="tx">Seg<br /><small>23/11</small></span></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="legend"><i>4</i>Horário</div>
+            <div class="times-wrap">
+              <p class="times-msg" id="times-msg">Escolha o serviço e o dia para ver os horários livres.</p>
+              <div class="times" id="times">
+                <div class="chip t"><span class="fill"></span><span class="tx">09:30</span></div>
+                <div class="chip t off"><span class="fill"></span><span class="tx">10:00</span></div>
+                <div class="chip t off"><span class="fill"></span><span class="tx">10:30</span></div>
+                <div class="chip t" id="c-1100"><span class="fill"></span><span class="tx">11:00</span></div>
+                <div class="chip t"><span class="fill"></span><span class="tx">11:30</span></div>
+                <div class="chip t"><span class="fill"></span><span class="tx">12:00</span></div>
+                <div class="chip t"><span class="fill"></span><span class="tx">12:30</span></div>
+                <div class="chip t"><span class="fill"></span><span class="tx">13:00</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="bpanel" id="sum">
+          <div class="sumc" id="sumc">
+            <p class="eyebrow">Seu atendimento</p>
+            <dl>
+              <div><dt>Serviço</dt><dd><span class="d" id="d-svc">—</span><span class="v" id="v-svc">Cabelo</span></dd></div>
+              <div><dt>Barbeiro</dt><dd><span class="d" id="d-bar">—</span><span class="v" id="v-bar">Bruno</span></dd></div>
+              <div><dt>Quando</dt><dd><span class="d" id="d-when">—</span><span class="v" id="v-when">Hoje, 16/11 às 11:00</span></dd></div>
+              <div><dt>Duração</dt><dd><span class="d" id="d-dur">—</span><span class="v" id="v-dur">30 min</span></dd></div>
+              <div class="total"><dt>Total</dt><dd><span class="d" id="d-price">—</span><span class="v" id="v-price">R$ 60</span></dd></div>
+            </dl>
+            <p class="note">Pague na barbearia: PIX, dinheiro ou cartão. Protótipo: nenhum dado é enviado.</p>
+            <div class="gobtn" id="gobtn">
+              <span class="press" id="go-press"></span>
+              <span id="go-0">Escolher serviço</span>
+              <span id="go-1" style="opacity:0">Escolher barbeiro</span>
+              <span id="go-2" style="opacity:0">Escolher dia</span>
+              <span id="go-3" style="opacity:0">Escolher horário</span>
+              <span id="go-4" style="opacity:0">Agendar</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- owner panel (admin.html), "Hoje" as captured -->
+      <section id="admin">
+        <nav class="side">
+          <div class="brand"><img src="assets/img/selo-branco.svg" alt="" /><span>DB Barbearia<small>Gestão</small></span></div>
+          <div class="nav-a cur"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Hoje</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2"/></svg><span>Agenda</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.5a3.5 3.5 0 0 1 0 7M18.5 14.8c1.6.8 2.7 2.5 3 5.2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Clientes</span><span class="soon">em breve</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 9h19M12 9v11.5" stroke="currentColor" stroke-width="2"/></svg><span>Benefícios</span><span class="soon">em breve</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Catálogo</span><span class="soon">em breve</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-4.5 4.2-6.5 8-6.5s7 2 8 6.5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Equipe</span><span class="soon">em breve</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Números</span><span class="soon">em breve</span></div>
+          <div class="nav-a"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>Site e Instagram</span><span class="soon">em breve</span></div>
+          <div class="foot">Protótipo · dados de exemplo<br /><u>Restaurar dados de exemplo</u></div>
+        </nav>
+        <header class="top">
+          <h1>Hoje</h1>
+          <div class="view-as"><span>Ver como</span><div class="seg"><span class="on">Dono</span><span>Barbeiro (Bruno)</span></div></div>
+        </header>
+        <div class="kpis">
+          <div class="kpi"><b id="k-n">65</b><span>atendimentos no dia</span></div>
+          <div class="kpi"><b id="k-rev">R$ 4.572</b><span>faturamento previsto</span></div>
+          <div class="kpi"><b id="k-free">32</b><span>horários livres</span></div>
+          <div class="kpi"><b>0</b><span>faltas</span></div>
+        </div>
+        <div class="dpanel">
+          <div class="ph-row"><span class="ph">Agenda do dia</span><span class="abtn">+ Encaixe</span></div>
+          <div class="grid-wrap"><div class="dgrid">
+<div class="hcol"><div class="head"></div><div class="hcell half"></div><div class="hcell">09:00</div><div class="hcell half"></div><div class="hcell">10:00</div><div class="hcell half"></div><div class="hcell">11:00</div><div class="hcell half"></div><div class="hcell">12:00</div><div class="hcell half"></div><div class="hcell">13:00</div><div class="hcell half"></div><div class="hcell">14:00</div><div class="hcell half"></div><div class="hcell">15:00</div><div class="hcell half"></div><div class="hcell">16:00</div><div class="hcell half"></div><div class="hcell">17:00</div><div class="hcell half"></div><div class="hcell">18:00</div><div class="hcell half"></div><div class="hcell">19:00</div><div class="hcell half"></div></div>
+<div class="gcol" id="ad-col-rafael"><div class="head"><span class="av"><img src="assets/img/rafael.webp" alt=""></span><span>Rafael<small id="ad-n-rafael">17 clientes</small></span></div><div class="bcol" data-layout-allow-overflow data-layout-allow-occlusion data-layout-allow-overlap><div class="blk" style="top:310px;height:84px">Almoço</div><div class="ap" style="top:90px;height:40px"><span class="tm">09:30–10:00</span><span class="nm">André K.</span></div><div class="ap from-app" style="top:134px;height:84px"><span class="tm">10:00–11:00</span><span class="nm">Igor Z.</span><span class="sv">Cabelo e Barba</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:222px;height:40px"><span class="tm">11:00–11:30</span><span class="nm">Igor Z.</span></div><div class="ap" style="top:266px;height:84px"><span class="tm">11:30–12:30</span><span class="nm">Samuel E.</span><span class="sv">Cabelo e Barba</span></div><div class="ap from-app" style="top:398px;height:84px"><span class="tm">13:00–14:00</span><span class="nm">Eduardo N.</span><span class="sv">Cabelo e Barba</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap from-app" style="top:486px;height:40px"><span class="tm">14:00–14:30</span><span class="nm">Caio D.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:530px;height:40px"><span class="tm">14:30–15:00</span><span class="nm">André K.</span></div><div class="ap" style="top:574px;height:40px"><span class="tm">15:00–15:30</span><span class="nm">Henrique J.</span></div><div class="ap from-app" style="top:618px;height:40px"><span class="tm">15:30–16:00</span><span class="nm">Gabriel A.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:662px;height:40px"><span class="tm">16:00–16:30</span><span class="nm">Marcelo H.</span></div><div class="ap" style="top:706px;height:40px"><span class="tm">16:30–17:00</span><span class="nm">Matheus R.</span></div><div class="ap" style="top:750px;height:40px"><span class="tm">17:00–17:30</span><span class="nm">Lucas M.</span></div><div class="ap" style="top:794px;height:40px"><span class="tm">17:30–18:00</span><span class="nm">Caio D.</span></div><div class="ap" style="top:838px;height:40px"><span class="tm">18:00–18:30</span><span class="nm">Rafael C.</span></div><div class="ap from-app" style="top:882px;height:40px"><span class="tm">18:30–19:00</span><span class="nm">Vinícius G.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap from-app" style="top:926px;height:40px"><span class="tm">19:00–19:30</span><span class="nm">Lucas M.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap from-app" style="top:970px;height:40px"><span class="tm">19:30–20:00</span><span class="nm">Leonardo V.</span><span class="tag" data-layout-allow-occlusion>app</span></div><span class="nowline" style="top:54.266666666666666px"></span></div></div>
+<div class="gcol" id="ad-col-bruno"><div class="head"><span class="av"><img src="assets/img/bruno.webp" alt=""></span><span>Bruno<small id="ad-n-bruno">10 clientes</small></span></div><div class="bcol" data-layout-allow-overflow data-layout-allow-occlusion data-layout-allow-overlap><div class="blk" style="top:354px;height:84px">Almoço</div><div class="ap from-app" data-layout-allow-occlusion style="top:46px;height:40px"><span class="tm">09:00–09:30</span><span class="nm">Lucas T.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" data-layout-allow-occlusion style="top:134px;height:84px"><span class="tm">10:00–11:00</span><span class="nm">Matheus R.</span><span class="sv">Combo executivo</span></div><div class="ap" data-layout-allow-occlusion style="top:266px;height:40px"><span class="tm">11:30–12:00</span><span class="nm">Lucas T.</span></div><div class="ap" data-layout-allow-occlusion style="top:442px;height:84px"><span class="tm">13:30–14:30</span><span class="nm">André K.</span><span class="sv">Cabelo e Barba</span></div><div class="ap from-app" data-layout-allow-occlusion style="top:574px;height:40px"><span class="tm">15:00–15:30</span><span class="nm">Igor Z.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap from-app" data-layout-allow-occlusion style="top:618px;height:40px"><span class="tm">15:30–16:00</span><span class="nm">Eduardo N.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" data-layout-allow-occlusion style="top:706px;height:40px"><span class="tm">16:30–17:00</span><span class="nm">Murilo W.</span></div><div class="ap from-app" data-layout-allow-occlusion style="top:750px;height:84px"><span class="tm">17:00–18:00</span><span class="nm">Marcelo H.</span><span class="sv">Cabelo e Barba</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" data-layout-allow-occlusion style="top:882px;height:40px"><span class="tm">18:30–19:00</span><span class="nm">Matheus R.</span></div><div class="ap" data-layout-allow-occlusion style="top:970px;height:40px"><span class="tm">19:30–20:00</span><span class="nm">Henrique J.</span></div><span class="nowline" style="top:54.266666666666666px"></span></div></div>
+<div class="gcol" id="ad-col-caio"><div class="head"><span class="av"><img src="assets/img/caio.webp" alt=""></span><span>Caio<small id="ad-n-caio">10 clientes</small></span></div><div class="bcol" data-layout-allow-overflow data-layout-allow-occlusion data-layout-allow-overlap><div class="blk" style="top:398px;height:84px">Almoço</div><div class="ap" style="top:46px;height:40px"><span class="tm">09:00–09:30</span><span class="nm">Leonardo V.</span></div><div class="ap from-app" style="top:134px;height:40px"><span class="tm">10:00–10:30</span><span class="nm">Marcelo H.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:178px;height:40px"><span class="tm">10:30–11:00</span><span class="nm">Gabriel A.</span></div><div class="ap" style="top:222px;height:40px"><span class="tm">11:00–11:30</span><span class="nm">Renan O.</span></div><div class="ap" style="top:266px;height:84px"><span class="tm">11:30–12:30</span><span class="nm">Gabriel A.</span><span class="sv">Cabelo e Barba</span></div><div class="ap" style="top:354px;height:40px"><span class="tm">12:30–13:00</span><span class="nm">André K.</span></div><div class="ap" style="top:486px;height:40px"><span class="tm">14:00–14:30</span><span class="nm">Igor Z.</span></div><div class="ap from-app" style="top:574px;height:40px"><span class="tm">15:00–15:30</span><span class="nm">Daniel X.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:706px;height:84px"><span class="tm">16:30–17:30</span><span class="nm">Lucas T.</span><span class="sv">Cabelo e Barba</span></div><div class="ap" style="top:926px;height:84px"><span class="tm">19:00–20:00</span><span class="nm">Diego F.</span><span class="sv">Cabelo e Barba</span></div><span class="nowline" style="top:54.266666666666666px"></span></div></div>
+<div class="gcol" id="ad-col-bigode"><div class="head"><span class="av"><img src="assets/img/bigode.webp" alt=""></span><span>Bigode<small id="ad-n-bigode">11 clientes</small></span></div><div class="bcol" data-layout-allow-overflow data-layout-allow-occlusion data-layout-allow-overlap><div class="blk" style="top:310px;height:84px">Almoço</div><div class="ap" style="top:46px;height:84px"><span class="tm">09:00–10:00</span><span class="nm">Renan O.</span><span class="sv">Cabelo e Barba</span></div><div class="ap from-app" style="top:134px;height:40px"><span class="tm">10:00–10:30</span><span class="nm">Gustavo L.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:222px;height:40px"><span class="tm">11:00–11:30</span><span class="nm">Gustavo L.</span></div><div class="ap" style="top:266px;height:40px"><span class="tm">11:30–12:00</span><span class="nm">Lucas T.</span></div><div class="ap from-app" style="top:398px;height:40px"><span class="tm">13:00–13:30</span><span class="nm">Henrique J.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap from-app" style="top:486px;height:84px"><span class="tm">14:00–15:00</span><span class="nm">Igor Z.</span><span class="sv">Cabelo e Barba</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:574px;height:84px"><span class="tm">15:00–16:00</span><span class="nm">Murilo W.</span><span class="sv">Cabelo e Barba</span></div><div class="ap" style="top:662px;height:40px"><span class="tm">16:00–16:30</span><span class="nm">Diego F.</span></div><div class="ap" style="top:706px;height:84px"><span class="tm">16:30–17:30</span><span class="nm">Daniel X.</span><span class="sv">Cabelo e Barba</span></div><div class="ap" style="top:794px;height:84px"><span class="tm">17:30–18:30</span><span class="nm">Marcelo H.</span><span class="sv">Cabelo e Barba</span></div><div class="ap" style="top:926px;height:84px"><span class="tm">19:00–20:00</span><span class="nm">Marcelo H.</span><span class="sv">Combo executivo</span></div><span class="nowline" style="top:54.266666666666666px"></span></div></div>
+<div class="gcol" id="ad-col-leo"><div class="head"><span class="av"><img src="assets/img/leo.webp" alt=""></span><span>Léo<small id="ad-n-leo">10 clientes</small></span></div><div class="bcol" data-layout-allow-overflow data-layout-allow-occlusion data-layout-allow-overlap><div class="blk" style="top:354px;height:84px">Almoço</div><div class="ap from-app" style="top:90px;height:40px"><span class="tm">09:30–10:00</span><span class="nm">Henrique J.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:178px;height:84px"><span class="tm">10:30–11:30</span><span class="nm">Lucas T.</span><span class="sv">Cabelo e Barba</span></div><div class="ap" style="top:310px;height:40px"><span class="tm">12:00–12:30</span><span class="nm">Matheus R.</span></div><div class="ap" style="top:442px;height:40px"><span class="tm">13:30–14:00</span><span class="nm">Felipe B.</span></div><div class="ap" style="top:530px;height:84px"><span class="tm">14:30–15:30</span><span class="nm">Lucas T.</span><span class="sv">Cabelo, Barba e Sobrancelha</span></div><div class="ap from-app" style="top:618px;height:40px"><span class="tm">15:30–16:00</span><span class="nm">Gabriel A.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:662px;height:40px"><span class="tm">16:00–16:30</span><span class="nm">Otávio Q.</span></div><div class="ap" style="top:706px;height:40px"><span class="tm">16:30–17:00</span><span class="nm">Otávio Q.</span></div><div class="ap from-app" style="top:838px;height:40px"><span class="tm">18:00–18:30</span><span class="nm">Marcelo H.</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:926px;height:84px"><span class="tm">19:00–20:00</span><span class="nm">Gustavo L.</span><span class="sv">Cabelo e Barba</span></div><span class="nowline" style="top:54.266666666666666px"></span></div></div>
+<div class="gcol" id="ad-col-vini"><div class="head"><span class="av">V</span><span>Vini<small id="ad-n-vini">7 clientes</small></span></div><div class="bcol" data-layout-allow-overflow data-layout-allow-occlusion data-layout-allow-overlap><div class="blk" style="top:398px;height:84px">Almoço</div><div class="ap from-app" style="top:90px;height:84px"><span class="tm">09:30–10:30</span><span class="nm">Igor Z.</span><span class="sv">Cabelo e Barba</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:178px;height:40px"><span class="tm">10:30–11:00</span><span class="nm">Caio D.</span></div><div class="ap" style="top:266px;height:40px"><span class="tm">11:30–12:00</span><span class="nm">Rafael C.</span></div><div class="ap" style="top:486px;height:84px"><span class="tm">14:00–15:00</span><span class="nm">Otávio Q.</span><span class="sv">Cabelo e Barba</span></div><div class="ap from-app" style="top:574px;height:84px"><span class="tm">15:00–16:00</span><span class="nm">Otávio Q.</span><span class="sv">Cabelo e Barba</span><span class="tag" data-layout-allow-occlusion>app</span></div><div class="ap" style="top:838px;height:40px"><span class="tm">18:00–18:30</span><span class="nm">Gabriel A.</span></div><div class="ap" style="top:926px;height:40px"><span class="tm">19:00–19:30</span><span class="nm">Gabriel A.</span></div><span class="nowline" style="top:54.266666666666666px"></span></div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <div id="pulse-clip" data-layout-ignore><div id="pulse"></div></div>
+
+      <div id="ticket" data-layout-allow-occlusion><span class="tm">11:00–11:30</span><span class="nm">Cabelo</span><span class="tag" id="ticket-tag">app</span></div>
+
+      <svg id="cursor" class="clip" data-start="0.6" data-duration="4.4" viewBox="0 0 34 46">
+        <path d="M2 2 L2 36 L10.5 28.5 L16.5 42 L22.5 39.4 L16.6 26.2 L28 26.2 Z" fill="#F2F5F3" stroke="#0b1f16" stroke-width="2.4" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <div id="cap1" class="cap clip" data-start="1.1" data-duration="3.1">O cliente agenda sozinho</div>
+    <div id="cap2" class="cap clip" data-layout-allow-occlusion data-layout-allow-overlap data-start="6.85" data-duration="2.75">O dono vê na hora</div>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const EASE_IN = "expo.out";      // the site's --ease, cubic-bezier(.16,1,.3,1)
+    const CAM = "power2.inOut";      // camera
+
+    // ---------- camera: frame = world rect at (cx, cy), zoom s ----------
+    const cam = (cx, cy, s) => ({ x: -cx * s, y: -cy * s, scale: s });
+    const F_HERO = cam(0, 0, 1), F_BOOK = cam(0, 660, 1), F_PANEL = cam(1650, 655, 1.22);
+    tl.set("#world", F_HERO, 0);
+    tl.to("#world", { ...F_BOOK, duration: 1.0, ease: CAM }, 0);            // beat 1: push down to the booking widget
+    tl.to("#world", { ...F_PANEL, duration: 1.4, ease: CAM }, 5.2);         // beat 4: pan to the owner panel
+    tl.to("#world", { ...F_HERO, duration: 1.1, ease: CAM }, 10.7);         // beat 6: back to the hero (= frame 0)
+
+    // ---------- cursor (world coordinates of its tip) ----------
+    const P = { start: [700, 1250], cabelo: [150, 752], bruno: [300, 930], hoje: [86, 1040], t1100: [350, 1134], go: [985, 1040], out: [1260, 1260] };
+    tl.set("#cursor", { x: P.start[0], y: P.start[1], opacity: 1, scale: 1 }, 0.6);
+    const move = (to, at, dur) => tl.to("#cursor", { x: to[0], y: to[1], duration: dur, ease: "power3.inOut" }, at);
+    const click = (at) => {
+      tl.to("#cursor", { scale: 0.84, duration: 0.05, ease: "power2.in" }, at - 0.05);
+      tl.to("#cursor", { scale: 1, duration: 0.14, ease: "power2.out" }, at);
+    };
+    const on = (chip, at) => {
+      tl.to(chip + " .fill", { opacity: 1, duration: 0.14, ease: "power2.out" }, at);
+      tl.to(chip + " .tx", { color: "#102A1E", duration: 0.14, ease: "power2.out" }, at);
+      if (document.querySelector(chip + " small")) tl.to(chip + " small", { color: "#1B3F2D", duration: 0.14, ease: "power2.out" }, at);
+    };
+    const fillRow = (k, at) => {
+      tl.to("#d-" + k, { opacity: 0, duration: 0.12, ease: "power2.out" }, at);
+      tl.fromTo("#v-" + k, { opacity: 0, filter: "blur(5px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: EASE_IN }, at + 0.03);
+    };
+    const label = (from, to, at) => {
+      tl.to("#go-" + from, { opacity: 0, duration: 0.12, ease: "power2.out" }, at);
+      tl.fromTo("#go-" + to, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, at + 0.06);
+    };
+
+    // beat 2: the client books, one click per step
+    move(P.cabelo, 0.75, 0.47);
+    click(1.3); on("#c-cabelo", 1.3); fillRow("svc", 1.3); fillRow("dur", 1.36); fillRow("price", 1.42); label(0, 1, 1.3);
+    move(P.bruno, 1.45, 0.47);
+    click(2.0); on("#c-bruno", 2.0); fillRow("bar", 2.0); label(1, 2, 2.0);
+    move(P.hoje, 2.12, 0.4);
+    click(2.6); on("#c-hoje", 2.6); label(2, 3, 2.6);
+    tl.to("#times-msg", { opacity: 0, duration: 0.12, ease: "power2.out" }, 2.6);
+    tl.fromTo("#times .chip", { opacity: 0, y: 6 }, { opacity: (i, el) => (el.classList.contains("off") ? 0.35 : 1), y: 0, duration: 0.3, ease: EASE_IN, stagger: 0.04 }, 2.64);
+    move(P.t1100, 2.78, 0.34);
+    click(3.2); on("#c-1100", 3.2); fillRow("when", 3.2); label(3, 4, 3.2);
+
+    // beat 3: confirm, and the summary lifts off the page
+    move(P.go, 3.4, 0.85);
+    click(4.4);
+    tl.to("#go-press", { opacity: 0.18, duration: 0.05 }, 4.35);
+    tl.to("#go-press", { opacity: 0, duration: 0.2 }, 4.4);
+    move(P.out, 4.55, 0.4);
+    tl.to("#cursor", { opacity: 0, duration: 0.1 }, 4.85);
+    tl.to("#sum", { scale: 1.04, boxShadow: "0 28px 60px rgba(4, 14, 9, .65)", duration: 0.32, ease: EASE_IN }, 4.45);
+    // the panel folds into the appointment card it will become
+    tl.to("#sum", { scale: 1, backgroundColor: "#214232", borderColor: "#8AD7B0", duration: 0.38, ease: "power3.inOut" }, 4.78);
+    tl.fromTo("#sum", { clipPath: "inset(0px 0px 0px 0px)" }, { clipPath: "inset(200px 32.33px 214px 32.33px)", duration: 0.38, ease: "power3.inOut", immediateRender: false }, 4.78);
+    tl.to("#sumc", { opacity: 0, filter: "blur(6px)", duration: 0.22, ease: "power2.in" }, 4.75);
+    tl.fromTo("#ticket", { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power2.out" }, 5.04);
+    tl.set("#sum", { opacity: 0 }, 5.18);
+
+    // beat 4: the card flies in an arc while the camera pans to the panel
+    const T = { x: 1922.67, y: 1116 };
+    tl.fromTo("#ticket", { x: 0, y: 0 }, { x: T.x - 804.33, duration: 1.4, ease: "power2.inOut" }, 5.2);
+    tl.to("#ticket", { y: -170, duration: 0.55, ease: "power2.out" }, 5.2);
+    tl.to("#ticket", { y: T.y - 880, duration: 0.85, ease: "power2.inOut" }, 5.75);
+    tl.fromTo("#ticket", { scale: 1 }, { scale: 0.5, duration: 1.4, ease: "power2.inOut" }, 5.2);
+    tl.fromTo("#ticket", { rotation: 0 }, { rotation: -3, duration: 0.55, ease: "power2.out" }, 5.2);
+    tl.to("#ticket", { rotation: 0, duration: 0.85, ease: "power2.inOut" }, 5.75);
+    tl.fromTo("#ticket", { boxShadow: "0 0 0 rgba(4,14,9,0)" }, { boxShadow: "0 30px 50px rgba(4,14,9,.6)", duration: 0.4, ease: "power2.out" }, 5.2);
+    tl.to("#ticket", { boxShadow: "0 0 0 rgba(4,14,9,0)", duration: 0.35, ease: "power2.out" }, 6.45);
+
+    // beat 5: it lands in Bruno's column; the day updates
+    tl.fromTo("#ticket-tag", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.3, ease: EASE_IN }, 6.62);
+    tl.fromTo("#pulse", { y: -160, opacity: 1 }, { y: 578, opacity: 1, duration: 0.9, ease: "power1.inOut" }, 6.7);
+    tl.set("#pulse", { opacity: 0 }, 7.6);
+    const fmt = (v) => "R$ " + Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const kp = { n: 65, rev: 4572, free: 32 };
+    tl.to(kp, { n: 66, rev: 4632, free: 31, duration: 0.7, ease: "power2.out",
+      onUpdate: () => {
+        document.getElementById("k-n").textContent = Math.round(kp.n);
+        document.getElementById("k-rev").textContent = fmt(kp.rev);
+        document.getElementById("k-free").textContent = Math.round(kp.free);
+        document.getElementById("ad-n-bruno").textContent = (kp.n >= 65.5 ? 11 : 10) + " clientes";
+      } }, 6.85);
+    tl.fromTo(["#k-n", "#k-rev", "#k-free"], { color: "#F2F5F3" }, { color: "#A7E3C5", duration: 0.25, ease: "power2.out" }, 6.85);
+    tl.to(["#k-n", "#k-rev", "#k-free"], { color: "#F2F5F3", duration: 0.6, ease: "power2.inOut" }, 8.2);
+
+    // off screen: the landing goes back to its empty state, so the loop and the way back are clean
+    tl.set(["#steps .fill", "#times-msg"], { clearProps: "opacity" }, 8.0);
+    tl.set(["#steps .tx", "#steps small"], { clearProps: "color" }, 8.0);
+    tl.set("#times .chip", { opacity: 0 }, 8.0);
+    tl.set(["#sum .d", "#go-0"], { opacity: 1 }, 8.0);
+    tl.set(["#sum .v", "#go-1", "#go-2", "#go-3", "#go-4"], { opacity: 0 }, 8.0);
+    tl.set("#sum", { opacity: 1, clipPath: "inset(0px 0px 0px 0px)", boxShadow: "none", backgroundColor: "#102A1E", borderColor: "rgba(210, 210, 210, .26)" }, 8.0);
+    tl.set("#sumc", { opacity: 1, filter: "blur(0px)" }, 8.0);
+
+    // captions: one at a time, blur in, hold, leave with a blur
+    const cap = (id, at, out) => {
+      tl.fromTo(id, { opacity: 0, filter: "blur(8px)", y: 10 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.5, ease: EASE_IN }, at);
+      tl.to(id, { opacity: 0, filter: "blur(6px)", duration: 0.35, ease: "power2.in" }, out);
+    };
+    cap("#cap1", 1.15, 3.8);
+    cap("#cap2", 6.9, 9.2);
+
+    tl.set({}, {}, 11.9);
+    window.__timelines["film"] = tl;
+  </script>
+</template>
