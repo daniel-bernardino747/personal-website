@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<circle cx="100" cy="100" r="98" fill="#102A1D"/>
+<circle cx="100" cy="100" r="90" fill="none" stroke="#8AD7AE" stroke-width="2"/>
+<circle cx="100" cy="100" r="62" fill="none" stroke="#8AD7AE" stroke-width="1.5"/>
+<defs><path id="c" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0"/></defs>
+<text font-family="Georgia, 'Times New Roman', serif" font-size="15" font-weight="700" letter-spacing="2.6" fill="#A7E3C3"><textPath href="#c">DB BARBEARIA · DB BARBEARIA · DB BARBEARIA · </textPath></text>
+<text x="100" y="122" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="700" font-size="64" fill="#A7E3C3">DB</text>
+</svg>

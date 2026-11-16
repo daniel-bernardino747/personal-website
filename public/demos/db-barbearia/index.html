@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DB Barbearia · Barbearia no Centro</title>
+<meta name="description" content="Barbearia premium no Centro. Cabelo, barba na navalha e toalha quente. Escolha o seu barbeiro e agende online. Nota 5,0 no Google.">
+<meta name="theme-color" content="#102A1E">
+<meta property="og:title" content="DB Barbearia · Centro">
+<meta property="og:description" content="Rafael, Bruno, Caio, Bigode, Léo e Vini. Escolha o seu barbeiro e agende online.">
+<meta property="og:image" content="assets/equipe/hero.png">
+<link rel="icon" href="assets/marca/selo-verde.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BarberShop",
+  "name": "DB Barbearia",
+  "telephone": "+55 48 3000-0000",
+  "address": { "@type": "PostalAddress", "streetAddress": "Rua das Tesouras, 120, Sala 01", "addressCountry": "BR" },
+  "geo": { "@type": "GeoCoordinates", "latitude": -23.55052, "longitude": -46.633308 },
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "09:00", "closes": "20:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:30", "closes": "16:00" }
+  ],
+  "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "212" },
+  "sameAs": ["https://www.instagram.com/"],
+  "employee": [
+    { "@type": "Person", "name": "Rafael", "jobTitle": "Barbeiro" },
+    { "@type": "Person", "name": "Bruno", "jobTitle": "Barbeiro" },
+    { "@type": "Person", "name": "Caio", "jobTitle": "Barbeiro" },
+    { "@type": "Person", "name": "Bigode", "jobTitle": "Barbeiro" },
+    { "@type": "Person", "name": "Léo", "jobTitle": "Barbeiro" },
+    { "@type": "Person", "name": "Vini", "jobTitle": "Barbeiro" }
+  ]
+}
+</script>
+<style>
+:root {
+  --night: #102A1E;
+  --navy: #1B3F2D;
+  --navy-2: #234C38;
+  --navy-3: #2C5842;
+  --steel: #728C7B;
+  --silver: #D2D2D2;
+  --mist: #B9CAC0;
+  --paper: #F2F5F3;
+  --lav: #8AD7B0;
+  --lav-2: #A7E3C5;
+  --rule: rgba(210, 210, 210, .14);
+  --rule-2: rgba(210, 210, 210, .26);
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --serif: "Libre Caslon Text", Georgia, serif;
+  --ui: "Manrope", system-ui, sans-serif;
+  --gutter: 16px;
+  --max: 1240px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --bar: 72px;
+}
+@media (min-width: 760px) { :root { --gutter: 32px; } }
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--bar) + 12px); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+body { margin: 0; background: var(--night); color: var(--paper); font: 400 1rem/1.6 var(--ui); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+/* backdrop: real photos of the shop (Google Maps, posted by the owner), cross-fading as you scroll */
+.backdrop { position: fixed; inset: -30px; z-index: -1; pointer-events: none; background: var(--night); }
+.backdrop i { position: absolute; inset: 0; background: center 35% / cover no-repeat; filter: blur(4px) saturate(.55) brightness(.72); opacity: 0; transition: opacity 1.4s var(--ease); }
+.backdrop i.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .backdrop i { transition: none; } }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--lav); color: var(--night); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--silver); color: var(--night); padding: 10px 14px; font-weight: 700; }
+.skip:focus { top: 12px; }
+.wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin: 0 auto; }
+
+/* type */
+.eyebrow { font: 700 .75rem/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--lav); margin: 0 0 14px; }
+.display { font: 800 clamp(3rem, 11vw, 7.5rem)/.86 var(--display); text-transform: uppercase; letter-spacing: -.005em; margin: 0; }
+.h2 { font: 800 clamp(2.6rem, 8vw, 5.5rem)/.88 var(--display); text-transform: uppercase; margin: 0; }
+.lede { font: 400 clamp(1.05rem, 1.6vw, 1.25rem)/1.55 var(--serif); color: var(--mist); max-width: 56ch; margin: 18px 0 0; }
+.muted { color: var(--mist); }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 0 22px; font: 700 .8125rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--rule-2); color: var(--paper); background: transparent; cursor: pointer; transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease); }
+.btn:hover { border-color: var(--lav); color: #fff; }
+.btn:active { transform: translateY(1px); }
+.btn-solid { background: var(--silver); border-color: var(--silver); color: var(--night); }
+.btn-solid:hover { background: #fff; border-color: #fff; color: var(--night); }
+.btn-lav { background: var(--lav); border-color: var(--lav); color: var(--night); }
+.btn-lav:hover { background: var(--lav-2); border-color: var(--lav-2); color: var(--night); }
+.btn-sm { min-height: 44px; padding: 0 16px; font-size: .75rem; }
+.link { font: 700 .8125rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 4px; display: inline-flex; min-height: 44px; align-items: flex-end; }
+.link:hover { color: var(--lav); }
+
+/* topbar */
+.topbar { position: fixed; inset: 10px var(--gutter) auto; z-index: 50; height: var(--bar); display: flex; align-items: center; gap: 16px; padding: 0 10px 0 10px; background: rgba(16, 42, 30, .82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--rule); max-width: var(--max); margin: 0 auto; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; min-width: 0; }
+.brand img { width: 48px; height: 48px; }
+.brand b { display: block; font: 700 .9375rem/1.1 var(--ui); letter-spacing: .14em; text-transform: uppercase; }
+.brand b { margin-bottom: 3px; }
+.brand small { display: grid; font-size: .71875rem; line-height: 1.3; color: var(--mist); }
+.brand small span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav { margin-left: auto; padding-left: 24px; }
+@media (min-width: 1100px) and (max-width: 1259px) { .brand small { display: none; } }
+.nav { display: none; margin-left: auto; gap: 4px; }
+.nav a { font: 700 .75rem/1 var(--ui); letter-spacing: .12em; text-transform: uppercase; text-decoration: none; color: var(--silver); padding: 14px 10px; }
+.nav a:hover { color: #fff; }
+.top-cta { display: none; gap: 8px; }
+.top-cta .call { display: none; }
+.icons { margin-left: auto; display: flex; gap: 6px; }
+.ico { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--rule-2); color: var(--silver); text-decoration: none; transition: border-color .25s, color .25s, background .25s; }
+.ico svg { width: 18px; height: 18px; }
+.ico:hover { border-color: var(--lav); color: #fff; }
+.ico.cal { background: var(--silver); border-color: var(--silver); color: var(--night); }
+.ico.acc { border-color: var(--lav); color: var(--lav-2); }
+@media (min-width: 760px) { .top-cta { display: flex; } .ico.cal { display: none; } .icons { margin-left: auto; } }
+@media (min-width: 1100px) { .nav { display: flex; } .icons { margin-left: 8px; } .top-cta .call { display: inline-flex; } }
+@media (max-width: 559px) { .brand small { display: none; } .topbar { inset: 8px 8px auto; height: 64px; } .brand img { width: 40px; height: 40px; } }
+
+/* hero */
+.hero { position: relative; min-height: min(100svh, 980px); display: grid; align-items: end; padding: calc(var(--bar) + 56px) 0 0; overflow: hidden; isolation: isolate; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -2; background:
+  radial-gradient(60% 55% at 72% 58%, rgba(138, 215, 176, .3), transparent 70%),
+  linear-gradient(180deg, rgba(16, 42, 30, .9) 0%, rgba(16, 42, 30, .72) 45%, rgba(27, 63, 45, .9) 100%); }
+.hero-grid { display: grid; gap: 28px; }
+.hero-copy { padding-bottom: 8px; }
+.hero h1 span { display: block; }
+.hero h1 .thin { color: var(--lav); }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.hero-photo { position: relative; margin: 0 calc(-1 * var(--gutter)); }
+.hero-photo img { width: 100%; height: auto; filter: drop-shadow(0 30px 40px rgba(8, 22, 15, .6)); }
+.today { border: 1px solid var(--rule-2); background: rgba(16, 42, 30, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 18px 20px; margin-top: 28px; max-width: 360px; }
+.today .status { display: flex; align-items: center; gap: 10px; font: 700 .75rem/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--silver); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--steel); box-shadow: 0 0 0 4px rgba(114, 140, 123, .25); }
+.dot.on { background: var(--lav); box-shadow: 0 0 0 4px rgba(138, 215, 176, .28); }
+.today p { margin: 10px 0 0; font: 400 1.25rem/1.3 var(--serif); }
+.today .rate { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: .875rem; color: var(--mist); }
+.today .rate b { color: var(--paper); }
+@media (max-width: 759px) {
+  .hero { min-height: auto; padding: calc(var(--bar) + 44px) 0 44px; align-items: start; }
+  .hero-photo { display: none; }
+  .hero .display { font-size: clamp(3.1rem, 15.5vw, 4.4rem); }
+  .hero-actions { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .hero .hero-actions { grid-template-columns: 1fr 1fr; }
+  .hero-actions .btn { padding: 0 10px; min-height: 52px; letter-spacing: .08em; }
+  .hero .hero-actions .btn:first-child { grid-column: 1 / -1; min-height: 56px; }
+  .today { max-width: none; }
+}
+@media (min-width: 960px) {
+  .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: end; gap: 24px; }
+  .hero-copy { padding-bottom: 72px; }
+  .hero-photo { margin: 0 -40px 0 0; }
+}
+
+/* amenities strip */
+.strip { border-block: 1px solid var(--rule); background: var(--navy); }
+.strip ul { list-style: none; margin: 0 auto; padding: 18px var(--gutter); display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 28px; max-width: var(--max); }
+.strip li { font: 800 1.375rem/1 var(--display); text-transform: uppercase; letter-spacing: .02em; color: var(--silver); white-space: nowrap; display: flex; align-items: center; gap: 28px; }
+@media (max-width: 759px) {
+  .strip ul { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; justify-items: start; padding-block: 20px; }
+  .strip li { font-size: 1.125rem; gap: 10px; white-space: normal; }
+  .strip li::before { content: ""; width: 6px; height: 6px; background: var(--lav); transform: rotate(45deg); flex: none; }
+  .strip li::after { display: none; }
+}
+.strip li:not(:last-child)::after { content: ""; width: 8px; height: 8px; background: var(--lav); transform: rotate(45deg); }
+
+/* sections */
+.band { padding: clamp(64px, 11vw, 140px) 0; position: relative; background: rgba(16, 42, 30, .88); }
+.band.alt { background: rgba(27, 63, 45, .9); }
+.head { max-width: 760px; margin-bottom: clamp(36px, 6vw, 64px); }
+.head.center { margin-inline: auto; text-align: center; }
+.head.center .lede { margin-inline: auto; }
+
+/* team */
+#equipe { padding-block: clamp(56px, 8vw, 104px); isolation: isolate; overflow: hidden; background: transparent; }
+#equipe::after { content: ""; position: absolute; inset: 0; z-index: -1; background:
+  radial-gradient(60% 50% at 50% 55%, rgba(27, 63, 45, .55), transparent 80%),
+  linear-gradient(180deg, rgba(16, 42, 30, .9) 0%, rgba(16, 42, 30, .6) 40%, rgba(16, 42, 30, .72) 70%, rgba(16, 42, 30, .94) 100%); }
+.team-head { display: grid; gap: 14px; margin-bottom: 28px; }
+.team-head .h2 { font-size: clamp(2.6rem, 6.5vw, 4.6rem); }
+.team-head .lede { margin: 0; }
+@media (min-width: 900px) { .team-head { grid-template-columns: 1fr minmax(0, 420px); align-items: end; gap: 40px; } }
+.team { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); margin: 0 calc(-1 * var(--gutter)); padding: 10px var(--gutter) 18px; scrollbar-width: none; }
+.team::-webkit-scrollbar { display: none; }
+.team > .card { flex: 0 0 min(68vw, 260px); scroll-snap-align: start; }
+@media (min-width: 1180px) { .team { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); overflow: visible; margin: 0; padding: 10px 0 18px; } }
+.card { --g1: rgba(138, 215, 176, .6); --g2: #2C5842; --gx: 30%;
+  position: relative; height: clamp(430px, 60vh, 520px); overflow: hidden; isolation: isolate; border: 1px solid var(--rule-2);
+  background: radial-gradient(90% 55% at var(--gx) 22%, var(--g1), transparent 72%), linear-gradient(180deg, var(--g2) 0%, var(--night) 92%);
+  transition: transform .55s var(--ease), border-color .4s, box-shadow .55s var(--ease); }
+.card:nth-child(5n+2) { --g1: rgba(114, 140, 123, .75); --g2: #234C38; --gx: 70%; }
+.card:nth-child(5n+3) { --g1: rgba(210, 210, 210, .4); --g2: #1B3F2D; --gx: 50%; }
+.card:nth-child(5n+4) { --g1: rgba(167, 227, 197, .5); --g2: #102A1E; --gx: 25%; }
+.card:nth-child(5n+5) { --g1: rgba(90, 160, 124, .7); --g2: #234C38; --gx: 75%; }
+.card .echo { position: absolute; inset: 0; z-index: 0; background: var(--ph) center 18% / cover no-repeat; opacity: .2; filter: grayscale(1) contrast(1.15); mix-blend-mode: luminosity;
+  transform: scale(1.5) translate(20%, -2%); -webkit-mask-image: linear-gradient(100deg, transparent 25%, #000 65%); mask-image: linear-gradient(100deg, transparent 25%, #000 65%);
+  transition: transform 1.4s var(--ease), opacity .6s; }
+.card .cut { position: absolute; z-index: 1; left: 50%; bottom: 0; height: 80%; width: auto; max-width: none; transform: translateX(-50%); transform-origin: 50% 100%;
+  filter: drop-shadow(0 0 1px rgba(210, 210, 210, .35)) drop-shadow(0 20px 30px rgba(8, 22, 15, .55)); transition: transform .8s var(--ease); }
+.card::after { content: ""; position: absolute; inset: 42% 0 0; z-index: 2; background: linear-gradient(180deg, transparent, rgba(16, 42, 30, .82) 45%, rgba(16, 42, 30, .97)); pointer-events: none; }
+.card::before { content: ""; position: absolute; inset: 10px; z-index: 4; border: 1px solid rgba(210, 210, 210, 0); pointer-events: none; transition: border-color .5s var(--ease); }
+.card .info { position: absolute; inset: auto 0 0; z-index: 3; padding: 18px 18px 20px; }
+.card .role { font: 700 .6875rem/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--lav); margin: 0; }
+.card h3 { font: 400 clamp(1.6rem, 2.1vw, 2rem)/1.05 var(--serif); margin: 6px 0 6px; overflow-wrap: anywhere; }
+.card .bio { font-size: .875rem; line-height: 1.45; color: var(--mist); margin: 0; }
+.card .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s var(--ease); }
+.card .more > div { overflow: hidden; }
+.card .more b { display: block; margin-top: 12px; font: 700 .6875rem/1.3 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--silver); }
+.card .more span { font-size: .875rem; color: var(--paper); }
+.card .link { color: var(--paper); margin-top: 6px; font-size: .75rem; }
+.card:hover, .card:focus-within { transform: translateY(-8px); border-color: rgba(138, 215, 176, .7); box-shadow: 0 34px 60px -30px rgba(4, 16, 10, .9); }
+.card:hover::before, .card:focus-within::before { border-color: rgba(210, 210, 210, .45); }
+.card:hover .echo, .card:focus-within .echo { opacity: .32; transform: scale(1.58) translate(16%, -4%); }
+.card:hover .cut, .card:focus-within .cut { transform: translateX(-50%) scale(1.04); }
+.card:hover .more, .card:focus-within .more { grid-template-rows: 1fr; }
+@media (hover: none) { .card .more { grid-template-rows: 1fr; } }
+.card.empty .ghost { position: absolute; z-index: 1; left: 50%; bottom: 0; width: 82%; transform: translateX(-50%); color: rgba(185, 202, 192, .16); }
+.card.empty .mono { position: absolute; z-index: 0; inset: 6% 0 auto; text-align: center; font: 800 16rem/1 var(--display); color: rgba(138, 215, 176, .1); }
+.card.empty .soon { position: absolute; z-index: 3; top: 20px; left: 20px; font: 700 .625rem/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; padding: 7px 9px; border: 1px dashed var(--rule-2); color: var(--mist); }
+.card.new { animation: pop .7s var(--ease) both; }
+@keyframes pop { from { opacity: 0; transform: translateY(24px) scale(.96); } }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field input, .field select { width: 100%; min-width: 0; max-width: 100%; }
+.field label { font: 700 .75rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; color: var(--silver); }
+.field input, .field select { min-height: 48px; background: var(--night); color: var(--paper); border: 1px solid var(--rule-2); padding: 0 14px; font: 500 1rem var(--ui); }
+.field input[type=file] { padding: 12px 14px; }
+.row2 { display: grid; gap: 14px; }
+@media (min-width: 640px) { .row2 { grid-template-columns: 1fr 1fr; } }
+
+/* services */
+.builder { display: grid; gap: 14px; }
+.toggles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (min-width: 560px) { .toggles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.toggles .chip span { width: 100%; min-height: 60px; font-size: 1rem; }
+.variant { display: grid; gap: 10px; padding: 16px; border-left: 2px solid var(--lav); background: rgba(138, 215, 176, .06); animation: pop .45s var(--ease) both; }
+.variant[hidden] { display: none; }
+.variant p { margin: 0; font: 700 .75rem/1.3 var(--ui); letter-spacing: .12em; text-transform: uppercase; color: var(--silver); }
+.find { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--rule); min-width: 0; }
+.find > h3 { font: 400 1.25rem/1.2 var(--serif); margin: 0 0 12px; }
+.show-all { background: none; border: 0; border-bottom: 1px solid currentColor; color: var(--silver); cursor: pointer; padding: 0; min-height: 32px; }
+.finder { position: sticky; top: calc(var(--bar) + 18px); z-index: 6; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 16px; background: rgba(16, 42, 30, .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border: 1px solid var(--lav); box-shadow: 0 18px 40px -22px rgba(4, 16, 10, .95); }
+.finder:focus-within { outline: 3px solid var(--lav); outline-offset: 3px; }
+.finder svg { width: 20px; height: 20px; color: var(--lav); flex: none; }
+.finder input { flex: 1; min-width: 0; min-height: 56px; background: transparent; border: 0; color: var(--paper); font: 500 1.0625rem var(--ui); outline: none; }
+.finder input::placeholder { color: var(--mist); }
+.finder input::-webkit-search-cancel-button { display: none; }
+.finder .x { width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 0; color: var(--mist); cursor: pointer; font-size: 1.4rem; line-height: 1; }
+.finder .x:hover { color: #fff; }
+.finder .x[hidden] { display: none; }
+.hints { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.hints span { font-size: .8125rem; color: var(--mist); align-self: center; margin-right: 4px; }
+.hint { min-height: 40px; padding: 0 12px; border: 1px solid var(--rule-2); background: transparent; color: var(--silver); font: 600 .8125rem/1 var(--ui); cursor: pointer; }
+.hint:hover { border-color: var(--lav); color: #fff; }
+.found { margin: 14px 0 0; font-size: .9375rem; color: var(--mist); min-height: 1.5em; }
+.found b { color: var(--paper); }
+.found a { color: var(--lav); }
+.show-all { margin-top: 6px; }
+.svc-list[hidden] { display: none; }
+.show-all[hidden] { display: none; }
+.svc-groups { display: grid; gap: 30px; margin-top: 8px; }
+.svc-groups.flat { gap: 0; }
+.group h3 { font: 700 .75rem/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--lav); margin: 0 0 6px; padding-top: 14px; border-top: 1px solid var(--lav); width: fit-content; }
+.group ul { list-style: none; margin: 0; padding: 0; }
+.group li { border-bottom: 1px solid var(--rule); }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; width: 100%; padding: 16px 0; background: none; border: 0; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+.row .n { font: 400 1.25rem/1.25 var(--serif); transition: color .2s; }
+.row .d { grid-column: 1; font-size: .875rem; color: var(--mist); }
+.row .why { grid-column: 1; font-size: .75rem; color: var(--lav); font-weight: 600; }
+.row .p { grid-row: 1 / span 3; grid-column: 2; align-self: center; text-align: right; font: 800 1.75rem/1 var(--display); white-space: nowrap; }
+.row .p small { display: block; font: 600 .6875rem/1.3 var(--ui); letter-spacing: .08em; text-transform: uppercase; color: var(--mist); }
+.row .go { grid-column: 1; font: 700 .6875rem/1.3 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--lav); max-height: 0; opacity: 0; overflow: hidden; transition: opacity .25s, max-height .25s; }
+.row:hover .n, .row:focus-visible .n { color: var(--lav-2); }
+.row:hover .go, .row:focus-visible .go { opacity: 1; max-height: 20px; }
+.row[aria-pressed="true"] { background: rgba(138, 215, 176, .1); box-shadow: inset 3px 0 var(--lav); padding-left: 14px; padding-right: 8px; }
+.row[aria-pressed="true"] .n { color: var(--lav-2); }
+.row[aria-pressed="true"] .go { opacity: 1; max-height: 20px; }
+@media (min-width: 1180px) { .svc-groups:not(.flat) { grid-template-columns: 1fr 1fr; gap: 30px 36px; } }
+
+/* booking */
+.book { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.book > * { min-width: 0; }
+.panel { background: var(--night); border: 1px solid var(--rule-2); padding: clamp(20px, 3vw, 32px); }
+.step { border: 0; margin: 0 0 26px; padding: 0; min-width: 0; max-width: 100%; }
+.step legend { display: flex; align-items: baseline; gap: 12px; padding: 0; margin-bottom: 14px; font: 400 1.375rem/1.2 var(--serif); }
+.step legend i { font: 800 1rem/1 var(--display); font-style: normal; color: var(--night); background: var(--lav); width: 28px; height: 28px; display: inline-grid; place-items: center; flex: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.chip span { display: inline-flex; flex-direction: column; justify-content: center; min-height: 48px; padding: 8px 14px; border: 1px solid var(--rule-2); font: 600 .9375rem/1.2 var(--ui); transition: background .2s, border-color .2s, color .2s; }
+.chip span small { font-weight: 500; font-size: .75rem; color: var(--mist); }
+.chip input:checked + span { background: var(--lav); border-color: var(--lav); color: var(--night); }
+.chip input:checked + span small { color: var(--navy); }
+.chip input:focus-visible + span { outline: 3px solid var(--lav); outline-offset: 3px; }
+.chip input:disabled + span { opacity: .35; text-decoration: line-through; cursor: not-allowed; }
+.more { margin-top: 12px; max-width: 520px; }
+.barbers { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; max-width: 100%; scrollbar-width: thin; }
+.barbers .chip { flex: 0 0 96px; }
+.barbers .chip span { width: 100%; }
+.barbers .chip span { align-items: center; text-align: center; gap: 8px; padding: 12px 6px; min-height: 120px; }
+.av { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 35%, rgba(138,215,176,.55), var(--navy) 70%); display: grid; place-items: center; font: 800 1.25rem/1 var(--display); color: var(--silver); }
+.av img { width: 120%; max-width: none; margin-top: 18%; }
+.days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; max-width: 100%; }
+.days .chip span { min-width: 64px; align-items: center; text-align: center; }
+.times { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 12px; }
+.times .chip span { align-items: center; }
+.empty-msg { color: var(--mist); font-size: .9375rem; margin: 6px 0 0; }
+.summary { display: grid; gap: 14px; align-content: start; }
+.summary dl { margin: 0; display: grid; gap: 0; }
+.summary dl div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.summary dt { color: var(--mist); font-size: .875rem; }
+.summary dd { margin: 0; text-align: right; font-weight: 600; }
+.summary .total dd { font: 800 2rem/1 var(--display); }
+.summary .note { font-size: .8125rem; color: var(--mist); margin: 0; }
+.summary .save { margin: 0; font-size: .875rem; font-weight: 600; color: var(--lav); }
+.summary .save[hidden] { display: none; }
+.sheet-body { display: grid; gap: 14px; }
+#sum { display: grid; gap: 14px; }
+#sum[hidden] { display: none; }
+#b-go { width: 100%; }
+.sheet-head, .scrim { display: none; }
+@media (max-width: 959px) {
+  .panel.summary { position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 45; padding: 8px 8px 8px 14px; max-height: calc(100svh - 100px); overflow: auto; overscroll-behavior: contain;
+    background: var(--night); border-color: var(--lav); box-shadow: 0 -12px 40px -12px rgba(4, 16, 10, .9);
+    transform: translateY(calc(100% + 24px)); transition: transform .45s var(--ease); }
+  .panel.summary.live { transform: none; }
+  #sum { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 10px; }
+  .summary .t-d { display: none; }
+  .sheet-body { grid-column: 1 / -1; grid-row: 1; display: none; padding: 8px 6px 4px 0; }
+  .sheet-head { grid-column: 1; grid-row: 2; }
+  #b-go { grid-column: 2; grid-row: 2; }
+  @media (prefers-reduced-motion: reduce) { .panel.summary, .panel.summary.live { transition: none; } }
+  .summary.open .sheet-body { display: grid; }
+  .sheet-head { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 52px; padding: 0; background: none; border: 0; color: inherit; text-align: left; cursor: pointer; font: inherit; }
+  .sh-t { display: grid; min-width: 0; flex: 1; }
+  .sh-t b { font: 400 1rem/1.25 var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sh-t small { font-size: .8125rem; color: var(--mist); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sheet-head svg { width: 20px; height: 20px; flex: none; color: var(--lav); transition: transform .3s var(--ease); }
+  .summary.open .sheet-head svg { transform: rotate(180deg); }
+  #b-go { width: auto; min-height: 52px; padding: 0 14px; letter-spacing: .06em; max-width: 46vw; white-space: normal; text-align: center; line-height: 1.15; }
+  .scrim { display: block; position: fixed; inset: 0; z-index: 44; background: rgba(4, 16, 10, .62); opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .scrim.on { opacity: 1; pointer-events: auto; }
+  .scrim[hidden] { display: none; }
+  #agendar { padding-bottom: calc(clamp(64px, 11vw, 140px) + 72px); }
+}
+.lead { width: min(440px, calc(100% - 32px)); padding: 0; border: 1px solid var(--lav); background: var(--night); color: var(--paper); }
+.lead::backdrop { background: rgba(4, 16, 10, .7); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.lead[open] { animation: pop .45s var(--ease) both; }
+.lead form { position: relative; display: grid; gap: 14px; padding: 28px 24px 24px; }
+.lead h3 { font: 400 1.6rem/1.2 var(--serif); margin: -6px 0 0; }
+.lead .eyebrow { margin: 0; }
+.lead-sum { margin: 0; padding: 12px 14px; border-left: 2px solid var(--lav); background: rgba(138, 215, 176, .08); font-size: .9375rem; color: var(--silver); }
+.lead-sum b { color: var(--paper); font-weight: 600; }
+.lead-err { margin: 0; min-height: 0; font-size: .875rem; color: var(--lav-2); }
+.lead-err:empty { display: none; }
+.lead .btn { width: 100%; min-height: 54px; }
+.lead .note { font-size: .8125rem; color: var(--mist); margin: 0; }
+.lead-x { position: absolute; top: 6px; right: 6px; width: 44px; height: 44px; background: none; border: 0; color: var(--mist); font-size: 1.6rem; cursor: pointer; }
+.lead-x:hover { color: #fff; }
+@media (max-width: 559px) {
+  .lead { width: 100%; max-width: none; margin: auto 0 0; border-width: 1px 0 0; }
+  .lead form { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+}
+.done { display: none; text-align: center; padding: 30px 10px; }
+.done.show { display: block; animation: pop .6s var(--ease) both; }
+.done h3 { font: 800 2.5rem/1 var(--display); text-transform: uppercase; margin: 12px 0 8px; }
+@media (min-width: 960px) { .book { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); } .summary { position: sticky; top: calc(var(--bar) + 24px); } }
+
+/* club */
+.packs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 559px) { .pack { padding: 16px 14px; } .pack .t { font-size: 1rem; } .pack .v { font-size: 2rem; } }
+@media (min-width: 900px) { .packs { grid-template-columns: repeat(3, 1fr); } }
+.pack { border: 1px solid var(--rule-2); padding: 22px; display: grid; gap: 6px; background: linear-gradient(180deg, var(--navy-2), var(--navy)); }
+.pack .t { font: 400 1.25rem/1.25 var(--serif); margin: 0; }
+.pack .v { font: 800 2.6rem/1 var(--display); margin: 8px 0 0; }
+.pack .s { font-size: .875rem; color: var(--lav); font-weight: 600; margin: 0; }
+.pack .u { font-size: .8125rem; color: var(--mist); margin: 0; }
+.allpacks { margin-top: 18px; }
+.allpacks summary { cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; font: 700 .8125rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; color: var(--silver); border-bottom: 1px solid currentColor; }
+.allpacks ul { list-style: none; padding: 0; margin: 14px 0 0; columns: 2 260px; column-gap: 32px; }
+.allpacks li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); break-inside: avoid; font-size: .9375rem; }
+.allpacks li b { white-space: nowrap; margin-left: auto; }
+.allpacks li .buy { font: 700 .6875rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; color: var(--lav); text-decoration: none; border-bottom: 1px solid currentColor; align-self: center; padding: 6px 0 3px; }
+.allpacks li .buy:hover { color: var(--lav-2); }
+.pack .pack-go { margin-top: 8px; justify-self: start; min-height: 36px; font-size: .75rem; color: var(--lav-2); }
+.club { margin-top: clamp(56px, 8vw, 96px); display: grid; gap: 14px; }
+.club-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
+.badge { display: inline-block; font: 700 .6875rem/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; padding: 8px 10px; border: 1px dashed var(--lav); color: var(--lav); }
+.plans { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 8px; scrollbar-width: none; }
+.plans::-webkit-scrollbar { display: none; }
+.plans > .plan { flex: 0 0 min(80vw, 320px); scroll-snap-align: start; }
+@media (min-width: 900px) { .plans { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; margin: 0; padding: 0; } }
+.plan { border: 1px solid var(--rule-2); padding: 26px 24px; display: grid; gap: 12px; align-content: start; background: var(--night); }
+.plan.hl { background: var(--lav); color: var(--night); border-color: var(--lav); }
+.plan.hl .muted, .plan.hl li { color: var(--navy); }
+.plan h3 { font: 800 2.2rem/1 var(--display); text-transform: uppercase; margin: 0; }
+.plan .price { font: 400 1.5rem/1 var(--serif); }
+.plan ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.plan li { padding-left: 22px; position: relative; color: var(--mist); font-size: .9375rem; }
+.plan li::before { content: ""; position: absolute; left: 0; top: .55em; width: 10px; height: 2px; background: currentColor; }
+.plan.hl .btn { border-color: var(--night); color: var(--night); }
+.plan.hl .btn:hover { background: var(--night); color: var(--paper); }
+
+/* instagram */
+.ig-head { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; justify-content: space-between; margin-bottom: 28px; }
+.ig-id { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+@media (max-width: 559px) { .ig-id { width: 100%; } .ig-id .btn { margin-left: auto; } .ig-id small { display: block; } }
+.ig-id img { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--lav); padding: 4px; background: var(--paper); }
+.ig-id b { font: 700 1.125rem/1.2 var(--ui); display: block; }
+.ig-id small { color: var(--mist); font-size: .875rem; }
+.ig-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.ig-grid a { position: relative; aspect-ratio: 310 / 330; overflow: hidden; display: block; background: var(--navy); }
+.ig-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease), filter .4s; }
+.ig-grid a:hover img { transform: scale(1.06); }
+.ig-grid a.playing img { animation: kb 9s ease-in-out infinite alternate; }
+@keyframes kb { from { transform: scale(1); } to { transform: scale(1.09) translate(-1.5%, -1.5%); } }
+.ig-grid .reel { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; color: #fff; filter: drop-shadow(0 1px 3px rgba(0,0,0,.5)); }
+.ig-grid a:nth-child(n+7) { display: none; }
+@media (min-width: 760px) { .ig-grid { grid-template-columns: repeat(4, 1fr); } .ig-grid a:nth-child(n+7) { display: block; } .ig-grid a:nth-child(n+9) { display: none; } }
+.ig-note { margin-top: 16px; font-size: .8125rem; color: var(--mist); }
+
+/* products */
+.prods { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 8px; scrollbar-width: none; }
+.prods::-webkit-scrollbar { display: none; }
+.prods > .prod { flex: 0 0 min(56vw, 230px); scroll-snap-align: start; }
+@media (min-width: 900px) { .prods { display: grid; grid-template-columns: repeat(5, 1fr); overflow: visible; margin: 0; padding: 0; } }
+.prod { display: grid; grid-template-rows: auto auto 1fr auto; gap: 8px; }
+.prod .ph { aspect-ratio: 3 / 4; overflow: hidden; background: var(--paper); }
+.prod .ph img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.prod:hover .ph img { transform: scale(1.05); }
+.prod h3 { font: 400 1.125rem/1.25 var(--serif); margin: 0; }
+.prod p { margin: 0; font-size: .875rem; color: var(--mist); }
+.prod .link { font-size: .6875rem; min-height: 44px; }
+
+/* reviews */
+.proof { display: grid; gap: 30px; align-items: center; text-align: center; justify-items: center; }
+.score { font: 800 clamp(7rem, 26vw, 15rem)/.8 var(--display); letter-spacing: -.02em; }
+.stars { color: var(--lav); font-size: 1.75rem; letter-spacing: .2em; }
+
+/* location */
+.loc { display: grid; gap: 28px; }
+.addr { font: 800 clamp(2.4rem, 7vw, 4.8rem)/.9 var(--display); text-transform: uppercase; margin: 0; }
+.hours { width: 100%; border-collapse: collapse; margin-top: 22px; max-width: 460px; }
+.hours th, .hours td { text-align: left; padding: 12px 0; border-bottom: 1px solid var(--rule); font-weight: 500; }
+.hours td { text-align: right; }
+.hours tr.now th, .hours tr.now td { color: var(--lav); font-weight: 700; }
+.map { min-height: 360px; border: 1px solid var(--rule-2); background: var(--navy); }
+.map iframe { width: 100%; height: 100%; min-height: 360px; border: 0; filter: grayscale(1) contrast(1.05) brightness(.9); }
+@media (min-width: 960px) { .loc { grid-template-columns: 1fr 1fr; align-items: stretch; } }
+
+/* closing */
+.closing { text-align: center; background:
+  radial-gradient(50% 70% at 50% 100%, rgba(138, 215, 176, .3), transparent 70%), rgba(27, 63, 45, .9); border-top: 1px solid var(--rule); }
+.closing .display { font-size: clamp(3rem, 10vw, 6.5rem); }
+.closing .hero-actions { justify-content: center; }
+
+/* illustrated barbers (Gemini stickers, background removed) */
+.toon { display: block; height: auto; max-width: none; pointer-events: none; user-select: none; filter: drop-shadow(0 14px 22px rgba(4, 16, 10, .55)); }
+.rv .toon, .toon.pop { transition: transform .7s var(--ease); }
+#st-svc { position: relative; }
+.toon-svc { display: none; position: absolute; transform: rotate(6deg); }
+@media (min-width: 760px) {
+  .toon-svc { display: block; top: -150px; right: 0; width: 132px; }
+}
+.lead { overflow: visible; }
+.toon-lead { position: absolute; top: -112px; right: 58px; width: 96px; transform: rotate(-4deg); }
+.toon-done { width: 120px; margin: -6px auto 0; transform: rotate(-3deg); }
+.map { position: relative; }
+.toon-loc { position: absolute; z-index: 2; left: -14px; bottom: -22px; width: 104px; transform: rotate(-3deg); }
+@media (min-width: 960px) { .toon-loc { left: -54px; bottom: -36px; width: 150px; } }
+.closing .wrap { position: relative; }
+.toon-close { width: 200px; margin: -20px auto 18px; transform: rotate(-3deg); }
+@media (min-width: 1180px) {
+  .toon-close { position: absolute; right: 0; bottom: calc(14px - clamp(64px, 11vw, 140px)); width: 270px; margin: 0; }
+}
+/* team: the illustrated version is slapped on the card on hover */
+.card .toon-card { position: absolute; z-index: 2; top: 12px; right: 6px; width: 54%; opacity: 0; transform: translateY(10px) scale(.7) rotate(10deg); transform-origin: 70% 20%;
+  transition: opacity .35s var(--ease), transform .6s var(--ease); }
+.card:hover .toon-card, .card:focus-within .toon-card { opacity: 1; transform: rotate(-5deg); }
+.card:hover .cut:has(+ .toon-card), .card:focus-within .cut:has(+ .toon-card) { transform: translateX(-66%) scale(1.04); }
+@media (prefers-reduced-motion: reduce) { .card .toon-card { transition: opacity .2s; transform: rotate(-5deg); } }
+
+/* hunt: find every illustrated barber for a surprise coupon */
+.toon[data-hunt] { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.toon[data-hunt]:hover { filter: drop-shadow(0 0 10px rgba(167, 227, 197, .55)) drop-shadow(0 14px 22px rgba(4, 16, 10, .55)); }
+.toon[data-hunt]:focus-visible { outline: 3px solid var(--lav); outline-offset: 4px; }
+.toon.caught { pointer-events: none; animation: caught 1.15s var(--ease) forwards; }
+.toon.gone { visibility: hidden; }
+@keyframes caught {
+  0% { filter: drop-shadow(0 0 0 rgba(167, 227, 197, 0)); }
+  12% { transform: rotate(-12deg) scale(1.14); filter: drop-shadow(0 0 22px rgba(167, 227, 197, .95)) brightness(1.15); }
+  24% { transform: rotate(11deg) scale(1.14); }
+  36% { transform: rotate(-9deg) scale(1.1); }
+  48% { transform: rotate(7deg) scale(1.06); filter: drop-shadow(0 0 26px rgba(167, 227, 197, 1)) brightness(1.2); }
+  60% { transform: rotate(-4deg) scale(.95); opacity: 1; }
+  100% { transform: rotate(0) scale(.08); opacity: 0; filter: drop-shadow(0 0 30px rgba(167, 227, 197, 1)); }
+}
+@media (prefers-reduced-motion: reduce) { .toon.caught { animation: caught-rm .4s linear forwards; } }
+@keyframes caught-rm { to { opacity: 0; } }
+.has-toon { position: relative; }
+.toon-head { position: absolute; z-index: 2; top: -52px; right: 0; width: 62px; transform: rotate(5deg); }
+.toon-head.flip { transform: rotate(-5deg); }
+@media (min-width: 760px) { .toon-head { top: 0; right: 2%; width: 150px; } }
+@media (min-width: 1100px) { .toon-head { width: 172px; right: 6%; } }
+.find { position: relative; }
+.toon-find { position: absolute; top: 12px; right: 0; width: 56px; transform: rotate(8deg); }
+.find > h3 { padding-right: 64px; }
+@media (min-width: 760px) { .toon-find { display: none; } .find > h3 { padding-right: 0; } }
+.hunt-toast { position: fixed; left: 50%; top: calc(var(--bar) + 22px); z-index: 60; transform: translate(-50%, -12px); opacity: 0; pointer-events: none;
+  padding: 10px 16px; background: var(--night); border: 1px solid var(--lav); font: 600 .875rem/1.3 var(--ui); white-space: nowrap; transition: opacity .3s, transform .4s var(--ease); }
+.hunt-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.hunt-toast b { color: var(--lav-2); }
+.coupon-body { position: relative; display: grid; gap: 14px; padding: 28px 24px 24px; text-align: center; }
+.coupon h3 { font: 800 clamp(2rem, 7vw, 2.6rem)/1 var(--display); text-transform: uppercase; margin: 0; }
+.coupon .eyebrow { margin: 0; }
+.coupon .muted { margin: 0; color: var(--silver); }
+.crew { display: flex; justify-content: center; margin: -86px 0 4px; }
+.crew img { width: 66px; height: auto; margin: 0 -8px; filter: drop-shadow(0 10px 14px rgba(4, 16, 10, .6)); animation: pop .6s var(--ease) both; }
+.crew img:nth-child(2) { animation-delay: .08s; transform: rotate(-4deg); } .crew img:nth-child(3) { animation-delay: .16s; }
+.crew img:nth-child(4) { animation-delay: .24s; transform: rotate(4deg); } .crew img:nth-child(5) { animation-delay: .32s; }
+.code { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; padding: 14px 16px; border: 1px dashed var(--lav); background: rgba(138, 215, 176, .08); text-align: left; }
+.code span { font: 700 .6875rem/1.3 var(--ui); letter-spacing: .14em; text-transform: uppercase; color: var(--mist); }
+.code b { grid-row: 2; font: 800 1.9rem/1 var(--display); letter-spacing: .06em; }
+.code strong { grid-row: 1 / span 2; grid-column: 2; font: 800 1.5rem/1 var(--display); color: var(--night); background: var(--lav); padding: 10px 12px; }
+.coupon .btn { width: 100%; }
+.coupon .note { font-size: .8125rem; color: var(--mist); margin: 0; }
+.summary .coupon-line { color: var(--lav-2); }
+
+/* returning-client popup: shows after 3s, docks to the top-left once you scroll */
+.member { position: fixed; z-index: 48; top: calc(10px + var(--bar) + 12px); left: max(var(--gutter), calc((100vw - var(--max)) / 2));
+  width: min(380px, calc(100vw - 2 * var(--gutter))); display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px 14px;
+  padding: 16px 14px 16px 16px; background: rgba(16, 42, 30, .97); border: 1px solid var(--lav); box-shadow: 0 24px 50px -20px rgba(4, 16, 10, .9);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  transform: translateY(calc(100svh - 100% - var(--bar) - 56px)); opacity: 0;
+  transition: transform .7s var(--ease), opacity .4s, width .5s var(--ease), padding .5s var(--ease); }
+.member[hidden] { display: none !important; }
+.member.in { opacity: 1; }
+.member img { width: 40px; height: 40px; grid-row: 1 / span 2; align-self: start; }
+.member .m-txt { min-width: 0; }
+.member .m-t { margin: 0; font: 400 1.3rem/1.2 var(--serif); }
+.member .m-d { margin: 4px 0 0; font-size: .875rem; color: var(--mist); }
+.member .m-go { grid-column: 2; justify-self: start; }
+.member .m-x { grid-column: 3; grid-row: 1; align-self: start; width: 40px; height: 40px; display: grid; place-items: center; margin: -6px -4px 0 0;
+  background: var(--paper); color: var(--night); border: 0; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 12px rgba(4, 16, 10, .5); }
+.member .m-x svg { width: 18px; height: 18px; }
+.member .m-x:hover { background: #fff; transform: scale(1.06); }
+.member .m-x:focus-visible { outline: 3px solid var(--lav); outline-offset: 2px; }
+/* docked: compact pill in the top-left corner */
+.member.docked { transform: none; width: auto; display: flex; align-items: center; padding: 8px 8px 8px 10px; gap: 10px; }
+.member.docked img { width: 30px; height: 30px; grid-row: auto; align-self: center; }
+.member.docked .m-d { display: none; }
+.member.docked .m-t { font-size: 1rem; white-space: nowrap; }
+.member.docked .m-go { grid-column: auto; min-height: 40px; padding: 0 14px; }
+.member.docked .m-x { grid-column: auto; grid-row: auto; align-self: center; margin: 0; width: 36px; height: 36px; }
+@media (max-width: 559px) {
+  .member { top: calc(8px + 64px + 8px); left: 8px; width: calc(100vw - 16px); }
+  .member.docked .m-txt { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .member { transition: opacity .3s; } }
+
+/* footer */
+footer { padding: 48px 0; border-top: 1px solid var(--rule); font-size: .875rem; color: var(--mist); background: rgba(16, 42, 30, .97); }
+.foot { display: grid; gap: 24px; }
+.foot img { width: 72px; height: 72px; }
+.foot a { text-decoration: none; }
+.foot a:hover { color: var(--paper); }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+@media (min-width: 760px) { .foot { grid-template-columns: auto 1fr 1fr 1fr; align-items: start; } }
+
+/* reveal */
+.rv { opacity: 0; transform: translateY(22px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } }
+
+/* ?todo review mode */
+.todo [data-todo] { outline: 2px dashed var(--lav); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+<header class="topbar">
+  <a class="brand" href="#topo" aria-label="DB Barbearia, início">
+    <img src="assets/marca/selo-branco.svg" alt="" width="48" height="48">
+    <span><b>DB Barbearia</b><small><span>Rua das Tesouras, 120</span><span>(48) 3000-0000 · Centro</span></small></span>
+  </a>
+  <nav class="nav" aria-label="Seções">
+    <a href="#equipe">Equipe</a>
+    <a href="#agendar">Serviços</a>
+    <a href="#clube">Clube</a>
+    <a href="#instagram">Instagram</a>
+    <a href="#produtos">Produtos</a>
+    <a href="#local">Endereço</a>
+  </nav>
+  <div class="icons">
+    <a class="ico" href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram da DB Barbearia"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></a>
+    <a class="ico" href="https://wa.me/554830000000" target="_blank" rel="noopener" aria-label="WhatsApp da DB Barbearia"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.5-.3z"/></svg></a>
+    <a class="ico cal" href="#agendar" aria-label="Agendar horário"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2"/></svg></a>
+  </div>
+  <div class="top-cta">
+    <a class="btn btn-solid btn-sm" href="#agendar">Agendar</a>
+    <a class="btn btn-sm call" href="tel:+554830000000">Ligar</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="hero" id="topo" aria-labelledby="t-hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">DB Barbearia · Centro</p>
+        <h1 class="display" id="t-hero"><span>Sente.</span><span>Relaxe.</span><span class="thin">Saia outro.</span></h1>
+        <p class="lede">Cabelo, barba na navalha e toalha quente, com TV na sua cadeira. Escolha o seu barbeiro e garanta o horário em menos de um minuto.</p>
+        <div class="hero-actions">
+          <a class="btn btn-solid" href="#agendar">Agendar horário</a>
+          <a class="btn" href="#equipe">Ver a equipe</a>
+          <a class="btn" href="#servicos">Ver preços</a>
+        </div>
+        <div class="today" aria-live="polite">
+          <div class="status"><span class="dot" id="dot"></span><span id="status">Horário de hoje</span></div>
+          <p id="status-line">Seg a sex, 9h às 20h · Sáb, 8h30 às 16h</p>
+          <div class="rate"><b>5,0 ★</b> · 212 avaliações no Google</div>
+        </div>
+      </div>
+      <figure class="hero-photo" style="margin-block:0">
+        <img src="assets/equipe/hero.png" alt="Equipe da DB Barbearia: cinco barbeiros sorrindo, de camisa escura e avental de couro" width="1088" height="682" fetchpriority="high">
+      </figure>
+    </div>
+  </section>
+
+  <div class="strip" aria-label="Comodidades">
+    <ul>
+      <li>Toalha quente</li><li>Barba na navalha</li><li>TV em cada cadeira</li><li>Wi-fi</li><li>Estacionamento</li><li>Atende crianças</li><li>Acessibilidade</li><li>PIX e cartões</li>
+    </ul>
+  </div>
+
+  <section class="band" id="equipe" aria-labelledby="t-equipe">
+    <div class="wrap">
+      <div class="team-head rv">
+        <div><p class="eyebrow">A equipe</p><h2 class="h2" id="t-equipe">Conheça quem<br>vai te atender.</h2></div>
+        <p class="lede">Cada barbeiro tem a sua mão, o seu ritmo e a sua agenda. Escolha o seu e marque direto com ele.</p>
+      </div>
+      <div class="team" id="team"></div>
+
+      <p class="ig-note" data-todo="equipe-painel">Equipe fictícia, projeto demonstrativo. Na versão final, o dono cadastra um novo barbeiro no painel e o card aparece aqui sozinho, com a foto no padrão da casa e o fundo removido automaticamente.</p>
+    </div>
+  </section>
+
+  <section class="band alt" id="agendar" aria-labelledby="t-agendar">
+    <div class="wrap">
+      <div class="head rv">
+        <p class="eyebrow">Serviços e agendamento</p>
+        <h2 class="h2" id="t-agendar">O padrão DB,<br>no seu horário.</h2>
+        <p class="lede">Monte o atendimento e veja o preço na hora. Depois escolha o barbeiro, o dia e o horário. Sem ligação e sem esperar resposta.</p>
+      </div>
+      <form class="book" id="book" novalidate>
+        <div class="panel">
+          <fieldset class="step" id="st-svc">
+            <legend><i>1</i>O que você vai fazer hoje?</legend>
+            <img class="toon toon-svc" data-hunt="leo" role="button" tabindex="0" aria-label="Léo escondido na página" src="assets/equipe/pose/leo.webp" alt="" width="560" height="760" loading="lazy">
+            <div class="builder" id="builder">
+              <div class="toggles" role="group" aria-label="Serviços">
+                <label class="chip"><input type="checkbox" value="hair"><span>Cabelo</span></label>
+                <label class="chip"><input type="checkbox" value="beard"><span>Barba</span></label>
+                <label class="chip"><input type="checkbox" value="S"><span>Sobrancelha</span></label>
+                <label class="chip"><input type="checkbox" value="N"><span>Pelos do nariz<small>Cera quente</small></span></label>
+                <label class="chip"><input type="checkbox" value="HI"><span>Hidratação</span></label>
+                <label class="chip"><input type="checkbox" value="TB"><span>Pintar a barba</span></label>
+              </div>
+              <div class="variant" id="v-hair" hidden role="radiogroup" aria-label="Tipo de corte">
+                <p>Qual corte?</p>
+                <div class="chips">
+                  <label class="chip"><input type="radio" name="hair" value="HT" checked><span>Tesoura e degradê<small>O corte completo</small></span></label>
+                  <label class="chip"><input type="radio" name="hair" value="HM"><span>Só máquina<small>Sem degradê</small></span></label>
+                  <label class="chip"><input type="radio" name="hair" value="HK"><span>Corte kids<small>Até 10 anos</small></span></label>
+                </div>
+              </div>
+              <div class="variant" id="v-beard" hidden role="radiogroup" aria-label="Tipo de barba">
+                <p>Qual barba?</p>
+                <div class="chips">
+                  <label class="chip"><input type="radio" name="beard" value="BC" checked><span>Completa<small>Toalha quente e navalha</small></span></label>
+                  <label class="chip"><input type="radio" name="beard" value="BM"><span>Só máquina<small>Sem toalha e sem lâmina</small></span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="find" id="servicos">
+              <h3>Procurando algo específico?</h3>
+              <img class="toon toon-find" data-hunt="leo" role="button" tabindex="0" aria-label="Léo escondido na página" src="assets/equipe/pose/leo.webp" alt="" width="560" height="760" loading="lazy">
+              <div class="finder" role="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <label for="q" class="sr-only">Buscar serviço</label>
+                <input id="q" type="search" placeholder="Busque: degradê, peruca, pintar…" autocomplete="off" enterkeyhint="search">
+                <button class="x" type="button" id="q-clear" aria-label="Limpar busca" hidden>&times;</button>
+              </div>
+              <div class="hints"><span>Tente:</span><button class="hint" type="button">degradê</button><button class="hint" type="button">criança</button><button class="hint" type="button">pintar</button><button class="hint" type="button">peruca</button><button class="hint" type="button">pezinho</button><button class="hint" type="button">alisar</button></div>
+              <p class="found" id="found" aria-live="polite"></p>
+              <button class="link show-all" type="button" id="show-all" aria-expanded="false" aria-controls="svc-list">Ver os 21 serviços e preços</button>
+              <div class="svc-list" id="svc-list" hidden><div class="svc-groups" id="svc-groups"></div></div>
+            </div>
+          </fieldset>
+          <fieldset class="step" id="st-bar">
+            <legend><i>2</i>Barbeiro</legend>
+            <div class="barbers" id="pick-barber"></div>
+          </fieldset>
+          <fieldset class="step" id="st-day">
+            <legend><i>3</i>Dia</legend>
+            <div class="days" id="pick-day"></div>
+          </fieldset>
+          <fieldset class="step" id="st-time" style="margin-bottom:0">
+            <legend><i>4</i>Horário</legend>
+            <div class="times" id="pick-time"></div>
+            <p class="empty-msg" id="time-msg"></p>
+          </fieldset>
+        </div>
+        <aside class="panel summary" id="sheet" aria-labelledby="t-resumo">
+          <div id="sum">
+            <p class="eyebrow t-d" id="t-resumo">Seu atendimento</p>
+            <div class="sheet-body" id="sheet-body">
+              <dl>
+                <div><dt>Serviço</dt><dd id="s-svc">—</dd></div>
+                <div><dt>Barbeiro</dt><dd id="s-bar">—</dd></div>
+                <div><dt>Quando</dt><dd id="s-when">—</dd></div>
+                <div><dt>Duração</dt><dd id="s-dur">—</dd></div>
+                <div class="total"><dt>Total</dt><dd id="s-price">—</dd></div>
+              </dl>
+              <p class="save" id="s-save" hidden></p>
+              <p class="save coupon-line" id="s-coupon" hidden></p>
+              <p class="note">Pague na barbearia: PIX, dinheiro ou cartão. Protótipo: nenhum dado é enviado.</p>
+            </div>
+            <button class="sheet-head" type="button" id="sheet-toggle" aria-expanded="false" aria-controls="sheet-body">
+              <span class="sh-t"><b id="m-svc">Seu atendimento</b><small id="m-meta"></small></span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+              <span class="sr-only">Ver resumo</span>
+            </button>
+            <button class="btn btn-lav" type="submit" id="b-go">Confirmar horário</button>
+          </div>
+          <div class="done" id="done" role="status">
+            <img class="toon toon-done" src="assets/equipe/pose/caio.webp" alt="" width="560" height="760" loading="lazy">
+            <h3>Horário reservado</h3>
+            <p class="muted" id="done-txt"></p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px"><a class="btn btn-sm btn-lav" href="conta.html">Ver na minha conta</a><button class="btn btn-sm" type="button" id="again">Marcar outro</button></div>
+          </div>
+        </aside>
+      </form>
+    </div>
+  </section>
+  <div class="scrim" id="scrim" hidden></div>
+  <dialog class="lead" id="lead" aria-labelledby="t-lead">
+    <form id="lead-form" novalidate>
+      <img class="toon toon-lead" src="assets/equipe/pose/rafael.webp" alt="" width="560" height="760">
+      <button class="lead-x" type="button" id="lead-x" aria-label="Fechar">&times;</button>
+      <p class="eyebrow">Quase lá</p>
+      <h3 id="t-lead">Para quem é o horário?</h3>
+      <p class="lead-sum" id="lead-sum"></p>
+      <div class="field"><label for="b-name">Seu nome</label><input id="b-name" autocomplete="name" required></div>
+      <div class="field"><label for="b-phone">WhatsApp</label><input id="b-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(48) 9 0000-0000" required></div>
+      <p class="lead-err" id="lead-err" role="alert"></p>
+      <button class="btn btn-lav" type="submit">Confirmar horário</button>
+      <p class="note">A confirmação chega no seu WhatsApp. Pague na barbearia. Protótipo: nenhum dado é enviado.</p>
+    </form>
+  </dialog>
+  <dialog class="lead" id="welcome" aria-labelledby="t-welcome">
+    <div class="coupon-body" style="text-align:left">
+      <button class="lead-x" type="button" id="welcome-x" aria-label="Fechar">&times;</button>
+      <p class="eyebrow" id="w-eyebrow">Você entrou</p>
+      <h3 id="t-welcome" style="font:800 clamp(2rem,7vw,2.6rem)/1 var(--display);text-transform:uppercase;margin:0"></h3>
+      <p class="lead-sum" id="w-sum"></p>
+      <p class="muted" id="w-txt" style="margin:0"></p>
+      <button class="btn btn-lav" type="button" id="w-go"></button>
+      <button class="btn btn-sm" type="button" id="w-later">Agora não</button>
+      <p class="note" data-todo="pagamento" id="w-note"></p>
+    </div>
+  </dialog>
+  <div class="hunt-toast" id="hunt-toast" role="status" aria-live="polite"></div>
+  <aside class="member" id="member" aria-labelledby="t-member" hidden>
+    <img src="assets/marca/selo-branco.svg" alt="" width="40" height="40">
+    <div class="m-txt">
+      <p class="m-t" id="t-member">Já é cliente?</p>
+      <p class="m-d">Faça o login e agende em segundos, com o seu barbeiro e seus dados já preenchidos.</p>
+    </div>
+    <button class="btn btn-lav btn-sm m-go" type="button" id="member-go">Entrar e agendar</button>
+    <button class="m-x" type="button" id="member-x" aria-label="Fechar aviso de login"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+  </aside>
+  <dialog class="lead" id="login" aria-labelledby="t-login">
+    <form id="login-form" novalidate>
+      <button class="lead-x" type="button" id="login-x" aria-label="Fechar">&times;</button>
+      <p class="eyebrow">Área do cliente</p>
+      <h3 id="t-login">Bom te ver de volta.</h3>
+      <div class="field"><label for="l-phone">Seu WhatsApp</label><input id="l-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(48) 9 0000-0000" required></div>
+      <p class="lead-err" id="login-err" role="alert"></p>
+      <button class="btn btn-lav" type="submit">Entrar</button>
+      <p class="note" data-todo="login">Protótipo: na versão final enviamos um código pelo WhatsApp para confirmar que é você. Nada é enviado aqui.</p>
+    </form>
+  </dialog>
+  <dialog class="lead coupon" id="coupon" aria-labelledby="t-coupon">
+    <div class="coupon-body">
+      <button class="lead-x" type="button" id="coupon-x" aria-label="Fechar">&times;</button>
+      <div class="crew" aria-hidden="true">
+        <img src="assets/equipe/pose/rafael.webp" alt=""><img src="assets/equipe/pose/bruno.webp" alt=""><img src="assets/equipe/pose/caio.webp" alt=""><img src="assets/equipe/pose/bigode.webp" alt=""><img src="assets/equipe/pose/leo.webp" alt="">
+      </div>
+      <p class="eyebrow">Surpresa</p>
+      <h3 id="t-coupon">Você achou a equipe toda.</h3>
+      <p class="muted">De presente, 10% de desconto no seu próximo atendimento.</p>
+      <div class="code"><span>Seu cupom</span><b id="coupon-code">DB10</b><strong>10% OFF</strong></div>
+      <button class="btn btn-lav" type="button" id="coupon-use">Agendar com desconto</button>
+      <button class="btn btn-sm" type="button" id="coupon-copy">Copiar código</button>
+      <p class="note" data-todo="cupom">Protótipo: cupom de demonstração. Regras, validade e limite de uso a definir com a barbearia.</p>
+    </div>
+  </dialog>
+
+  <section class="band" id="clube" aria-labelledby="t-clube">
+    <div class="wrap has-toon">
+      <img class="toon toon-head" data-hunt="rafael" role="button" tabindex="0" aria-label="Rafael escondido na página" src="assets/equipe/pose/rafael.webp" alt="" width="560" height="760" loading="lazy">
+      <div class="head rv">
+        <p class="eyebrow">Clube DB</p>
+        <h2 class="h2" id="t-clube">Cliente da casa<br>paga menos.</h2>
+        <p class="lede">Pacotes pré-pagos que já existem hoje, com a economia calculada sobre os serviços avulsos.</p>
+      </div>
+      <div class="packs" id="packs"></div>
+      <details class="allpacks"><summary>Ver os 17 pacotes</summary><ul id="allpacks"></ul></details>
+
+      <div class="club">
+        <div class="club-head">
+          <h3 class="h2" style="font-size:clamp(2.2rem,6vw,3.6rem)">Assinatura mensal</h3>
+          <span class="badge" data-todo="clube">Proposta · regras e preços a definir</span>
+        </div>
+        <div class="plans">
+          <article class="plan">
+            <h3>Cabelo</h3>
+            <p class="price" data-todo="preco-clube">R$ — /mês</p>
+            <ul><li>Cortes no mês sem pagar na hora</li><li>Agenda pelo site, com o seu barbeiro</li><li>Cancele quando quiser</li></ul>
+            <a class="btn btn-sm" href="entrar.html?next=index.html%23clube&amp;intent=assinatura&amp;item=cabelo&amp;label=Cabelo">Quero assinar</a>
+          </article>
+          <article class="plan hl">
+            <h3>Cabelo + Barba</h3>
+            <p class="price" data-todo="preco-clube">R$ — /mês</p>
+            <ul><li>Cabelo e barba com toalha quente</li><li>Prioridade nos horários de pico</li><li>Desconto nos produtos da casa</li></ul>
+            <a class="btn btn-sm" href="entrar.html?next=index.html%23clube&amp;intent=assinatura&amp;item=cabelo-barba&amp;label=Cabelo+%2B+Barba">Quero assinar</a>
+          </article>
+          <article class="plan">
+            <h3>Barba</h3>
+            <p class="price" data-todo="preco-clube">R$ — /mês</p>
+            <ul><li>Barba na navalha durante o mês</li><li>Acabamento entre uma visita e outra</li><li>Cancele quando quiser</li></ul>
+            <a class="btn btn-sm" href="entrar.html?next=index.html%23clube&amp;intent=assinatura&amp;item=barba&amp;label=Barba">Quero assinar</a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt" id="instagram" aria-labelledby="t-ig">
+    <div class="wrap">
+      <div class="ig-head rv">
+        <div>
+          <p class="eyebrow">No Instagram</p>
+          <h2 class="h2" id="t-ig">Os bastidores<br>da cadeira.</h2>
+        </div>
+        <div class="ig-id">
+          <img src="assets/marca/selo-verde.svg" alt="" width="64" height="64">
+          <div><b>@dbbarbearia</b><small>2.400 seguidores · Reels toda semana</small></div>
+          <a class="btn btn-solid btn-sm" href="https://www.instagram.com/" target="_blank" rel="noopener">Seguir</a>
+        </div>
+      </div>
+      <div class="ig-grid" id="ig"></div>
+      <p class="ig-note" data-todo="instagram-api">Protótipo com as capas dos posts. Na versão final, esta grade se atualiza sozinha pela integração com o Instagram e os Reels tocam aqui, sem som, enquanto estiverem na tela.</p>
+    </div>
+  </section>
+
+  <section class="band" id="produtos" aria-labelledby="t-prod">
+    <div class="wrap has-toon">
+      <img class="toon toon-head flip" data-hunt="caio" role="button" tabindex="0" aria-label="Caio escondido na página" src="assets/equipe/pose/caio.webp" alt="" width="560" height="760" loading="lazy">
+      <div class="head rv">
+        <p class="eyebrow">Para usar em casa</p>
+        <h2 class="h2" id="t-prod">O cuidado da<br>barbearia em casa.</h2>
+        <p class="lede">Os mesmos produtos usados na cadeira. Peça pelo WhatsApp e retire na barbearia.</p>
+      </div>
+      <div class="prods" id="prods"></div>
+    </div>
+  </section>
+
+  <section class="band alt" id="avaliacoes" aria-labelledby="t-rev">
+    <div class="wrap proof rv">
+      <p class="eyebrow" style="margin:0">Avaliações</p>
+      <h2 class="sr-only" id="t-rev">Nota no Google</h2>
+      <div class="score" aria-hidden="true">5,0</div>
+      <div class="stars" aria-hidden="true">★★★★★</div>
+      <p class="lede" style="margin:0">Nota máxima em 212 avaliações no Google. Leia o que dizem depois de sentar na cadeira.</p>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=barbearia" target="_blank" rel="noopener" data-todo="google-url">Ler no Google</a>
+    </div>
+  </section>
+
+  <section class="band" id="local" aria-labelledby="t-local">
+    <div class="wrap loc">
+      <div class="rv">
+        <p class="eyebrow">Onde estamos</p>
+        <h2 class="addr" id="t-local">Rua das Tesouras, 120</h2>
+        <p class="lede">Sala 01 · Centro · Endereço fictício, projeto demonstrativo.</p>
+        <table class="hours" aria-label="Horário de atendimento">
+          <tbody id="hours"></tbody>
+        </table>
+        <div class="hero-actions">
+          <a class="btn btn-solid" href="https://www.google.com/maps/dir/?api=1&destination=-23.55052,-46.633308" target="_blank" rel="noopener">Como chegar</a>
+          <a class="btn" href="tel:+554830000000">(48) 3000-0000</a>
+        </div>
+      </div>
+      <div class="map">
+        <img class="toon toon-loc" data-hunt="bigode" role="button" tabindex="0" aria-label="Bigode escondido na página" src="assets/equipe/pose/bigode.webp" alt="" width="560" height="760" loading="lazy">
+        <iframe title="Mapa da DB Barbearia" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=-23.55052,-46.633308&z=17&output=embed"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="band closing" aria-labelledby="t-close">
+    <div class="wrap">
+      <img class="toon toon-close" data-hunt="bruno" role="button" tabindex="0" aria-label="Bruno escondido na página" src="assets/equipe/pose/bruno.webp" alt="" width="560" height="760" loading="lazy">
+      <p class="eyebrow" style="color:var(--silver)">DB Barbearia</p>
+      <h2 class="display" id="t-close">Sua cadeira<br>está esperando.</h2>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="#agendar">Agendar horário</a>
+        <a class="btn" href="https://wa.me/554830000000" target="_blank" rel="noopener">Falar no WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <img src="assets/marca/selo-branco.svg" alt="DB Barbearia" width="72" height="72">
+    <ul><li><b style="color:var(--paper)">DB Barbearia</b></li><li>Projeto demonstrativo</li><li>Dados fictícios</li></ul>
+    <ul><li>Rua das Tesouras, 120</li><li>Sala 01 · Centro</li><li><a href="tel:+554830000000">(48) 3000-0000</a></li></ul>
+    <ul><li><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram @dbbarbearia</a></li><li><a href="https://wa.me/554830000000" target="_blank" rel="noopener">WhatsApp</a></li><li>Projeto demo · DB Solutions</li></ul>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const TZ = "America/Sao_Paulo";
+  const brl = v => v == null ? "Consultar" : v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: Number.isInteger(v) ? 0 : 2, maximumFractionDigits: 2 });
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  // Demo data (fictional barbershop)
+  const EQUIPE = [
+    { id: "rafael", nome: "Rafael", foto: "assets/equipe/rafael.webp", orig: "assets/equipe/rafael.webp", toon: "assets/equipe/pose/rafael.webp" },
+    { id: "bruno", nome: "Bruno", foto: "assets/equipe/bruno.webp", orig: "assets/equipe/bruno.webp", toon: "assets/equipe/pose/bruno.webp" },
+    { id: "caio", nome: "Caio", foto: "assets/equipe/caio.webp", orig: "assets/equipe/caio.webp", toon: "assets/equipe/pose/caio.webp" },
+    { id: "bigode", nome: "Bigode", foto: "assets/equipe/bigode.webp", orig: "assets/equipe/bigode.webp", toon: "assets/equipe/pose/bigode.webp" },
+    { id: "leo", nome: "Léo", foto: "assets/equipe/leo.webp", orig: "assets/equipe/leo.webp", toon: "assets/equipe/pose/leo.webp" },
+    { id: "vini", nome: "Vini", foto: null }
+  ];
+  const SERVICOS = [
+    { g: "Cabelo", n: "Cabelo", d: "Corte completo, com degradê", p: 60, m: 30, q: 1 },
+    { g: "Cabelo", n: "Corte máquina", d: "Sem degradê", p: 43, m: 20 },
+    { g: "Cabelo", n: "Corte Kids", d: "Até 10 anos", p: 57, m: 30, q: 1 },
+    { g: "Cabelo", n: "Recorte do cabelo", d: "Pezinho", p: 22, m: 10 },
+    { g: "Barba", n: "Barba", d: "Toalha quente e navalha", p: 52, m: 30, q: 1 },
+    { g: "Barba", n: "Barba na máquina", d: "Sem toalha quente e sem lâmina", p: 38, m: 20 },
+    { g: "Barba", n: "Acabamento da barba", d: "Linhas da bochecha e pescoço", p: 22, m: 10 },
+    { g: "Barba", n: "Tonalização de barba", p: 44, m: 20 },
+    { g: "Combos", n: "Cabelo e Barba", p: 105, m: 60, q: 1 },
+    { g: "Combos", n: "Cabelo, Barba e Sobrancelha", p: 116, m: 60, q: 1 },
+    { g: "Combos", n: "Combo executivo", d: "Cabelo, barba, sobrancelha e limpeza nasal com cera quente", p: 132, m: 60, q: 1 },
+    { g: "Combos", n: "Cabelo, Barba e Limpeza nasal", d: "Cera quente", p: 124, m: 60 },
+    { g: "Combos", n: "Cabelo e Barba na máquina", d: "Sem toalha quente e sem lâmina", p: 98, m: 50 },
+    { g: "Combos", n: "Corte máquina e Barba", d: "Corte sem degradê", p: 86, m: 40, from: 1 },
+    { g: "Cuidados", n: "Sobrancelha", d: "Na navalha", p: 24, m: 10 },
+    { g: "Cuidados", n: "Limpeza dos pelos do nariz", d: "Cera quente", p: 26, m: 10 },
+    { g: "Cuidados", n: "Hidratação capilar", p: 26, m: 10 },
+    { g: "Cuidados", n: "Cabelo e Hidratação", p: 80, m: 30 },
+    { g: "Cuidados", n: "Relaxamento capilar", p: 110, m: 60, from: 1 },
+    { g: "Cuidados", n: "Tonalização de cabelo", p: null, m: 20 },
+    { g: "Cuidados", n: "Prótese capilar + corte", d: "Aplicação", p: 250, m: 120 }
+  ];
+  const PACOTES = [
+    ["3 cabelos", 150, 3, 0], ["4 cabelos", 190, 4, 0], ["4 barbas", 156, 0, 4], ["2 cabelos e 2 barbas", 165, 2, 2],
+    ["3 cabelos e 3 barbas", 237, 3, 3], ["4 cabelos e 4 barbas", 304, 4, 4]
+  ];
+  const TODOS_PACOTES = [
+    ["3 cabelos", 150], ["4 cabelos", 190], ["4 barbas", 156], ["1 cabelo e 3 barbas", 162], ["2 cabelos e 2 barbas", 165],
+    ["2 cabelos e 2 barbas na máquina", 138], ["2 cabelos, 2 barbas na máquina e 1 corte kids", 190], ["2 cortes máquina e 4 barbas", 215],
+    ["3 cabelos e 3 barbas", 237], ["1 cabelo e 4 barbas", 195], ["1 cabelo, 4 barbas e 1 cera", 210], ["2 cabelos e 4 barbas", 235],
+    ["2 cortes, 4 barbas e 2 ceras", 260], ["4 cabelos e 1 barba", 225], ["4 cabelos e 4 barbas", 304], ["4 cortes máquina e 2 barbas", 204],
+    ["4 cortes máquina e 4 barbas", 246]
+  ];
+  const PRODUTOS = [
+    ["Shampoo", "shampoo.jpg"], ["Pomada", "pomada.jpg"], ["Pomada modeladora", "pomada-modeladora.jpg"], ["Óleo para barba", "oleo-para-barba.jpg"], ["Balm", "balm.jpg"]
+  ];
+  const IG = [["produtos/shampoo.jpg", 1], ["equipe/rafael.webp", 0], ["ambiente/bg-maquina-acabamento.jpg", 1], ["equipe/pose/leo.webp", 0], ["produtos/pomada.jpg", 0], ["equipe/bruno.webp", 1], ["ambiente/bg-pente-e-tesoura.jpg", 0], ["produtos/oleo-para-barba.jpg", 1]];
+  // 0=dom ... 6=sáb ; minutos desde 00:00
+  const HORAS = { 0: null, 1: [540, 1200], 2: [540, 1200], 3: [540, 1200], 4: [540, 1200], 5: [540, 1200], 6: [510, 960] };
+  const DIAS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+  const hm = m => `${Math.floor(m / 60)}h${m % 60 ? String(m % 60).padStart(2, "0") : ""}`;
+  const hhmm = m => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+
+  if (/[?&]todo\b/.test(location.search)) document.documentElement.classList.add("todo");
+
+  // "Now" in the shop timezone
+  const nowParts = () => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: TZ, weekday: "short", hour: "numeric", minute: "numeric", hour12: false, year: "numeric", month: "numeric", day: "numeric" }).formatToParts(new Date()).map(x => [x.type, x.value]));
+    const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday);
+    return { wd, min: (+p.hour % 24) * 60 + +p.minute, y: +p.year, mo: +p.month, d: +p.day };
+  };
+
+  // Open status
+  (() => {
+    const { wd, min } = nowParts();
+    const h = HORAS[wd];
+    const dot = document.getElementById("dot"), st = document.getElementById("status"), line = document.getElementById("status-line");
+    if (h && min >= h[0] && min < h[1]) {
+      dot.classList.add("on"); st.textContent = "Aberto agora"; line.textContent = `Hoje até as ${hm(h[1])}. Ainda dá tempo.`;
+    } else {
+      let k = 1, n = (wd + 1) % 7;
+      if (h && min < h[0]) { k = 0; n = wd; }
+      while (!HORAS[n]) { n = (n + 1) % 7; k++; }
+      st.textContent = "Fechado agora";
+      line.textContent = `Abre ${k === 0 ? "hoje" : k === 1 ? "amanhã" : DIAS[n].toLowerCase()} às ${hm(HORAS[n][0])}.`;
+    }
+  })();
+
+  // Hours table
+  (() => {
+    const { wd } = nowParts();
+    const order = [1, 2, 3, 4, 5, 6, 0];
+    document.getElementById("hours").innerHTML = order.map(d => `<tr class="${d === wd ? "now" : ""}"><th scope="row">${DIAS[d]}${d === wd ? " · hoje" : ""}</th><td>${HORAS[d] ? `${hm(HORAS[d][0])} às ${hm(HORAS[d][1])}` : "Fechado"}</td></tr>`).join("");
+  })();
+
+  // Team
+  const ghost = `<svg class="ghost" viewBox="0 0 200 220" aria-hidden="true"><circle cx="100" cy="62" r="40" fill="currentColor"/><path d="M8 220c4-66 42-96 92-96s88 30 92 96z" fill="currentColor"/></svg>`;
+  const teamEl = document.getElementById("team");
+  const hh = str => { let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return (h >>> 0) / 4294967295; };
+  const nextSlot = id => {
+    const { wd, min } = nowParts();
+    for (let k = 0; k < 8; k++) {
+      const dw = (wd + k) % 7, h = HORAS[dw];
+      if (!h) continue;
+      for (let m = h[0]; m + 30 <= h[1]; m += 30) {
+        if (k === 0 && m <= min + 15) continue;
+        if (hh(`${k}-${id}-${m}`) > .42) return `${k === 0 ? "Hoje" : k === 1 ? "Amanhã" : DIAS[dw]}, ${hhmm(m)}`;
+      }
+    }
+    return "Consulte a agenda";
+  };
+  const card = (b, isNew) => `
+    <article class="card${b.foto ? "" : " empty"}${isNew ? " new" : ""}" ${b.foto ? `style="--ph:url('${esc(b.orig || b.foto)}')"` : 'data-todo="foto"'}>
+      ${b.foto ? `<span class="echo" aria-hidden="true"></span><img class="cut" src="${esc(b.foto)}" alt="Retrato de ${esc(b.nome)}, de braços cruzados com o uniforme da casa" loading="lazy" width="720" height="790">${b.toon ? `<img class="toon toon-card" src="${esc(b.toon)}" alt="" loading="lazy" width="560" height="760">` : ""}` : `<span class="mono" aria-hidden="true">${esc(b.nome[0])}</span>${ghost}<span class="soon">Foto em breve</span>`}
+      <div class="info">
+        <p class="role">${esc(b.role || "Barbeiro")}</p>
+        <h3>${esc(b.nome)}</h3>
+        <p class="bio" ${b.bio ? "" : 'data-todo="bio"'}>${esc(b.bio || "Especialidade a confirmar.")}</p>
+        <div class="more"><div><b>Próximo horário livre</b><span>${nextSlot(b.id)}</span></div></div>
+        <a class="link" href="#agendar" data-book="${esc(b.id)}">Agendar com ${esc(b.nome)}</a>
+      </div>
+    </article>`;
+  const renderTeam = newId => { teamEl.innerHTML = EQUIPE.map(b => card(b, b.id === newId)).join(""); };
+  renderTeam();
+
+
+  const groups = ["Cabelo", "Barba", "Combos", "Cuidados"];
+
+  // Booking
+  const state = { svc: null, bar: null, day: null, time: null };
+  let coupon = false;
+  // Referral: ?ref=DB-XXXX gives the friend R$ 15 off the first visit (the larger discount wins over the hunt coupon)
+  let refCode = null;
+  try {
+    const r = (new URLSearchParams(location.search).get("ref") || sessionStorage.getItem("dbb.ref") || "").toUpperCase();
+    if (/^DB-[A-Z0-9]{2,12}$/.test(r)) { refCode = r; sessionStorage.setItem("dbb.ref", r); }
+  } catch (_) {}
+
+  const barEl = document.getElementById("pick-barber");
+  function renderBarbers() {
+    barEl.innerHTML = `<label class="chip"><input type="radio" name="bar" value="any"><span><i class="av" aria-hidden="true">?</i>Tanto faz</span></label>` +
+      EQUIPE.map(b => `<label class="chip"><input type="radio" name="bar" value="${esc(b.id)}"${state.bar === b.id ? " checked" : ""}><span><i class="av" aria-hidden="true">${b.foto ? `<img src="${esc(b.foto)}" alt="" loading="lazy">` : esc(b.nome[0])}</i>${esc(b.nome)}</span></label>`).join("");
+  }
+  renderBarbers();
+
+  const dayEl = document.getElementById("pick-day");
+  const { y, mo, d } = nowParts();
+  const base = new Date(Date.UTC(y, mo - 1, d, 12));
+  const days = [];
+  for (let i = 0; days.length < 10 && i < 14; i++) {
+    const dt = new Date(base.getTime() + i * 864e5);
+    const wd = dt.getUTCDay();
+    days.push({ i, wd, dt, open: !!HORAS[wd] });
+  }
+  dayEl.innerHTML = days.map(x => `<label class="chip"><input type="radio" name="day" value="${x.i}"${x.open ? "" : " disabled"}><span>${x.i === 0 ? "Hoje" : x.i === 1 ? "Amanhã" : DIAS[x.wd].slice(0, 3)}<small>${String(x.dt.getUTCDate()).padStart(2, "0")}/${String(x.dt.getUTCMonth() + 1).padStart(2, "0")}${x.open ? "" : " · fechado"}</small></span></label>`).join("");
+
+  const hash = s => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return (h >>> 0) / 4294967295; };
+  const timeEl = document.getElementById("pick-time"), msg = document.getElementById("time-msg");
+  function renderTimes() {
+    state.time = null;
+    if (state.day == null || state.svc == null) { timeEl.innerHTML = ""; msg.textContent = "Escolha o serviço e o dia para ver os horários livres."; return; }
+    const day = days[state.day], h = HORAS[day.wd], dur = SERVICOS[state.svc].m;
+    const nowMin = day.i === 0 ? nowParts().min : -1;
+    const slots = [];
+    for (let m = h[0]; m + dur <= h[1]; m += 30) {
+      if (m <= nowMin + 15) continue;
+      const taken = hash(`${day.i}-${state.bar || "any"}-${m}`) < (state.bar && state.bar !== "any" ? .42 : .18);
+      slots.push(`<label class="chip"><input type="radio" name="time" value="${m}"${taken ? " disabled" : ""}><span>${hhmm(m)}</span></label>`);
+    }
+    timeEl.innerHTML = slots.join("");
+    msg.textContent = slots.length ? "Horários riscados já estão ocupados." : "Não há mais horários hoje. Escolha outro dia.";
+  }
+  renderTimes();
+
+  const set = (id, v) => { document.getElementById(id).textContent = v; };
+  const sheet = document.getElementById("sheet"), scrim = document.getElementById("scrim"), toggle = document.getElementById("sheet-toggle"), goBtn = document.getElementById("b-go");
+  const mobile = matchMedia("(max-width: 959px)");
+  const smooth = () => matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+  const STEPS = [["svc", "st-svc", "Escolher serviço"], ["bar", "st-bar", "Escolher barbeiro"], ["day", "st-day", "Escolher dia"], ["time", "st-time", "Escolher horário"]];
+  const missingStep = () => {
+    const v = { svc: state.svc, bar: state.bar, day: state.day, time: state.time };
+    return STEPS.find(([k]) => v[k] == null) || null;
+  };
+  const whenTxt = () => state.day != null && state.time != null ? `${days[state.day].i === 0 ? "Hoje" : DIAS[days[state.day].wd]}, ${String(days[state.day].dt.getUTCDate()).padStart(2, "0")}/${String(days[state.day].dt.getUTCMonth() + 1).padStart(2, "0")} às ${hhmm(state.time)}` : null;
+  function summary() {
+    const s = state.svc != null ? SERVICOS[state.svc] : null;
+    const cOff = s && s.p != null && coupon ? Math.round(s.p * 10) / 100 : 0;
+    const rOff = s && s.p != null && refCode ? Math.min(15, s.p) : 0;
+    const off = Math.max(cOff, rOff);
+    const price = s ? (s.from ? "a partir de " : "") + brl(s.p == null ? null : s.p - off) : "—";
+    const cl = document.getElementById("s-coupon");
+    cl.hidden = !off; cl.textContent = !off ? "" : rOff >= cOff ? `Indicação ${refCode}: ${brl(off)} a menos no primeiro corte` : `Cupom DB10 aplicado: ${brl(off)} a menos`;
+    set("s-svc", s ? s.n : "—");
+    const b = EQUIPE.find(x => x.id === state.bar);
+    const bar = state.bar === "any" ? "Primeiro disponível" : b ? b.nome : null;
+    set("s-bar", bar || "—");
+    set("s-when", whenTxt() || "—");
+    set("s-dur", s ? `${s.m} min` : "—");
+    set("s-price", price);
+    const save = document.getElementById("s-save");
+    save.hidden = !(s && s.save > 0); save.textContent = s && s.save > 0 ? `${brl(s.save)} a menos que os serviços separados` : "";
+    set("m-svc", s ? s.n : "Seu atendimento");
+    set("m-meta", s ? [price, `${s.m} min`, bar, whenTxt()].filter(Boolean).join(" · ") : "");
+    const m = missingStep();
+    goBtn.textContent = m ? m[2] : "Agendar";
+    goBtn.classList.toggle("ready", !m);
+    syncSheet();
+  }
+  // bottom sheet (phones): visible while the booking section is on screen and a service is chosen
+  let inView = false;
+  function syncSheet() {
+    const done = document.getElementById("done").classList.contains("show");
+    const live = done || (inView && state.svc != null);
+    sheet.classList.toggle("live", live);
+    sheet.inert = mobile.matches && !live;
+    if (!sheet.classList.contains("live")) openSheet(false);
+  }
+  function openSheet(on) {
+    on = !!on && mobile.matches;
+    sheet.classList.toggle("open", on);
+    toggle.setAttribute("aria-expanded", String(on));
+    scrim.hidden = !on; requestAnimationFrame(() => scrim.classList.toggle("on", on));
+  }
+  toggle.addEventListener("click", () => openSheet(!sheet.classList.contains("open")));
+  scrim.addEventListener("click", () => openSheet(false));
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && sheet.classList.contains("open")) { openSheet(false); toggle.focus(); } });
+  mobile.addEventListener("change", () => { openSheet(false); syncSheet(); });
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(es => { inView = es[0].isIntersecting; syncSheet(); }, { rootMargin: "0px 0px -35% 0px" }).observe(document.getElementById("agendar"));
+  } else inView = true;
+  function goStep(id) {
+    openSheet(false);
+    const el = document.getElementById(id);
+    el.scrollIntoView({ behavior: smooth(), block: "start" });
+    const f = el.querySelector("input:not(:disabled):not(:checked)");
+    if (f) setTimeout(() => f.focus({ preventScroll: true }), 450);
+  }
+
+  document.getElementById("book").addEventListener("change", e => {
+    const t = e.target;
+    if (t.name === "bar") { state.bar = t.value; renderTimes(); }
+    if (t.name === "day") { state.day = +t.value; renderTimes(); }
+    if (t.name === "time") state.time = +t.value;
+    summary();
+  });
+
+
+  // Choose the service (builder or list); combos carry their savings vs. separate services
+  const VIDX = SERVICOS.length;
+  let listPick = null;
+  function chooseService(i, custom) {
+    if (custom) { SERVICOS[VIDX] = custom; i = VIDX; }
+    state.svc = i;
+    renderTimes(); summary();
+  }
+  function markRows() { groupsEl.querySelectorAll("[data-svc]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.svc === listPick))); }
+
+  document.addEventListener("click", e => {
+    const a = e.target.closest("[data-book]");
+    if (!a) return;
+    e.preventDefault();
+    state.bar = a.dataset.book; renderBarbers(); renderTimes(); summary();
+    goStep(state.svc == null ? "st-svc" : "st-day");
+  });
+
+  document.getElementById("book").addEventListener("submit", e => {
+    e.preventDefault();
+    const m = missingStep();
+    if (m) { goStep(m[1]); return; }
+    openSheet(false);
+    const b = EQUIPE.find(x => x.id === state.bar), sv = SERVICOS[state.svc];
+    document.getElementById("lead-sum").innerHTML = `<b>${esc(sv.n)}</b><br>${state.bar === "any" ? "Primeiro barbeiro livre" : "Com " + esc(b.nome)} · ${esc(whenTxt())} · ${sv.from ? "a partir de " : ""}${brl(sv.p == null ? null : sv.p - Math.max(coupon ? Math.round(sv.p * 10) / 100 : 0, refCode ? Math.min(15, sv.p) : 0))}${sv.p != null && (coupon || refCode) ? " com desconto" : ""}`;
+    document.getElementById("lead-err").textContent = "";
+    lead.showModal();
+  });
+  const lead = document.getElementById("lead");
+  document.getElementById("lead-x").addEventListener("click", () => lead.close());
+  lead.addEventListener("click", e => { if (e.target === lead) lead.close(); });
+  document.getElementById("lead-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("b-name"), phone = document.getElementById("b-phone");
+    const digits = phone.value.replace(/\D/g, "");
+    const err = !name.value.trim() ? [name, "Diga o seu nome."] : digits.length < 10 ? [phone, "Confira o WhatsApp, com DDD."] : null;
+    if (err) { document.getElementById("lead-err").textContent = err[1]; err[0].focus(); return; }
+    lead.close();
+    try {
+      const sv = SERVICOS[state.svc], dd = days[state.day].dt, bb = EQUIPE.find(x => x.id === state.bar);
+      const base = state.svc < VIDX ? state.svc : listPick != null ? listPick : SERVICOS.slice(0, VIDX).findIndex(x => x.n === sv.n);
+      sessionStorage.setItem("dbb.cliente", phone.value.trim());
+      sessionStorage.setItem("dbb.nome", name.value.trim());
+      sessionStorage.setItem("dbb.agendamento", JSON.stringify({ y: dd.getUTCFullYear(), mo: dd.getUTCMonth() + 1, d: dd.getUTCDate(), min: state.time, dur: sv.m,
+        svc: base, svcName: sv.n, bar: state.bar, barName: bb ? bb.nome : "Primeiro disponível", price: (sv.from ? "a partir de " : "") + brl(sv.p == null ? null : coupon ? sv.p - Math.round(sv.p * 10) / 100 : sv.p) }));
+      try { const L = JSON.parse(localStorage.getItem("dbb.app.agendamentos") || "[]"); L.push(Object.assign({ id: Date.now() }, Object.assign({ y: dd.getUTCFullYear(), mo: dd.getUTCMonth() + 1, d: dd.getUTCDate(), min: state.time, dur: sv.m,
+        svc: base, svcName: sv.n, bar: state.bar, barName: bb ? bb.nome : "Primeiro disponível", price: (sv.from ? "a partir de " : "") + brl(sv.p == null ? null : coupon ? sv.p - Math.round(sv.p * 10) / 100 : sv.p) }), { nome: name.value.trim(), tel: phone.value.trim() })); localStorage.setItem("dbb.app.agendamentos", JSON.stringify(L.slice(-50))); } catch (_) {}
+    } catch (_) {}
+    document.getElementById("done-txt").textContent = `${name.value.trim().split(" ")[0]}, te esperamos ${whenTxt().toLowerCase()} para ${SERVICOS[state.svc].n.toLowerCase()}. Você recebe a confirmação no WhatsApp.`;
+    document.getElementById("sum").hidden = true;
+    document.getElementById("done").classList.add("show");
+    syncSheet(); openSheet(true);
+  });
+  document.getElementById("again").addEventListener("click", () => {
+    document.getElementById("book").reset(); document.getElementById("lead-form").reset(); Object.assign(state, { svc: null, bar: null, day: null, time: null });
+    listPick = null; markRows(); vHair.hidden = vBeard.hidden = true;
+    document.getElementById("sum").hidden = false; document.getElementById("done").classList.remove("show");
+    renderBarbers(); renderTimes(); summary();
+    goStep("st-svc");
+  });
+
+  // ---------- Service builder ("O que você vai fazer hoje?") ----------
+  // component codes: HT cabelo (tesoura/degradê) · HM corte máquina · HK kids · BC barba completa · BM barba máquina
+  //                  S sobrancelha · N nariz · HI hidratação · TB tonalização de barba
+  const COMP = { 0: ["HT"], 1: ["HM"], 2: ["HK"], 4: ["BC"], 5: ["BM"], 7: ["TB"], 8: ["HT", "BC"], 9: ["HT", "BC", "S"], 10: ["HT", "BC", "S", "N"],
+    11: ["HT", "BC", "N"], 12: ["HT", "BM"], 13: ["HM", "BC"], 14: ["S"], 15: ["N"], 16: ["HI"], 17: ["HT", "HI"] };
+  const SINGLE = { HT: 0, HM: 1, HK: 2, BC: 4, BM: 5, TB: 7, S: 14, N: 15, HI: 16 };
+  const builder = document.getElementById("builder");
+  const vHair = document.getElementById("v-hair"), vBeard = document.getElementById("v-beard");
+
+  function bestCover(sel) {
+    let best = null;
+    const ids = Object.keys(COMP).map(Number).filter(i => COMP[i].every(c => sel.has(c)));
+    (function dfs(left, pick, total) {
+      if (!left.size) { if (!best || total < best.total || (total === best.total && pick.length < best.pick.length)) best = { pick: [...pick], total }; return; }
+      const first = [...left][0];
+      for (const i of ids) {
+        const c = COMP[i];
+        if (!c.includes(first) || !c.every(x => left.has(x))) continue;
+        const next = new Set(left); c.forEach(x => next.delete(x));
+        pick.push(i); dfs(next, pick, total + SERVICOS[i].p); pick.pop();
+      }
+    })(new Set(sel), [], 0);
+    return best;
+  }
+
+  function updateBuilder() {
+    const on = v => builder.querySelector(`.toggles input[value="${v}"]`).checked;
+    vHair.hidden = !on("hair"); vBeard.hidden = !on("beard");
+    const sel = new Set();
+    if (on("hair")) sel.add(builder.querySelector('input[name="hair"]:checked').value);
+    if (on("beard")) sel.add(builder.querySelector('input[name="beard"]:checked').value);
+    ["S", "N", "HI", "TB"].forEach(v => { if (on(v)) sel.add(v); });
+    if (!sel.size) { if (listPick == null) { state.svc = null; renderTimes(); summary(); } return; }
+    listPick = null; markRows();
+    const cov = bestCover(sel);
+    const items = cov.pick.map(i => SERVICOS[i]);
+    const mins = items.reduce((a, x) => a + x.m, 0);
+    const from = items.some(x => x.from);
+    const avulso = [...sel].reduce((a, c) => a + SERVICOS[SINGLE[c]].p, 0);
+    const save = avulso - cov.total;
+    chooseService(null, { g: "Montado", n: items.map(x => x.n).join(" + "), p: cov.total, m: mins, from: from ? 1 : 0, save });
+  }
+  builder.addEventListener("change", e => { e.stopPropagation(); updateBuilder(); });
+
+  // ---------- Search with synonyms and typo tolerance ----------
+  const KW = {
+    0: "corte cortar cabelo tesoura degrade degradê fade disfarcado disfarçado social americano navalhado low mid taper",
+    1: "maquina máquina zero raspar raspado reco militar maquininha careca",
+    2: "crianca criança kids infantil filho filha menino menina garoto bebe bebê",
+    3: "pezinho pe nuca contorno acabamento costeleta",
+    4: "barba barbear fazer toalha quente navalha bigode cavanhaque barboterapia",
+    5: "barba maquina aparar rapida rápida",
+    6: "linha linhas bochecha pescoco pescoço desenho alinhar acabamento",
+    7: "pintar tingir tinta cor grisalho branco tonalizar pigmentar pigmentacao preencher falha barba",
+    8: "cabelo barba corte combo",
+    9: "cabelo barba sobrancelha corte combo",
+    10: "executivo completo tudo vip combo",
+    11: "cabelo barba nariz cera corte combo",
+    12: "cabelo barba maquina corte combo",
+    13: "corte maquina barba combo",
+    14: "sobrancelha sombrancelha design navalha",
+    15: "nariz pelo pelos cera depilar depilacao depilação",
+    16: "hidratar hidratacao ressecado tratamento cuidado brilho",
+    17: "cabelo hidratacao hidratar corte tratamento",
+    18: "alisar alisamento progressiva relaxar relaxamento liso cacheado crespo volume frizz",
+    19: "pintar tingir tinta cor luzes platinado platinar nevou nevado grisalho branco descolorir reflexo",
+    20: "protese prótese peruca aplique calvicie calvície careca entradas queda implante topete capilar"
+  };
+  const STOP = new Set("a o e de da do das dos com sem para pra pro no na nos nas um uma quero fazer meu minha que em por".split(" "));
+  const norm = t => String(t).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const lev = (a, b) => {
+    if (Math.abs(a.length - b.length) > 2) return 9;
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[a.length][b.length];
+  };
+  const tokMatch = (q, w) => {
+    if (w === q || (q.length >= 2 && w.startsWith(q))) return 2;
+    const tol = q.length >= 7 ? 2 : q.length >= 4 ? 1 : 0;
+    if (tol && (lev(q, w) <= tol || (w.length > q.length && lev(q, w.slice(0, q.length)) <= tol))) return 1;
+    return 0;
+  };
+  const INDEX = SERVICOS.slice(0, 21).map((sv, i) => ({ i, name: norm(sv.n).split(" "), desc: norm(`${sv.d || ""} ${sv.g}`).split(" "), kw: norm(KW[i] || "").split(" ") }));
+
+  function search(raw) {
+    const toks = norm(raw).split(" ").filter(t => t && !STOP.has(t));
+    if (!toks.length) return null;
+    const scored = INDEX.map(x => {
+      let score = 0, hits = 0, why = null;
+      for (const t of toks) {
+        let best = 0, field = null;
+        for (const [f, words, w] of [["name", x.name, 3], ["kw", x.kw, 2], ["desc", x.desc, 1]]) {
+          for (const word of words) { const m = tokMatch(t, word); if (m && m * w > best) { best = m * w; field = f; } }
+        }
+        if (best) { score += best; hits++; if (field === "kw" && !why) why = t; }
+      }
+      if (x.name.filter(w => !STOP.has(w)).join(" ") === toks.join(" ")) score += 6;
+      return { i: x.i, score, hits, why };
+    }).filter(r => r.hits);
+    const all = scored.filter(r => r.hits === toks.length);
+    const list = (all.length ? all : scored).sort((a, b) => b.score - a.score || SERVICOS[a.i].p - SERVICOS[b.i].p);
+    return { list, partial: !all.length && scored.length > 0, toks };
+  }
+
+  const groupsEl = document.getElementById("svc-groups"), listEl = document.getElementById("svc-list");
+  const showAll = document.getElementById("show-all"), found = document.getElementById("found");
+  const q = document.getElementById("q"), qClear = document.getElementById("q-clear");
+  const row = (i, why) => {
+    const sv = SERVICOS[i];
+    return `<li><button class="row" type="button" data-svc="${i}" aria-pressed="${listPick === i}" aria-label="Escolher ${esc(sv.n)}, ${brl(sv.p)}">
+      <span class="n">${esc(sv.n)}</span><span class="d">${sv.d ? esc(sv.d) + " · " : ""}${sv.m} min</span>${why ? `<span class="why">Você buscou "${esc(why)}"</span>` : ""}<span class="go">${listPick === i ? "Escolhido ✓" : "Escolher"}</span>
+      <span class="p">${sv.from ? "<small>a partir de</small>" : ""}${brl(sv.p)}</span></button></li>`;
+  };
+  function renderGrouped() {
+    groupsEl.classList.remove("flat");
+    groupsEl.innerHTML = groups.map(g => `<div class="group"><h3>${g}</h3><ul>${SERVICOS.slice(0, 21).map((sv, i) => sv.g === g ? row(i) : "").join("")}</ul></div>`).join("");
+  }
+  function renderSearch() {
+    const r = search(q.value);
+    qClear.hidden = !q.value;
+    if (!r) {
+      found.textContent = ""; renderGrouped();
+      listEl.hidden = showAll.getAttribute("aria-expanded") !== "true"; showAll.hidden = false; return;
+    }
+    showAll.hidden = true; listEl.hidden = false;
+    if (!r.list.length) {
+      groupsEl.innerHTML = "";
+      found.innerHTML = `Nada encontrado para <b>"${esc(q.value.trim())}"</b>. <a href="https://wa.me/554830000000?text=${encodeURIComponent(`Olá! Vocês fazem ${q.value.trim()}?`)}" target="_blank" rel="noopener">Pergunte no WhatsApp</a>.`;
+      return;
+    }
+    groupsEl.classList.add("flat");
+    groupsEl.innerHTML = `<div class="group"><ul>${r.list.slice(0, 8).map(x => row(x.i, x.why)).join("")}</ul></div>`;
+    const n = Math.min(r.list.length, 8);
+    found.innerHTML = `${n} ${n === 1 ? "serviço" : "serviços"} para <b>"${esc(q.value.trim())}"</b>${r.partial ? " (resultados aproximados)" : ""}.`;
+  }
+  q.addEventListener("input", renderSearch);
+  qClear.addEventListener("click", () => { q.value = ""; renderSearch(); q.focus(); });
+  document.querySelectorAll(".hint").forEach(b => b.addEventListener("click", () => { q.value = b.textContent; renderSearch(); }));
+  showAll.addEventListener("click", () => {
+    const open = showAll.getAttribute("aria-expanded") !== "true";
+    showAll.setAttribute("aria-expanded", String(open));
+    showAll.textContent = open ? "Esconder a lista" : "Ver os 21 serviços e preços";
+    listEl.hidden = !open;
+  });
+  groupsEl.addEventListener("click", e => {
+    const b = e.target.closest("[data-svc]");
+    if (!b) return;
+    const i = +b.dataset.svc;
+    builder.querySelectorAll(".toggles input").forEach(x => { x.checked = false; }); vHair.hidden = vBeard.hidden = true;
+    listPick = i;
+    const sv = SERVICOS[i], parts = COMP[i];
+    const save = parts && parts.length > 1 ? parts.reduce((a, c) => a + SERVICOS[SINGLE[c]].p, 0) - sv.p : 0;
+    SERVICOS[VIDX] = { ...sv, save }; chooseService(VIDX);
+    groupsEl.querySelectorAll("[data-svc]").forEach(r => { const on = +r.dataset.svc === i; r.setAttribute("aria-pressed", String(on)); r.querySelector(".go").textContent = on ? "Escolhido ✓" : "Escolher"; });
+  });
+  // "Ver preços" in the hero opens the full list
+  document.querySelectorAll('a[href="#servicos"]').forEach(a => a.addEventListener("click", () => { if (showAll.getAttribute("aria-expanded") !== "true" && !q.value) showAll.click(); }));
+  renderGrouped();
+  summary();
+
+  // Packages
+  const slug = t => norm(t).replace(/ /g, "-");
+  const buyUrl = (t, v) => "entrar.html?" + new URLSearchParams({ next: "index.html#clube", intent: "pacote", item: slug(t), label: `${t} · ${brl(v)}` }).toString().replace(/&/g, "&amp;");
+  document.getElementById("packs").innerHTML = PACOTES.map(([t, v, c, b]) => {
+    const avulso = c * 60 + b * 52;
+    return `<article class="pack rv"><p class="t">${t}</p><p class="v">${brl(v)}</p><p class="s">Economia de ${brl(avulso - v)}</p><p class="u">Avulso sairia ${brl(avulso)}</p><a class="link pack-go" href="${buyUrl(t, v)}">Comprar pacote</a></article>`;
+  }).join("");
+  document.getElementById("allpacks").innerHTML = TODOS_PACOTES.map(([t, v]) => `<li><span>${t}</span><b>${brl(v)}</b><a class="buy" href="${buyUrl(t, v)}" aria-label="Comprar o pacote ${t}">Comprar</a></li>`).join("");
+
+  // Instagram
+  const reel = `<svg class="reel" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>`;
+  document.getElementById("ig").innerHTML = IG.map(([p, r], i) => `<a href="#instagram" aria-label="Post ${i + 1} (demonstração)"><img src="assets/${p}" alt="" loading="lazy" width="310" height="330">${r ? reel : ""}</a>`).join("");
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(x => x.target.classList.toggle("playing", x.isIntersecting)), { threshold: .6 });
+    document.querySelectorAll(".ig-grid a").forEach(a => io.observe(a));
+  }
+
+  // Products
+  document.getElementById("prods").innerHTML = PRODUTOS.map(([n, f]) => `
+    <article class="prod rv"><div class="ph"><img src="assets/produtos/${f}" alt="${n}" loading="lazy" width="600" height="800"></div>
+    <h3>${n}</h3><p data-todo="preco">Preço a confirmar</p>
+    <a class="link" href="https://wa.me/554830000000?text=${encodeURIComponent(`Olá! Quero saber o preço do produto: ${n}.`)}" target="_blank" rel="noopener">Pedir no WhatsApp<span class="sr-only">: ${n}</span></a></article>`).join("");
+
+  // From conta.html: intent=agendar&svc=&bar= arrives with service and barber chosen
+  (() => {
+    const q = new URLSearchParams(location.search);
+    if (q.get("intent") !== "agendar") return;
+    history.replaceState(null, "", location.pathname + location.hash);
+    const svc = parseInt(q.get("svc"), 10), bar = q.get("bar") || "";
+    if (svc >= 0 && svc < VIDX) { const b = groupsEl.querySelector(`[data-svc="${svc}"]`); if (b) b.click(); }
+    const bi = [...document.querySelectorAll('#pick-barber input')].find(i => i.value === bar);
+    if (bi) { bi.checked = true; bi.dispatchEvent(new Event("change", { bubbles: true })); }
+    setTimeout(() => goStep(state.svc == null ? "st-svc" : state.bar ? "st-day" : "st-bar"), 350);
+  })();
+
+  // Back from entrar.html: finish what the person came to do
+  (() => {
+    const q = new URLSearchParams(location.search);
+    if (q.get("entrou") !== "1") return;
+    const intent = q.get("intent"), item = q.get("item") || "";
+    history.replaceState(null, "", location.pathname + location.hash);
+    const dlg = document.getElementById("welcome"), $ = id => document.getElementById(id);
+    const PLANS = { cabelo: "Cabelo", "cabelo-barba": "Cabelo + Barba", barba: "Barba" };
+    const close = () => dlg.close();
+    $("welcome-x").onclick = close; $("w-later").onclick = close;
+    dlg.addEventListener("click", e => { if (e.target === dlg) close(); });
+    if (intent === "pacote") {
+      const pk = TODOS_PACOTES.find(([t]) => slug(t) === item);
+      if (!pk) return;
+      $("w-eyebrow").textContent = "Pacote · você entrou";
+      $("t-welcome").textContent = pk[0];
+      $("w-sum").innerHTML = `<b>${brl(pk[1])}</b> · pagamento único`;
+      $("w-txt").textContent = "Pague com PIX e os créditos entram na sua conta. Na hora de agendar, é só escolher usar o pacote.";
+      $("w-go").textContent = "Pagar com PIX";
+      $("w-note").textContent = "Protótipo: nenhuma cobrança é feita. O meio de pagamento ainda será definido com a barbearia.";
+      $("w-go").onclick = () => { $("w-go").textContent = "PIX gerado (demonstração)"; $("w-go").disabled = true; };
+    } else if (intent === "assinatura" && PLANS[item]) {
+      $("w-eyebrow").textContent = "Assinatura · você entrou";
+      $("t-welcome").textContent = `Plano ${PLANS[item]}`;
+      $("w-sum").innerHTML = "<b>Interesse registrado</b> no seu cadastro";
+      $("w-txt").textContent = "O clube de assinatura está sendo preparado. Você é avisado primeiro no WhatsApp quando abrir, com o preço e as regras.";
+      $("w-go").textContent = "Combinado";
+      $("w-later").hidden = true;
+      $("w-note").textContent = "Protótipo: preços e regras da assinatura a definir com a barbearia.";
+      $("w-go").onclick = close;
+    } else return;
+    setTimeout(() => dlg.showModal(), 300);
+  })();
+
+  // Returning client popup + simulated login
+  (() => {
+    const box = document.getElementById("member"), dlg = document.getElementById("login");
+    let closed = false, logged = false;
+    const showAccount = () => {
+      if (document.getElementById("acc")) return;
+      const a = document.createElement("a");
+      a.className = "ico acc"; a.id = "acc"; a.href = "conta.html"; a.setAttribute("aria-label", "Minha conta");
+      a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-4.5 4.2-6.5 8-6.5s7 2 8 6.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+      document.querySelector(".topbar .icons").prepend(a);
+    };
+    let saved = null;
+    try { saved = sessionStorage.getItem("dbb.cliente"); } catch (_) {}
+    const markLogged = ph => {
+      logged = true;
+      document.getElementById("b-phone").value = ph;
+      document.querySelector("#member .m-t").textContent = "Você entrou";
+      document.querySelector("#member .m-d").textContent = "Seus horários, pacote e atalhos ficam na sua conta.";
+      document.getElementById("member-go").textContent = "Minha conta";
+      showAccount();
+    };
+    if (saved) markLogged(saved);
+    const dock = () => box.classList.toggle("docked", scrollY > 320);
+    setTimeout(() => {
+      if (closed) return;
+      box.hidden = false; dock();
+      setTimeout(() => box.classList.add("in"), 40);
+      addEventListener("scroll", dock, { passive: true });
+    }, 1500);
+    document.getElementById("member-x").addEventListener("click", () => { closed = true; box.hidden = true; removeEventListener("scroll", dock); });
+    document.getElementById("member-go").addEventListener("click", () => {
+      if (logged) { location.href = "conta.html"; return; }
+      document.getElementById("login-err").textContent = ""; dlg.showModal();
+    });
+    document.getElementById("login-x").addEventListener("click", () => dlg.close());
+    dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+    document.getElementById("login-form").addEventListener("submit", e => {
+      e.preventDefault();
+      const ph = document.getElementById("l-phone"), digits = ph.value.replace(/\D/g, "");
+      if (digits.length < 10) { document.getElementById("login-err").textContent = "Confira o WhatsApp, com DDD."; ph.focus(); return; }
+      dlg.close();
+      try { sessionStorage.setItem("dbb.cliente", ph.value.trim()); } catch (_) {}
+      document.getElementById("b-phone").value = ph.value.trim();
+      document.querySelector("#member .m-t").textContent = "Você entrou";
+      document.querySelector("#member .m-d").textContent = "Seu WhatsApp já fica preenchido no agendamento.";
+      document.getElementById("member-go").textContent = "Minha conta";
+      logged = true; showAccount();
+      document.getElementById("agendar").scrollIntoView({ behavior: smooth() });
+    });
+  })();
+
+  // Referral welcome
+  if (refCode && new URLSearchParams(location.search).get("ref")) {
+    history.replaceState(null, "", location.pathname + location.hash);
+    setTimeout(() => { const t = document.getElementById("hunt-toast"); t.innerHTML = `Você foi indicado: <b>R$ 15 de desconto</b> no primeiro corte.`; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 5000); }, 600);
+  }
+
+  // Hunt: tap every illustrated barber on the page (not the team cards) to unlock a surprise coupon
+  (() => {
+    const CREW = ["rafael", "bruno", "caio", "bigode", "leo"];
+    const NAMES = { rafael: "Rafael", bruno: "Bruno", caio: "Caio", bigode: "Bigode", leo: "Léo" };
+    const found = new Set(), toast = document.getElementById("hunt-toast"), dlg = document.getElementById("coupon");
+    let tt;
+    const say = html => { toast.innerHTML = html; toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 2600); };
+    const catchOne = el => {
+      const who = el.dataset.hunt;
+      if (found.has(who)) return;
+      found.add(who);
+      document.querySelectorAll(`[data-hunt="${who}"]`).forEach(x => {
+        x.classList.add("caught"); x.setAttribute("aria-hidden", "true"); x.tabIndex = -1;
+        x.addEventListener("animationend", () => x.classList.add("gone"), { once: true });
+      });
+      const left = CREW.length - found.size;
+      if (left) say(`Você achou o <b>${NAMES[who]}</b>! ${found.size} de ${CREW.length}. ${left === 1 ? "Falta só um." : `Faltam ${left}.`}`);
+      else setTimeout(() => { toast.classList.remove("show"); dlg.showModal(); }, 900);
+    };
+    document.addEventListener("click", e => { const t = e.target.closest("[data-hunt]"); if (t) { e.preventDefault(); e.stopPropagation(); catchOne(t); } }, true);
+    document.addEventListener("keydown", e => { const t = e.target.closest && e.target.closest("[data-hunt]"); if (t && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); catchOne(t); } });
+    document.getElementById("coupon-x").addEventListener("click", () => dlg.close());
+    dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+    document.getElementById("coupon-copy").addEventListener("click", e => {
+      const b = e.currentTarget, done = () => { b.textContent = "Código copiado"; setTimeout(() => { b.textContent = "Copiar código"; }, 2000); };
+      try { navigator.clipboard.writeText("DB10").then(done, done); } catch (_) { done(); }
+    });
+    document.getElementById("coupon-use").addEventListener("click", () => {
+      coupon = true; summary(); dlg.close();
+      document.getElementById("agendar").scrollIntoView({ behavior: smooth() });
+    });
+  })();
+
+  // Backdrop: each section brings its own photo of the shop
+  (() => {
+    const A = "assets/ambiente/bg-", P = "assets/produtos/", I = A + "pente-e-tesoura.jpg", M = A + "maquina-acabamento.jpg";
+    const MAP = [["#topo", I], ["#equipe", M], ["#agendar", I],
+      ["#clube", P + "oleo-para-barba.jpg"], ["#instagram", M], ["#produtos", P + "pomada.jpg"],
+      ["#avaliacoes", I], ["#local", M], [".closing", I]];
+    const bd = document.getElementById("backdrop"), layers = new Map();
+    const layer = url => {
+      if (!layers.has(url)) { const i = document.createElement("i"); i.style.backgroundImage = `url("${url}")`; bd.append(i); layers.set(url, i); }
+      return layers.get(url);
+    };
+    const show = url => {
+      const pre = new Image(); pre.src = url;
+      const go = () => layers.forEach((el, u) => el.classList.toggle("on", u === url));
+      layer(url); pre.complete ? go() : (pre.onload = go, pre.onerror = go);
+    };
+    const secs = MAP.map(([sel, url]) => [document.querySelector(sel), url]).filter(x => x[0]);
+    let cur = null;
+    const pick = () => {
+      const mid = innerHeight / 2;
+      const hit = secs.find(([el]) => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
+      const url = hit ? hit[1] : cur || I;
+      if (url !== cur) { cur = url; show(url); }
+    };
+    addEventListener("scroll", pick, { passive: true });
+    addEventListener("resize", pick);
+    pick();
+  })();
+
+  // Reveal on scroll
+  const rvs = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(x => { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    rvs.forEach(el => io.observe(el));
+  } else rvs.forEach(el => el.classList.add("in"));
+})();
+</script>
+</body>
+</html>

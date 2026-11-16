@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar · DB Barbearia</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#102A1E">
+<link rel="icon" href="assets/marca/selo-verde.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Libre+Caslon+Text:wght@400;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night: #102A1E; --navy: #1B3F2D; --silver: #D2D2D2; --mist: #B9CAC0; --paper: #F2F5F3;
+  --lav: #8AD7B0; --lav-2: #A7E3C5; --rule: rgba(210, 210, 210, .14); --rule-2: rgba(210, 210, 210, .26);
+  --display: "Big Shoulders Display", "Arial Narrow", sans-serif; --serif: "Libre Caslon Text", Georgia, serif; --ui: "Manrope", system-ui, sans-serif;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+}
+* { box-sizing: border-box; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--night); color: var(--paper); font: 400 1rem/1.6 var(--ui); -webkit-font-smoothing: antialiased;
+  display: grid; grid-template-rows: auto 1fr auto; min-height: 100svh; }
+body::before { content: ""; position: fixed; inset: -30px; z-index: -1; background: url(assets/ambiente/bg-pente-e-tesoura.jpg) center / cover no-repeat;
+  filter: blur(5px) saturate(.5) brightness(.45); }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 16px; max-width: 1240px; width: 100%; margin: 0 auto; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font: 700 .9375rem/1 var(--ui); letter-spacing: .14em; text-transform: uppercase; }
+.brand img { width: 44px; height: 44px; }
+.back { font: 700 .75rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border: 1px solid var(--rule-2); }
+.back:hover { border-color: var(--lav); }
+
+main { display: grid; place-items: center; padding: 24px 16px 48px; }
+.card { width: min(440px, 100%); background: rgba(16, 42, 30, .94); border: 1px solid var(--lav); padding: 30px 24px 26px; display: grid; gap: 16px;
+  box-shadow: 0 30px 70px -30px rgba(4, 16, 10, .95); animation: pop .6s var(--ease) both; }
+@keyframes pop { from { opacity: 0; transform: translateY(18px) scale(.98); } }
+.eyebrow { font: 700 .75rem/1.3 var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--lav); margin: 0; }
+h1 { font: 800 clamp(2.4rem, 9vw, 3.2rem)/.92 var(--display); text-transform: uppercase; margin: -4px 0 0; }
+.goal { margin: 0; padding: 12px 14px; border-left: 2px solid var(--lav); background: rgba(138, 215, 176, .08); color: var(--silver); font-size: .9375rem; }
+.goal b { color: var(--paper); font-weight: 600; }
+.goal[hidden] { display: none; }
+.field { display: grid; gap: 6px; }
+.field label { font: 700 .75rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase; color: var(--silver); }
+.field input { width: 100%; min-height: 52px; background: var(--night); color: var(--paper); border: 1px solid var(--rule-2); padding: 0 14px; font: 500 1.0625rem var(--ui); }
+.field input:focus { border-color: var(--lav); outline: none; box-shadow: 0 0 0 3px rgba(138, 215, 176, .35); }
+.code input { letter-spacing: .6em; font: 800 1.6rem var(--display); text-align: center; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 0 22px; width: 100%; font: 700 .8125rem/1 var(--ui); letter-spacing: .1em; text-transform: uppercase;
+  border: 1px solid var(--lav); background: var(--lav); color: var(--night); cursor: pointer; transition: background .25s; }
+.btn:hover { background: var(--lav-2); }
+.plain { background: none; border: 0; color: var(--silver); font: 600 .875rem var(--ui); text-decoration: underline; cursor: pointer; padding: 6px 0; justify-self: start; }
+.err { margin: 0; font-size: .875rem; color: var(--lav-2); }
+.err:empty { display: none; }
+.note { margin: 0; font-size: .8125rem; color: var(--mist); }
+.step[hidden] { display: none; }
+.step { display: grid; gap: 14px; }
+.sent { margin: 0; color: var(--mist); font-size: .9375rem; }
+.sent b { color: var(--paper); }
+.sub { font: 400 1.35rem/1.25 var(--serif); margin: 0; }
+.sub:focus { outline: none; }
+.req, .opt-tag { font: 600 .6875rem/1 var(--ui); letter-spacing: .06em; text-transform: none; margin-left: 6px; padding: 3px 6px; border: 1px solid var(--rule-2); color: var(--mist); }
+.req { border-color: var(--lav); color: var(--lav-2); }
+.help { color: var(--mist); font-size: .8125rem; }
+.field input[aria-invalid="true"] { border-color: #F2B8A0; }
+.check { display: flex; align-items: flex-start; gap: 12px; min-height: 48px; padding: 4px 0; cursor: pointer; font-size: .9375rem; color: var(--silver); }
+.check input { flex: none; width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--lav); cursor: pointer; }
+.perks[hidden] { display: none; }
+.perks { list-style: none; margin: 0; padding: 14px 0 0; border-top: 1px solid var(--rule); display: grid; gap: 6px; font-size: .875rem; color: var(--mist); }
+.perks li::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--lav); transform: rotate(45deg); margin: 0 10px 2px 0; }
+footer { text-align: center; padding: 18px 16px 24px; font-size: .8125rem; color: var(--mist); }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index.html" id="home"><img src="assets/marca/selo-branco.svg" alt="" width="44" height="44">DB Barbearia</a>
+  <a class="back" href="index.html" id="back"><span aria-hidden="true">←</span> Voltar ao site</a>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="t">
+    <p class="eyebrow">Área do cliente</p>
+    <h1 id="t">Entre para continuar</h1>
+    <p class="goal" id="goal" hidden></p>
+
+    <form class="step" id="s1" novalidate>
+      <div class="field"><label for="phone">Seu WhatsApp</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(48) 9 0000-0000" required></div>
+      <p class="err" id="e1" role="alert"></p>
+      <button class="btn" type="submit">Receber código</button>
+    </form>
+
+    <form class="step" id="s2" novalidate hidden>
+      <p class="sent">Enviamos um código de 4 dígitos para <b id="sent-to"></b>.</p>
+      <div class="field code"><label for="code">Código</label><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]{4}" required></div>
+      <p class="err" id="e2" role="alert"></p>
+      <button class="btn" type="submit" id="go">Entrar</button>
+      <button class="plain" type="button" id="change">Trocar número</button>
+    </form>
+
+    <form class="step" id="s3" novalidate hidden aria-labelledby="t3">
+      <h2 class="sub" id="t3" tabindex="-1">Falta pouco: como podemos te chamar?</h2>
+      <div class="field"><label for="name">Seu nome <span class="req">obrigatório</span></label><input id="name" autocomplete="name" autocapitalize="words" maxlength="60" required aria-describedby="name-help"><small class="help" id="name-help">É assim que o barbeiro vai te chamar na cadeira.</small></div>
+      <div class="field"><label for="email">Seu email <span class="opt-tag">opcional</span></label><input id="email" type="email" inputmode="email" autocomplete="email" maxlength="80" aria-describedby="email-help"><small class="help" id="email-help">Para receber a confirmação e os lembretes dos seus horários.</small></div>
+      <label class="check"><input type="checkbox" id="optin"><span>Quero receber novidades e ofertas da DB Barbearia por email</span></label>
+      <p class="err" id="e3" role="alert"></p>
+      <button class="btn" type="submit">Concluir cadastro</button>
+    </form>
+
+    <ul class="perks">
+      <li>Seus dados já preenchidos no agendamento</li>
+      <li>Pacotes e créditos num lugar só</li>
+      <li>Histórico e o seu barbeiro de sempre</li>
+    </ul>
+    <p class="note" data-todo="login">Protótipo: qualquer código de 4 dígitos funciona e nada é enviado. Na versão final o código chega pelo WhatsApp.</p>
+  </section>
+</main>
+<footer>DB Barbearia · Rua das Tesouras, 120</footer>
+
+<script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  // Only same-site pages are accepted as return targets (no open redirect)
+  const SAFE = /^(index|conta)\.html(#[a-z0-9-]+)?$/i;
+  const next = SAFE.test(q.get("next") || "") ? q.get("next") : "conta.html";
+  const intent = (q.get("intent") || "").replace(/[^a-z-]/g, "");
+  const item = (q.get("item") || "").replace(/[^a-z0-9-]/g, "");
+  const label = (q.get("label") || "").slice(0, 80);
+
+  const site = next.startsWith("conta") ? "index.html" : next;
+  document.getElementById("back").href = site;
+  document.getElementById("home").href = site;
+
+  const GOALS = { pacote: "Para comprar o pacote", assinatura: "Para assinar o plano", agendar: "Para agendar" };
+  if (GOALS[intent]) {
+    const g = document.getElementById("goal");
+    g.textContent = GOALS[intent] + (label ? " " : "");
+    if (label) { const b = document.createElement("b"); b.textContent = label; g.append(b); }
+    g.append(document.createTextNode(", entre com o seu WhatsApp. Depois disso você volta direto para onde estava."));
+    g.hidden = false;
+  }
+
+  const s1 = document.getElementById("s1"), s2 = document.getElementById("s2");
+  const phone = document.getElementById("phone"), code = document.getElementById("code");
+  s1.addEventListener("submit", e => {
+    e.preventDefault();
+    if (phone.value.replace(/\D/g, "").length < 10) { document.getElementById("e1").textContent = "Confira o WhatsApp, com DDD."; phone.focus(); return; }
+    document.getElementById("sent-to").textContent = phone.value.trim();
+    s1.hidden = true; s2.hidden = false; code.focus();
+  });
+  document.getElementById("change").addEventListener("click", () => { s2.hidden = true; s1.hidden = false; phone.focus(); });
+  code.addEventListener("input", () => { code.value = code.value.replace(/\D/g, "").slice(0, 4); if (code.value.length === 4) s2.requestSubmit(); });
+  s2.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!/^\d{4}$/.test(code.value)) { document.getElementById("e2").textContent = "Digite os 4 números do código."; code.focus(); return; }
+    try { sessionStorage.setItem("dbb.cliente", phone.value.trim()); } catch (_) {}
+    // First access: finish the sign-up (name, email) before leaving
+    let known = null; try { known = sessionStorage.getItem("dbb.nome"); } catch (_) {}
+    if (!known) {
+      s2.hidden = true; s3.hidden = false;
+      document.getElementById("t").textContent = "Bem-vindo à DB Barbearia";
+      document.querySelector(".perks").hidden = true;
+      document.getElementById("t3").focus();
+      return;
+    }
+    leave();
+  });
+  const s3 = document.getElementById("s3");
+  s3.addEventListener("submit", e => {
+    e.preventDefault();
+    const nm = document.getElementById("name"), em = document.getElementById("email"), err = document.getElementById("e3");
+    const n = nm.value.trim().replace(/\s+/g, " "), m = em.value.trim();
+    if (n.length < 2) { err.textContent = "Escreva o seu nome."; nm.setAttribute("aria-invalid", "true"); nm.focus(); return; }
+    nm.removeAttribute("aria-invalid");
+    if (m && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)) { err.textContent = "Confira o email. Exemplo: nome@email.com"; em.setAttribute("aria-invalid", "true"); em.focus(); return; }
+    em.removeAttribute("aria-invalid");
+    try {
+      sessionStorage.setItem("dbb.nome", n);
+      if (m) sessionStorage.setItem("dbb.email", m); else sessionStorage.removeItem("dbb.email");
+      sessionStorage.setItem("dbb.optin", document.getElementById("optin").checked && m ? "1" : "0");
+    } catch (_) {}
+    leave();
+  });
+  function leave() {
+    document.querySelectorAll("form:not([hidden]) .btn").forEach(b => { b.textContent = "Entrando…"; });
+    // Return to where the person came from, carrying what they wanted to do
+    const [path, hash] = next.split("#");
+    const back = new URLSearchParams({ entrou: "1" });
+    if (intent) back.set("intent", intent);
+    if (item) back.set("item", item);
+    setTimeout(() => location.replace(`${path}?${back}${hash ? "#" + hash : ""}`), 350);
+  }
+})();
+</script>
+</body>
+</html>

@@ -17,6 +17,13 @@ const nextConfig = {
         destination: 'https://cal.com/daniel-bernardino-cdrdn0/tire-o-projeto-do-papel',
         permanent: false,
       },
+      // Static demos live in `public/demos/<name>/`. Next does not serve a
+      // folder's index.html, so the bare address points at it.
+      {
+        source: '/demos/db-barbearia',
+        destination: '/demos/db-barbearia/index.html',
+        permanent: false,
+      },
     ];
   },
 };
