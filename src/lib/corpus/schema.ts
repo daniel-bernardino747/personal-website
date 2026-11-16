@@ -23,7 +23,7 @@ export type Kind = (typeof KINDS)[number];
  * validates shape, not visibility. A mismatched `version` is refused before
  * parsing, because the producer lives in another repository.
  */
-export const SITE_JSON_VERSION = 3;
+export const SITE_JSON_VERSION = 4;
 
 const affiliationSchema = z.object({
   id: z.string().min(1),
@@ -41,8 +41,10 @@ const accomplishmentSchema = z.object({
   metric: z.string().min(1).optional(),
   title: z.string().min(1).optional(),
   images: z
-    .array(z.object({ src: z.string().regex(/^\/projects\/[\w-]+\/[\w-]+\.webp$/), alt: z.string().min(1) }))
+    .array(z.object({ src: z.string().regex(/^\/projects\/[\w-]+\/[\w-]+\.(?:webp|mp4)$/), alt: z.string().min(1) }))
     .min(1)
+    // The cover is what the gallery card shows, so it is always a picture (ADR-0018).
+    .refine((images) => images[0].src.endsWith('.webp'), 'the cover must be a .webp picture')
     .optional(),
   statement: z.string().min(1),
   featured: z.boolean(),
@@ -138,9 +140,10 @@ export interface Accomplishment {
    */
   title?: string;
   /**
-   * The pictures of a project, WebP under `public/projects/<id>/` (ADR-0017).
-   * The first is the cover the card shows (1200×630); the rest are extra screens
-   * for the project dialog, 1200×630 or 630×1200. Absent for most
+   * The pictures of a project, under `public/projects/<id>/` (ADR-0017). The
+   * first is the cover the card shows, always a 1200×630 WebP; the rest are extra
+   * screens for the project dialog, 1200×630 or 630×1200, each a WebP or a short
+   * MP4 whose poster is the WebP of the same name (ADR-0018). Absent for most
    * Accomplishments, and for projects with nothing to show yet.
    */
   images?: { src: string; alt: string }[];

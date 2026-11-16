@@ -50,6 +50,22 @@ describe('reading site:json', () => {
     expect(() => fromSiteJson(json)).toThrow(CorpusError);
   });
 
+  it('accepts a video screen after the cover, and refuses a video cover (ADR-0018)', () => {
+    const withScreens = (srcs: string[]) => {
+      const json = fixture();
+      const project = json.accomplishments.find((a: { id: string }) => a.id === 'side-project');
+      project.images = srcs.map((src) => ({ src, alt: 'A screen' }));
+      return json;
+    };
+    expect(() =>
+      fromSiteJson(withScreens(['/projects/side-project/cover.webp', '/projects/side-project/demo.mp4'])),
+    ).not.toThrow();
+    expect(() => fromSiteJson(withScreens(['/projects/side-project/demo.mp4']))).toThrow(CorpusError);
+    expect(() => fromSiteJson(withScreens(['/projects/side-project/cover.webp', '/projects/side-project/demo.gif']))).toThrow(
+      CorpusError,
+    );
+  });
+
   it('refuses a reference to an Affiliation it does not carry', () => {
     const json = fixture();
     json.accomplishments[0].affiliationId = 'nowhere';

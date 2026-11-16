@@ -16,3 +16,5 @@ So `image` becomes an ordered list, `images: [{ src, alt }]`. Each entry is acqu
 The images are still site presentation. The résumé, the LinkedIn blocks and `corpus:json` ignore them, so the contract with `prospect-me` is unchanged.
 
 `project:image` writes the cover to the new path, and `--screen <name> --file <path>` adds an extra screen from a file Daniel supplies. Neither replaces an existing file without `--force`, so refreshing a stale image is now a deliberate re-run with `--force`.
+
+[ADR-0018](./0018-a-screen-may-be-a-short-video.md) lets a screen after the cover be a short video.

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { useDictionary } from "@/components/DictionaryProvider";
+import { isVideo, posterOf } from "@/lib/projects/image";
 
 /** Pointer travel, in px, past which a swipe changes the screen. */
 const SWIPE = 40;
@@ -13,7 +14,8 @@ const SWIPE = 40;
 type Screen = { src: string; alt: string };
 
 /**
- * A project's screens, one at a time, at the top of its dialog (ADR-0017). The
+ * A project's screens, one at a time, at the top of its dialog (ADR-0017); a
+ * screen after the cover may be a short muted clip (ADR-0018). The
  * first is the cover. A landscape screen is 1200×630; a portrait one is a phone
  * fitted into a transparent 630×1200, so the stage turns taller when the set
  * holds one, and every screen is shown whole (`object-contain`).
@@ -54,15 +56,33 @@ export function ScreenCarousel({ screens, title }: { screens: Screen[]; title: s
           transition={{ type: "spring", stiffness: 320, damping: 32 }}
           className="absolute inset-0"
         >
-          <Image
-            src={screen.src}
-            alt={screen.alt}
-            fill
-            sizes="(min-width: 768px) 720px, 92vw"
-            draggable={false}
-            className="object-contain"
-            priority={index === 0}
-          />
+          {isVideo(screen.src) ? (
+            // Only the current slide is mounted, so a clip plays only while it is
+            // the one shown, and stops when the visitor moves on or closes the
+            // dialog. Under reduced motion it waits on its poster, with controls.
+            <video
+              src={screen.src}
+              poster={posterOf(screen.src)}
+              aria-label={screen.alt}
+              muted
+              loop
+              playsInline
+              autoPlay={!reduced}
+              controls={reduced ?? false}
+              preload="metadata"
+              className="absolute inset-0 size-full object-contain"
+            />
+          ) : (
+            <Image
+              src={screen.src}
+              alt={screen.alt}
+              fill
+              sizes="(min-width: 768px) 720px, 92vw"
+              draggable={false}
+              className="object-contain"
+              priority={index === 0}
+            />
+          )}
         </motion.div>
       </AnimatePresence>
       <span aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-foreground/10" />
@@ -154,7 +174,8 @@ function useHasPortrait(screens: Screen[]): boolean {
       probe.onload = () => {
         if (live && probe.naturalHeight > probe.naturalWidth) setPortrait(true);
       };
-      probe.src = src;
+      // A clip is measured by its poster, which has its size.
+      probe.src = posterOf(src);
     }
     return () => {
       live = false;

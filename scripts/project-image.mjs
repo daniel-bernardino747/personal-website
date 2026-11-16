@@ -14,6 +14,8 @@
 //   npm run project:image -- <accomplishment-id> --screenshot    (skip og:image)
 //   npm run project:image -- <accomplishment-id> --file <path>   (a supplied image)
 //   npm run project:image -- <accomplishment-id> --screen <name> --file <path>
+//   npm run project:image -- <accomplishment-id> --screen <name> --file <clip.mp4|.mov|.webm>
+//     (a short video screen, ADR-0018: needs ffmpeg and ffprobe on the PATH)
 //   ... --force   (replace a file that already exists)
 //
 // Local and deliberate, like capture itself: never run this from a build. The
@@ -39,8 +41,12 @@ import {
   IMAGE_HEIGHT,
   IMAGE_WIDTH,
   imageSrc,
+  isVideoFile,
   SCREEN_NAME,
   screenFit,
+  VIDEO_CRF,
+  VIDEO_MAX_BYTES,
+  videoFit,
 } from '../src/lib/projects/image.ts';
 
 const OUT_DIR = join('public', 'projects');
@@ -155,6 +161,10 @@ async function main() {
 
   if (screen !== undefined) return addScreen(accomplishment, screen, file, force);
 
+  if (file && isVideoFile(file)) {
+    fail('The cover is what the gallery card shows, so it is always a picture. A clip can be a later screen: add --screen <name>.');
+  }
+
   const coverOut = join(OUT_DIR, id, `${COVER}.webp`);
   if (existsSync(coverOut) && !force) {
     fail(`${coverOut} already exists. Pass --force to replace it (and approve the new one again).`);
@@ -215,6 +225,8 @@ async function addScreen(accomplishment, name, file, force) {
   if (!accomplishment.images?.length) {
     fail(`"${id}" has no cover recorded yet. The first image is the cover: acquire and record it first.`);
   }
+  if (isVideoFile(file)) return addVideoScreen(accomplishment, name, file, force);
+
   const src = imageSrc(id, name);
   if (accomplishment.images.some((image) => image.src === src)) {
     process.stderr.write(`  ${src} is already recorded; this replaces the file only.\n`);
@@ -251,6 +263,96 @@ async function addScreen(accomplishment, name, file, force) {
       '',
       `  - src: ${src}`,
       '    alt: "<what the screen shows, in words>"',
+      '',
+      `Then translate its alt under accomplishment:${id}.imageAlt:${name}.`,
+      '',
+    ].join('\n'),
+  );
+}
+
+/** `ffprobe`'s view of a clip: its displayed size (rotation applied) and duration. */
+function probe(file) {
+  let raw;
+  try {
+    raw = execFileSync(
+      'ffprobe',
+      ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height:stream_side_data=rotation:format=duration', '-of', 'json', file],
+      { encoding: 'utf8' },
+    );
+  } catch {
+    fail('ffprobe could not read the clip. Is ffmpeg installed and on the PATH?');
+  }
+  const json = JSON.parse(raw);
+  const stream = json.streams?.[0];
+  if (!stream) fail(`${file} has no video stream.`);
+  const rotation = Math.abs(Number(stream.side_data_list?.find((d) => 'rotation' in d)?.rotation ?? 0));
+  const turned = rotation === 90 || rotation === 270;
+  return {
+    width: turned ? stream.height : stream.width,
+    height: turned ? stream.width : stream.height,
+    seconds: Number(json.format?.duration ?? 0),
+  };
+}
+
+/**
+ * Adds a video screen (ADR-0018): an H.264 MP4 with no audio and `faststart`, and
+ * beside it the WebP poster of the same name, from the clip's first frame. Over
+ * the size budget it tries once more at a lower quality, then refuses and leaves
+ * nothing behind.
+ */
+async function addVideoScreen(accomplishment, name, file, force) {
+  const { id } = accomplishment;
+  const src = imageSrc(id, name).replace(/\.webp$/, '.mp4');
+  const out = join(OUT_DIR, id, `${name}.mp4`);
+  const poster = join(OUT_DIR, id, `${name}.webp`);
+  for (const path of [out, poster]) {
+    if (existsSync(path) && !force) fail(`${path} already exists. Pass --force to replace it.`);
+  }
+
+  const { width, height, seconds } = probe(file);
+  const fit = videoFit(width, height, seconds);
+  if ('refused' in fit) fail(`The clip ${file} is refused: ${fit.refused}. Nothing is cropped or trimmed.`);
+
+  mkdirSync(join(OUT_DIR, id), { recursive: true });
+  let bytes = 0;
+  for (const crf of VIDEO_CRF) {
+    execFileSync(
+      'ffmpeg',
+      ['-y', '-v', 'error', '-i', file, '-an', '-c:v', 'libx264', '-preset', 'slow', '-crf', String(crf),
+        '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-vf', `scale=${fit.width}:${fit.height},setsar=1`, out],
+      { stdio: 'inherit' },
+    );
+    bytes = readFileSync(out).length;
+    if (bytes <= VIDEO_MAX_BYTES) break;
+    process.stderr.write(`  ${Math.round(bytes / 1024)} KB at quality ${crf} is over budget; trying lower.\n`);
+  }
+  if (bytes > VIDEO_MAX_BYTES) {
+    rmSync(out, { force: true });
+    fail(
+      `Even at the lowest quality the clip is ${Math.round(bytes / 1024)} KB, over ${VIDEO_MAX_BYTES / 1024} KB.\n` +
+        'Shorten it, or record it at a smaller size, and try again.',
+    );
+  }
+
+  // The first frame, through a PNG so `sharp` writes the WebP like every other picture.
+  const dir = mkdtempSync(join(tmpdir(), 'project-video-'));
+  try {
+    const frame = join(dir, 'frame.png');
+    execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', out, '-frames:v', '1', frame], { stdio: 'inherit' });
+    await sharp(readFileSync(frame)).webp({ quality: 80 }).toFile(poster);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+
+  process.stdout.write(
+    [
+      `Wrote ${out} (${fit.width}×${fit.height}, ${seconds.toFixed(1)} s, ${Math.round(bytes / 1024)} KB) and its poster ${poster}.`,
+      '',
+      'Watch it. If it shows the project, append to `images:` in the frontmatter of',
+      `career/corpus/accomplishments/${id}.md, in the order the carousel should show it:`,
+      '',
+      `  - src: ${src}`,
+      '    alt: "<what the clip shows, in words>"',
       '',
       `Then translate its alt under accomplishment:${id}.imageAlt:${name}.`,
       '',

@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest';
 
-import { findOgImage, fitsRatio, imageName, imageSrc, screenFit, SCREEN_NAME } from './image';
+import {
+  findOgImage,
+  fitsRatio,
+  imageName,
+  imageSrc,
+  isVideo,
+  isVideoFile,
+  posterOf,
+  screenFit,
+  SCREEN_NAME,
+  videoFit,
+} from './image';
 
 describe('findOgImage', () => {
   const page = 'https://labs.example.com/demo/thing';
@@ -107,5 +118,40 @@ describe('SCREEN_NAME', () => {
     expect(SCREEN_NAME.test('../cover')).toBe(false);
     expect(SCREEN_NAME.test('a b')).toBe(false);
     expect(SCREEN_NAME.test('x.webp')).toBe(false);
+  });
+});
+
+describe('video screens', () => {
+  it('names a video like a picture, so its alt is translated the same way', () => {
+    expect(imageName('/projects/acme/demo.mp4')).toBe('demo');
+  });
+
+  it('finds the poster beside a video, and lets a picture be its own', () => {
+    expect(isVideo('/projects/acme/demo.mp4')).toBe(true);
+    expect(posterOf('/projects/acme/demo.mp4')).toBe('/projects/acme/demo.webp');
+    expect(isVideo('/projects/acme/cover.webp')).toBe(false);
+    expect(posterOf('/projects/acme/cover.webp')).toBe('/projects/acme/cover.webp');
+  });
+});
+
+describe('videoFit', () => {
+  it('scales a landscape or a phone clip to fit its box, in even dimensions', () => {
+    expect(videoFit(2400, 1260, 8)).toEqual({ width: 1200, height: 630 });
+    expect(videoFit(1080, 2340, 10)).toEqual({ width: 552, height: 1200 });
+    expect(videoFit(600, 315, 5)).toEqual({ width: 600, height: 314 });
+  });
+
+  it('refuses a clip too long, of another shape, or with no duration', () => {
+    expect(videoFit(1200, 630, 12.5)).toHaveProperty('refused');
+    expect(videoFit(1920, 1080, 5)).toHaveProperty('refused');
+    expect(videoFit(1200, 630, 0)).toHaveProperty('refused');
+  });
+});
+
+describe('isVideoFile', () => {
+  it('knows a clip by its extension, in any case', () => {
+    expect(isVideoFile('C:/clips/demo.MOV')).toBe(true);
+    expect(isVideoFile('demo.webm')).toBe(true);
+    expect(isVideoFile('shot.png')).toBe(false);
   });
 });

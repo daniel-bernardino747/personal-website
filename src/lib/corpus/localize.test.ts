@@ -5,7 +5,7 @@ import type { SiteJson } from './schema';
 import { parseStatement } from './statement';
 
 const site: SiteJson = {
-  version: 3,
+  version: 4,
   identity: {
     name: 'Ada Lovelace',
     initials: 'AL',
