@@ -1,0 +1,386 @@
+<template>
+  <style>
+    @font-face { font-family: "Fraunces"; font-weight: 400 600; src: url("assets/fonts/fraunces.woff2") format("woff2"); }
+    @font-face { font-family: "Hanken Grotesk"; font-weight: 400 700; src: url("assets/fonts/hanken.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Mono"; font-weight: 400; src: url("assets/fonts/plexmono-400.woff2") format("woff2"); }
+    @font-face { font-family: "IBM Plex Mono"; font-weight: 500; src: url("assets/fonts/plexmono-500.woff2") format("woff2"); }
+
+    #root {
+      position: absolute; inset: 0; overflow: hidden; background: #100C08;
+      /* the site's dark theme (src/style.css :root, prefers-color-scheme: dark) */
+      --bg: #14110D; --surface: #1E1914; --surface-2: #241E18;
+      --ink: #ECE6DC; --muted: #9C9488; --faint: #7E766B;
+      --accent: #E9694A; --accent-ink: #1A130F;
+      --line: #2E2820; --line-strong: #3B3428; --good: #7FBF97;
+      /* the hero's own palette */
+      --h-bg: #100C08; --h-ink: #EDE6DA; --h-dim: #8C857A; --h-line: rgba(237, 230, 218, .14);
+      --serif: "Fraunces", Georgia, serif; --sans: "Hanken Grotesk", sans-serif; --mono: "IBM Plex Mono", monospace;
+      font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased;
+    }
+    #root * { box-sizing: border-box; }
+    #world { position: absolute; left: 0; top: 0; width: 1440px; height: 1700px; transform-origin: 0 0; background: var(--surface-2); }
+    .marca { display: block; overflow: visible; }
+
+    /* ---------- hero (index.html .hero), laid out for a 1200x630 frame ---------- */
+    #hero { position: absolute; left: 0; top: 0; width: 1440px; height: 630px; overflow: hidden; color: var(--h-ink);
+      background:
+        radial-gradient(48% 62% at 56% 40%, rgba(237, 230, 218, .10) 0%, rgba(237, 230, 218, .035) 42%, transparent 74%),
+        radial-gradient(100% 92% at 42% 46%, transparent 46%, rgba(0, 0, 0, .45) 100%),
+        var(--h-bg); }
+    #fig { position: absolute; left: 351px; top: 429px; width: 776px; height: auto; }
+    #fig-scrim { position: absolute; inset: 0; background: linear-gradient(180deg, var(--h-bg) 0%, rgba(16, 12, 8, .5) 12%, transparent 30%); }
+    #fig-dots { position: absolute; left: 545px; top: 480px; width: 190px; height: 190px; border-radius: 50%;
+      background-image: radial-gradient(circle, rgba(127, 191, 151, .9) 0 1.2px, transparent 1.6px); background-size: 9px 9px;
+      -webkit-mask-image: radial-gradient(circle, #000 30%, transparent 70%); mask-image: radial-gradient(circle, #000 30%, transparent 70%); opacity: .55; }
+    .ret { position: absolute; border: 1px solid rgba(127, 191, 151, .42); border-radius: 50%; box-shadow: 0 0 34px rgba(127, 191, 151, .12); }
+    .ret i { position: absolute; background: rgba(127, 191, 151, .6); }
+    .ret .t { left: 50%; top: -7px; width: 1px; height: 14px; margin-left: -.5px; }
+    .ret .b { left: 50%; bottom: -7px; width: 1px; height: 14px; margin-left: -.5px; }
+    .ret .l { top: 50%; left: -7px; height: 1px; width: 14px; margin-top: -.5px; }
+    .ret .r { top: 50%; right: -7px; height: 1px; width: 14px; margin-top: -.5px; }
+    #hero-ret { left: 525px; top: 460px; width: 230px; height: 230px; }
+
+    .bar { position: absolute; left: 0; top: 0; width: 1200px; height: 54px; display: flex; align-items: center; padding: 0 25px; }
+    .bar .brand { display: flex; align-items: center; gap: 8px; flex: 1; font: 600 19px/1 var(--serif); letter-spacing: -.01em; }
+    .bar .brand sup { font-size: 8px; font-weight: 400; opacity: .6; margin-left: 2px; }
+    .bar nav { display: flex; gap: 22px; font: 400 10.5px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: rgba(237, 230, 218, .7); }
+    .bar nav sup { font-size: 7.5px; margin-left: 2px; opacity: .5; }
+    .bar .acts { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+    .iconbtn { width: 32px; height: 32px; border: 1px solid rgba(237, 230, 218, .24); border-radius: 8px; display: grid; place-items: center; color: var(--h-ink); }
+    .bar .go { background: var(--accent); color: var(--accent-ink); font: 600 13px/1 var(--sans); padding: 10px 14px; border-radius: 8px; }
+
+    #rail { position: absolute; left: 165px; top: 54px; width: 1px; height: 576px; background: var(--h-line); }
+    .mk { position: absolute; left: 25px; display: flex; align-items: center; gap: 9px; font: 400 9.6px/1 var(--mono); letter-spacing: .13em; color: var(--h-dim); white-space: nowrap; }
+    .mk::before { content: ""; width: 22px; height: 1px; background: rgba(237, 230, 218, .34); }
+    #hero h1 { position: absolute; left: 195px; top: 124px; margin: 0; font: 500 31px/1.16 var(--serif); letter-spacing: -.015em; }
+    #hero h1 em { font-style: italic; color: var(--accent); }
+    #hero h1 b { color: var(--accent); font-weight: inherit; }
+    .stat { position: absolute; right: 265px; top: 116px; text-align: right; }
+    .stat .big { font: 600 50px/1 var(--serif); color: var(--accent); letter-spacing: -.025em; }
+    .stat .cap { margin-top: 8px; font: 400 9.6px/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--h-dim); }
+    .stat .sig { margin-top: 14px; display: inline-flex; align-items: center; gap: 7px; font: 400 8.8px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: rgba(237, 230, 218, .5); }
+    .stat .sig b { width: 6px; height: 6px; border-radius: 50%; background: var(--good); }
+    #marca-hero { position: absolute; left: 197px; top: 222px; width: 46px; height: 46px; color: var(--h-ink); }
+    .wordmark { position: absolute; left: 192px; top: 286px; margin: 0; white-space: nowrap; font: 600 154px/.86 var(--serif); letter-spacing: -.035em; }
+    .wordmark .a { color: var(--accent); }
+    .wordmark .sl { color: #fff; font-weight: 400; }
+    .copy { position: absolute; left: 195px; top: 455px; }
+    .copy .desc { margin: 0; font: 400 10.8px/1.8 var(--mono); letter-spacing: .055em; text-transform: uppercase; }
+    .copy .hair { width: 28px; height: 1px; background: rgba(237, 230, 218, .34); margin: 13px 0 10px; }
+    .copy .clock { margin: 0; font: 400 10.4px/1.75 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--h-dim); }
+    .copy .cta { display: flex; gap: 11px; margin-top: 14px; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; font: 500 10.4px/1 var(--mono); letter-spacing: .09em; text-transform: uppercase; padding: 13px 21px; }
+    .pill.primary { background: var(--accent); color: #160F0C; }
+    .pill.ghost { background: #F3EEE5; color: #171310; }
+    .reel { position: absolute; left: 845px; top: 425px; width: 330px; }
+    .reel .lab { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; font: 400 9.6px/1 var(--mono); letter-spacing: .13em; text-transform: uppercase; color: var(--h-dim); }
+    .reel .lab i { flex: 1; height: 1px; background: var(--h-line); }
+    .reel img { display: block; width: 330px; height: 185px; border-radius: 9px; border: 1px solid var(--h-line); }
+
+    /* ---------- the demo (index.html #demo), dark theme ---------- */
+    #demo { position: absolute; left: 0; top: 630px; width: 1440px; height: 1070px; background: var(--surface-2); border-top: 1px solid var(--line); }
+    #demo .eyebrow { position: absolute; left: 65px; top: 46px; margin: 0; font: 500 12px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+    #demo .eyebrow span { color: var(--faint); }
+    #demo h2 { position: absolute; left: 65px; top: 72px; margin: 0; font: 500 40px/1.05 var(--serif); letter-spacing: -.015em; }
+    #demo .sub { position: absolute; left: 65px; top: 130px; margin: 0; font-size: 18px; line-height: 1.6; color: var(--muted); }
+
+    #console { position: absolute; left: 65px; top: 830px; width: 1070px; height: 830px; border: 1px solid var(--line-strong); border-radius: 16px; overflow: hidden; background: var(--surface); }
+    .tabs { position: absolute; left: 0; top: 0; width: 100%; height: 54px; display: flex; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+    .tab { position: relative; flex: 1; display: flex; align-items: center; justify-content: center; gap: 9px; font: 600 15px/1 var(--sans); color: var(--muted); }
+    .tab .on { position: absolute; inset: 0 0 -1px; background: var(--surface); opacity: 0; }
+    .tab svg, .tab span { position: relative; }
+    #t-seal .on { opacity: 1; }
+    #t-seal { color: var(--ink); }
+    #tab-line { position: absolute; left: 0; top: 52px; width: 535px; height: 2px; background: var(--accent); }
+
+    .col { position: absolute; top: 82px; }
+    .left { left: 28px; width: 444px; }
+    .lab { display: block; margin-bottom: 6px; font: 600 12.5px/1.6 var(--sans); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .drop { height: 112px; border: 1.5px dashed var(--line-strong); border-radius: 12px; background: var(--bg); display: grid; place-content: center; text-align: center; font-size: 14px; line-height: 1.6; color: var(--muted); }
+    .drop b { color: var(--ink); font-weight: 600; }
+    .drop small { font-size: 12px; }
+    .field { margin-top: 14px; }
+    .field .in { height: 46px; padding: 0 13px; display: flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--bg); font-size: 15px; }
+    .bigbtn { position: relative; margin-top: 14px; height: 48px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 600 15px/1 var(--sans);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 18px 44px -18px rgba(0, 0, 0, .7); overflow: hidden; }
+    .bigbtn .press, .sbtn .press { position: absolute; inset: 0; background: #000; opacity: 0; }
+    .bigbtn span { position: relative; }
+    .note { margin: 12px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--faint); }
+    #trace-left { opacity: 0; }
+    #trace-left .bigbtn { margin-top: 14px; }
+
+    .right { left: 500px; width: 542px; }
+    #stage { position: relative; height: 342px; background: #0d0b09; border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; }
+    .shot { position: absolute; left: 15px; top: 0; width: 510px; height: 340px; }
+    #scan { position: absolute; left: 15px; top: 0; width: 510px; height: 340px; overflow: hidden; }
+    #band { position: absolute; left: 0; top: 0; width: 510px; height: 130px; opacity: 0;
+      background-image: radial-gradient(circle, rgba(127, 191, 151, .95) 0 1.3px, transparent 1.7px); background-size: 11px 11px;
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%, #000 58%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 42%, #000 58%, transparent); }
+    .tag { position: absolute; left: 10px; top: 10px; padding: 4px 8px; border-radius: 5px; background: rgba(0, 0, 0, .5); color: #eee; font: 400 10px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+    #tag-1, #tag-2 { opacity: 0; }
+
+    .readout { margin-top: 16px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font: 400 13px/1.6 var(--mono); }
+    .readout .r { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+    .readout .r:last-child { border-bottom: 0; }
+    .readout .r span:first-child { color: var(--muted); }
+    .readout .r span:last-child { font-weight: 500; }
+    #seal-out .r { opacity: 0; }
+    #seal-out { border-color: transparent; }
+    .actions { display: flex; gap: 10px; margin-top: 16px; opacity: 0; }
+    .sbtn { position: relative; overflow: hidden; display: inline-flex; align-items: center; height: 42px; padding: 0 14px; border-radius: 10px; font: 600 13.5px/1 var(--sans); }
+    .sbtn span { position: relative; }
+    .sbtn.primary { background: var(--accent); color: var(--accent-ink); }
+    .sbtn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); }
+
+    #result { position: absolute; left: 0; top: 358px; width: 542px; padding: 18px; border-radius: 12px; opacity: 0;
+      border: 1px solid #4f6c58; background: rgba(127, 191, 151, .09); }
+    #result h4 { margin: 0 0 4px; font: 600 19px/1.2 var(--serif); }
+    #result p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--muted); }
+    .conf { height: 7px; border-radius: 6px; background: var(--line); overflow: hidden; margin: 12px 0 4px; }
+    .conf i { display: block; width: 100%; height: 100%; background: var(--good); transform-origin: 0 50%; transform: scaleX(0); }
+    #conf-lab { font-size: 12.5px; color: var(--faint); opacity: 0; }
+    #result .readout { margin-top: 14px; }
+    #result .readout .r { opacity: 0; position: relative; }
+    #hit { position: absolute; inset: 0; background: rgba(233, 105, 74, .16); box-shadow: inset 3px 0 0 var(--accent); opacity: 0; }
+    #result .readout .r > span:not(#hit) { position: relative; }
+
+    /* ---------- the lens: the ×60 difference, seen through the hero's reticle ---------- */
+    #lens-diff { position: absolute; left: 596px; top: 913px; width: 510px; height: 340px; clip-path: circle(0px at 265px 70px); }
+    #lens-ret { position: absolute; left: 0; top: 0; width: 176px; height: 176px; opacity: 0; border-color: rgba(127, 191, 151, .7); }
+    #lens-tag { position: absolute; left: 140px; top: 150px; padding: 5px 9px; border-radius: 5px; background: var(--accent); color: var(--accent-ink); font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+
+    /* ---------- cursor and captions ---------- */
+    #cursor { position: absolute; left: 0; top: 0; width: 30px; height: 41px; z-index: 30; transform-origin: 2px 2px; opacity: 0; }
+    .capt { position: absolute; left: 40px; top: 546px; padding: 8px 22px 10px; background: var(--h-bg); color: var(--h-ink); border-left: 3px solid var(--accent);
+      font: 600 36px/1.2 var(--sans); letter-spacing: -.01em; white-space: nowrap; }
+  </style>
+
+  <div id="root" data-composition-id="film" data-width="1200" data-height="630">
+    <div id="world">
+
+      <!-- landing: hero -->
+      <section id="hero">
+        <img id="fig" src="assets/img/noiva-hero.png" alt="" />
+        <div id="fig-dots"></div>
+        <div id="fig-scrim"></div>
+        <div id="hero-ret" class="ret"><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i></div>
+
+        <header class="bar">
+          <div class="brand">
+            <svg class="marca" width="18" height="18" viewBox="0 0 78 78"><g>
+              <rect x="0" y="0" width="18.57" height="18.57" fill="currentColor" fill-opacity=".7"/><rect x="29.71" y="0" width="18.57" height="18.57" fill="currentColor" fill-opacity=".4"/><rect x="59.43" y="0" width="18.57" height="18.57" fill="#E9694A" fill-opacity=".2"/>
+              <rect x="0" y="29.71" width="18.57" height="18.57" fill="#E9694A"/><rect x="29.71" y="29.71" width="18.57" height="18.57" fill="#E9694A" fill-opacity=".7"/><rect x="59.43" y="29.71" width="18.57" height="18.57" fill="currentColor" fill-opacity=".4"/>
+              <rect x="29.71" y="59.43" width="18.57" height="18.57" fill="currentColor"/><rect x="59.43" y="59.43" width="18.57" height="18.57" fill="currentColor" fill-opacity=".7"/></g></svg>
+            Latente<sup>®</sup>
+          </div>
+          <nav><span>Como<sup>3</sup></span><span>Demo</span><span>Planos<sup>3</sup></span><span>Dúvidas<sup>6</sup></span></nav>
+          <div class="acts">
+            <span class="iconbtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg></span>
+            <span class="go">Testar agora</span>
+          </div>
+        </header>
+
+        <div id="rail"></div>
+        <span class="mk" style="top:186px">// 00.01°</span>
+        <span class="mk" style="top:352px">// 00.02°</span>
+        <span class="mk" style="top:596px">// 00.03°</span>
+
+        <h1>Sua assinatura vive <em>dentro</em><br />da foto — e ninguém a vê<b>.</b></h1>
+
+        <div class="stat">
+          <div class="big">2048</div>
+          <div class="cap">bits de assinatura costurados<br />em cada canto da imagem</div>
+          <div class="sig"><b></b>selo ativo</div>
+        </div>
+
+        <svg id="marca-hero" class="marca" viewBox="0 0 78 78"><g>
+          <rect x="0" y="0" width="18.57" height="18.57" fill="currentColor" fill-opacity=".7"/><rect x="29.71" y="0" width="18.57" height="18.57" fill="currentColor" fill-opacity=".4"/><rect x="59.43" y="0" width="18.57" height="18.57" fill="#E9694A" fill-opacity=".2"/>
+          <rect x="0" y="29.71" width="18.57" height="18.57" fill="#E9694A"/><rect x="29.71" y="29.71" width="18.57" height="18.57" fill="#E9694A" fill-opacity=".7"/><rect x="59.43" y="29.71" width="18.57" height="18.57" fill="currentColor" fill-opacity=".4"/>
+          <rect x="29.71" y="59.43" width="18.57" height="18.57" fill="currentColor"/><rect x="59.43" y="59.43" width="18.57" height="18.57" fill="currentColor" fill-opacity=".7"/></g></svg>
+        <h2 class="wordmark"><span class="a">Latente</span><span class="sl">\</span>Forense</h2>
+
+        <div class="copy">
+          <p class="desc">Marca d'água forense para fotógrafo de casamento e retrato.<br />A foto sai limpa — o rastro fica dentro dela.</p>
+          <div class="hair"></div>
+          <p class="clock">agora 11:00:51<br />UTC−3 · tudo roda no seu navegador</p>
+          <div class="cta"><span class="pill primary">Testar agora →</span><span class="pill ghost">Como funciona →</span></div>
+        </div>
+
+        <div class="reel">
+          <div class="lab">Demonstração <i></i> \\2026</div>
+          <img src="assets/img/reel.png" alt="" />
+        </div>
+      </section>
+
+      <!-- landing: the demo, Seal and Trace -->
+      <section id="demo">
+        <p class="eyebrow"><span>// 00.03°&nbsp;&nbsp;</span>Experimente</p>
+        <h2>Sele uma foto e rastreie você mesmo.</h2>
+        <p class="sub">O motor de verdade rodando localmente — sua imagem nunca sai deste dispositivo.</p>
+      </section>
+
+      <div id="console">
+        <div class="tabs">
+          <div class="tab" id="t-seal"><span class="on"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Selar</span></div>
+          <div class="tab" id="t-trace"><span class="on"></span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Rastrear</span></div>
+          <div id="tab-line"></div>
+        </div>
+
+        <div class="col left" id="seal-left">
+          <span class="lab">Imagem</span>
+          <div class="drop"><div><b>Escolher uma foto</b><br />ou arraste aqui · JPG/PNG<br /><small>sem foto? um negativo de teste é gerado</small></div></div>
+          <div class="field"><span class="lab">Cliente / destinatário</span><div class="in">Maria Silva</div></div>
+          <div class="field"><span class="lab">Canal de entrega</span><div class="in">galeria de prévia</div></div>
+          <div class="field"><span class="lab">Etapa da entrega</span><div class="in">prévia · antes do pagamento</div></div>
+          <div class="bigbtn"><span class="press" id="seal-press"></span><span>Selar imagem</span></div>
+          <p class="note">A assinatura é repetida milhares de vezes ao longo da imagem, alterando no máximo <b>1 nível</b> de cor por pixel — abaixo do que o olho enxerga.</p>
+        </div>
+
+        <div class="col left" id="trace-left">
+          <span class="lab">Imagem suspeita</span>
+          <div class="drop"><div><b>Subir imagem para analisar</b><br />ou use a que você acabou de selar<br /><small>PNG preserva o selo · JPG pode degradá-lo</small></div></div>
+          <div class="bigbtn"><span class="press" id="trace-press"></span><span>Revelar assinatura</span></div>
+          <p class="note">A Latente varre os pixels, junta todas as cópias da assinatura e vota bit a bit — por isso resiste a ruído e a pequenos danos.</p>
+        </div>
+
+        <div class="col right">
+          <div id="stage">
+            <img class="shot" id="shot-orig" src="assets/img/stage-original.png" alt="" />
+            <img class="shot" id="shot-sealed" src="assets/img/stage-sealed.png" alt="" style="opacity:0" />
+            <div id="scan"><div id="band"></div></div>
+            <span class="tag" id="tag-0">original</span>
+            <span class="tag" id="tag-1">selada · idêntica</span>
+            <span class="tag" id="tag-2">da selagem</span>
+          </div>
+          <div id="seal-block">
+            <div class="readout" id="seal-out">
+              <div class="r"><span>trace id</span><span>A0412</span></div>
+              <div class="r"><span>repetições da assinatura</span><span>700×</span></div>
+              <div class="r"><span>alteração visual</span><span style="color:var(--good)">≤ 1 nível · imperceptível</span></div>
+            </div>
+            <div class="actions" id="actions">
+              <span class="sbtn primary"><span class="press" id="go-press"></span><span>Rastrear esta imagem →</span></span>
+              <span class="sbtn ghost"><span>Ver a assinatura (diferença ×60)</span></span>
+            </div>
+          </div>
+          <div id="result">
+            <h4>Assinatura recuperada ✓</h4>
+            <p>Confere com uma entrega no seu registro:</p>
+            <div class="conf"><i id="conf-bar"></i></div>
+            <div id="conf-lab">confiança 100% · 700 cópias lidas</div>
+            <div class="readout">
+              <div class="r" id="row-who"><span id="hit"></span><span>entregue a</span><span>Maria Silva</span></div>
+              <div class="r"><span>canal</span><span>galeria de prévia</span></div>
+              <div class="r"><span>etapa</span><span>prévia · antes do pagamento</span></div>
+              <div class="r"><span>data da entrega</span><span>16/11/2026</span></div>
+              <div class="r"><span>trace id</span><span>A0412</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <img id="lens-diff" src="assets/img/stage-diff.png" alt="" data-layout-allow-overlap />
+      <div id="lens-ret" class="ret" data-layout-allow-overlap><i class="t"></i><i class="b"></i><i class="l"></i><i class="r"></i><span id="lens-tag">assinatura revelada</span></div>
+
+      <svg id="cursor" class="clip" data-start="0.95" data-duration="5.95" viewBox="0 0 34 46">
+        <path d="M2 2 L2 36 L10.5 28.5 L16.5 42 L22.5 39.4 L16.6 26.2 L28 26.2 Z" fill="#ECE6DC" stroke="#100C08" stroke-width="2.4" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <div id="cap1" class="capt clip" data-layout-allow-occlusion data-layout-allow-overlap data-start="1.7" data-duration="1.75">A foto sai idêntica</div>
+    <div id="cap2" class="capt clip" data-layout-allow-occlusion data-layout-allow-overlap data-start="7.65" data-duration="2.6">Se vazar, ela diz de quem partiu</div>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const RISE = "expo.out";        // entrances
+    const CAM = "power2.inOut";     // camera
+
+    // ---------- camera: the frame shows the world rect at (cx, cy) with zoom s ----------
+    const cam = (cx, cy, s) => ({ x: -cx * s, y: -cy * s, scale: s });
+    const F_HERO = cam(0, 0, 1), F_SEAL = cam(0, 834, 1), F_LENS = cam(461, 886, 1.6), F_TRACE = cam(25, 1055, 1.1);
+    tl.set("#world", F_HERO, 0);
+    tl.to("#world", { ...F_SEAL, duration: 1.0, ease: CAM }, 0);      // push down from the hero to the demo
+    tl.to("#world", { ...F_LENS, duration: 0.75, ease: CAM }, 3.2);   // close in on the sealed photo
+    tl.to("#world", { ...F_SEAL, duration: 0.6, ease: CAM }, 5.2);    // back out to the console
+    tl.to("#world", { ...F_TRACE, duration: 0.8, ease: CAM }, 6.8);   // down to the result
+    tl.to("#world", { ...F_HERO, duration: 1.6, ease: CAM }, 10.2);   // back to the hero (= frame 0)
+
+    // ---------- cursor (world coordinates of its tip) ----------
+    const P = { start: [560, 1420], seal: [315, 1330], rest: [470, 1420], go: [655, 1431], reveal: [330, 1084], out: [150, 1200] };
+    tl.set("#cursor", { x: P.start[0], y: P.start[1], opacity: 1, scale: 1 }, 0.95);
+    const move = (to, at, dur) => tl.to("#cursor", { x: to[0], y: to[1], duration: dur, ease: "power3.inOut" }, at);
+    const click = (at, press) => {
+      tl.to("#cursor", { scale: 0.84, duration: 0.05, ease: "power2.in" }, at - 0.05);
+      tl.to("#cursor", { scale: 1, duration: 0.14, ease: "power2.out" }, at);
+      if (press) { tl.to(press, { opacity: 0.22, duration: 0.05 }, at - 0.05); tl.to(press, { opacity: 0, duration: 0.2 }, at); }
+    };
+    tl.set("#band", { y: -130, opacity: 0 }, 0);
+    const sweep = (at, dur) => {
+      tl.set("#band", { y: -130, opacity: 1 }, at);
+      tl.to("#band", { y: 340, duration: dur, ease: "power1.inOut" }, at);
+      tl.set("#band", { opacity: 0 }, at + dur);
+    };
+
+    // seal: one click, the band of signature dots sweeps the photo, nothing visible changes
+    move(P.seal, 1.05, 0.5);
+    click(1.6, "#seal-press");
+    sweep(1.65, 0.85);
+    tl.set("#shot-sealed", { opacity: 1 }, 2.1);
+    tl.to("#tag-0", { opacity: 0, duration: 0.15 }, 2.45);
+    tl.fromTo("#tag-1", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 2.5);
+    tl.to("#seal-out", { borderColor: "#2E2820", duration: 0.2 }, 2.45);
+    tl.fromTo("#seal-out .r", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: RISE, stagger: 0.08 }, 2.5);
+    tl.fromTo("#actions", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: RISE }, 2.75);
+    move(P.rest, 1.75, 0.45);
+
+    // the lens: the hero's reticle passes over the photo and shows the signature, amplified 60x
+    const L = [[846, 990], [771, 1110], [930, 1160]];   // world centers: face, bouquet, dress
+    const IMG = [596, 913];                              // the photo's top-left in the world
+    const clip = (c, r) => `circle(${r}px at ${c[0] - IMG[0]}px ${c[1] - IMG[1]}px)`;
+    const ret = (c) => ({ x: c[0] - 88, y: c[1] - 88 });
+    tl.set("#lens-ret", ret(L[0]), 0);
+    tl.fromTo("#lens-diff", { clipPath: clip(L[0], 0) }, { clipPath: clip(L[0], 85), duration: 0.45, ease: RISE }, 3.55);
+    tl.fromTo("#lens-ret", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.45, ease: RISE }, 3.55);
+    tl.to("#lens-diff", { clipPath: clip(L[1], 85), duration: 0.6, ease: "power2.inOut" }, 4.05);
+    tl.to("#lens-ret", { ...ret(L[1]), duration: 0.6, ease: "power2.inOut" }, 4.05);
+    tl.to("#lens-diff", { clipPath: clip(L[2], 85), duration: 0.5, ease: "power2.inOut" }, 4.65);
+    tl.to("#lens-ret", { ...ret(L[2]), duration: 0.5, ease: "power2.inOut" }, 4.65);
+    tl.to("#lens-diff", { clipPath: clip(L[2], 0), duration: 0.3, ease: "power2.in" }, 5.2);
+    tl.to("#lens-ret", { opacity: 0, scale: 0.8, duration: 0.3, ease: "power2.in" }, 5.2);
+
+    // trace: open the Trace tab with the sealed photo, reveal, read the vote
+    move(P.go, 5.4, 0.5);
+    click(5.95, "#go-press");
+    tl.to("#tab-line", { x: 535, duration: 0.35, ease: "power3.inOut" }, 5.97);
+    tl.to("#t-seal .on", { opacity: 0, duration: 0.2 }, 5.97);
+    tl.to("#t-trace .on", { opacity: 1, duration: 0.2 }, 5.97);
+    tl.to("#t-seal", { color: "#9C9488", duration: 0.2 }, 5.97);
+    tl.to("#t-trace", { color: "#ECE6DC", duration: 0.2 }, 5.97);
+    tl.to(["#seal-left", "#seal-block"], { opacity: 0, duration: 0.15 }, 5.97);
+    tl.to("#trace-left", { opacity: 1, duration: 0.2 }, 6.05);
+    tl.to("#tag-1", { opacity: 0, duration: 0.12 }, 5.97);
+    tl.to("#tag-2", { opacity: 1, duration: 0.2 }, 6.05);
+    move(P.reveal, 6.08, 0.42);
+    click(6.55, "#trace-press");
+    sweep(6.6, 0.7);
+    move(P.out, 6.65, 0.25);
+    tl.to("#cursor", { opacity: 0, duration: 0.1 }, 6.8);
+    tl.fromTo("#result", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: RISE }, 7.1);
+    tl.to("#conf-bar", { scaleX: 1, duration: 0.6, ease: "power2.out" }, 7.25);
+    tl.to("#conf-lab", { opacity: 1, duration: 0.3 }, 7.7);
+    tl.fromTo("#result .readout .r", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.4, ease: RISE, stagger: 0.07 }, 7.45);
+    tl.to("#hit", { opacity: 1, duration: 0.35, ease: "power2.out" }, 8.25);
+
+    // captions: one at a time
+    const cap = (id, at, out) => {
+      tl.fromTo(id, { opacity: 0, filter: "blur(8px)", y: 10 }, { opacity: 1, filter: "blur(0px)", y: 0, duration: 0.5, ease: RISE }, at);
+      tl.to(id, { opacity: 0, filter: "blur(6px)", duration: 0.3, ease: "power2.in" }, out);
+    };
+    cap("#cap1", 1.72, 3.12);
+    cap("#cap2", 7.68, 9.95);
+
+    tl.set({}, {}, 11.9);
+    window.__timelines["film"] = tl;
+  </script>
+</template>

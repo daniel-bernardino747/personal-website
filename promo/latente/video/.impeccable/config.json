@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "hero-eyebrow-chip",
+        "value": "*",
+        "files": [
+          "compositions/film.html"
+        ],
+        "createdAt": "2026-11-16T12:36:29.831Z",
+        "reason": "Claude: film.html recreates the shipped DB Barbearia demo UI (public/demos/db-barbearia) 1:1 per the confirmed promo PLAN.md; the eyebrow and chip padding are the product's own design"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "compositions/film.html"
+        ],
+        "createdAt": "2026-11-16T12:36:30.354Z",
+        "reason": "Claude: film.html recreates the shipped DB Barbearia demo UI (public/demos/db-barbearia) 1:1 per the confirmed promo PLAN.md; the eyebrow and chip padding are the product's own design"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "compositions/film.html"
+        ],
+        "createdAt": "2026-11-16T14:08:47.142Z",
+        "reason": "recreation of the Latente site's own reticle (src/style.css .hero-photo .reticle box-shadow)"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          "compositions/film.html"
+        ],
+        "createdAt": "2026-11-16T14:16:07.703Z",
+        "reason": "video frame recreating the Latente site's own UI at 0.83x scale (src/style.css sizes); not interactive, message carried by 36px captions"
+      }
+    ]
+  }
+}
