@@ -28,7 +28,11 @@ Single-context — `CONTEXT.md` na raiz (só os termos do site; o glossário do 
 
 ## Skills de carreira
 
-`capture`, `generate`, `cover-letter` e `article` escrevem o Corpus ou renderizam a partir dele, e por isso moram no `career` (ADR-0013). Abra a sessão lá para usá-las. O `project:image` continua aqui, porque a imagem é apresentação do site (ADR-0012); o `capture` o chama por caminho.
+`capture`, `generate`, `cover-letter` e `article` escrevem o Corpus ou renderizam a partir dele, e por isso moram no `career` (ADR-0013). Abra a sessão lá para usá-las. O `project:image` continua aqui, porque a imagem é apresentação do site (ADR-0012); o `capture` o chama por caminho. Ele grava a capa em `public/projects/<id>/cover.webp` e, com `--screen <nome> --file <caminho>`, acrescenta telas (ADR-0017); nada é sobrescrito sem `--force`.
+
+## Seção Agents
+
+Projetos sem tela própria saem da galeria e ganham uma animação na seção Agents (`.scratch/projects-and-agents/`). Quem entra é decidido aqui, não no Corpus: o id vai em `AGENT_IDS` (`src/lib/projects/agents.ts`, na ordem da página) junto com a cena em `src/components/sections/agents/<Nome>Scene.tsx`, registrada em `STORIES` (`Agents.tsx`), e os textos (frase leiga, legendas, falas da cena) em `agents` nos dicionários `pt` e `en`. O `StoryPlayer` cuida do loop, das legendas e dos quadros estáticos com movimento reduzido. A frase e as legendas falam pelo Daniel: só publique depois que ele aprovar.
 
 ## Prospect-me
 

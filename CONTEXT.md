@@ -13,8 +13,16 @@ The contract through which the site reads the Corpus: the Identity, every Affili
 _Avoid_: export, feed, API
 
 **Accomplishment**:
-One provable thing, with a `kind`. On this site it becomes a project card, an `/achievements` entry, or something the agent may say.
+One provable thing, with a `kind`. On this site it becomes a project card, a row in "Other projects", an Agent project's band, an `/achievements` entry, or something the agent may say.
 _Avoid_: Achievement, highlight, win
+
+**Cover** and **Screens**:
+A project's pictures, recorded in the Corpus as `images` (ADR-0017). The first is the Cover, the 1200×630 picture its gallery card shows; the rest are Screens, shown in a carousel when the project opens. A project with no Cover is listed in "Other projects" instead of the gallery.
+_Avoid_: thumbnail, screenshot (for the recorded picture)
+
+**Agent project**:
+A project with no screen of its own (an AI agent uses it, or it runs unattended), shown in the Agents section with a bespoke animation instead of a picture. Being one is the site's decision, not a Corpus field: the list is `AGENT_IDS`, and an id joins only with its animation. The code calls them agents; this glossary does not, because the **agent** is the chat agent (ADR-0008).
+_Avoid_: skill, bot, automation (as the name of the section's entries)
 
 **Affiliation**:
 The organisation an Accomplishment happened inside: an employer, a client, a course of study. The career timeline is built from them.
