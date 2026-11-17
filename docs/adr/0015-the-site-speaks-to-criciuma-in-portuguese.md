@@ -16,5 +16,5 @@ So the site changes audience and language together.
 - A record whose English changed after its translation was reviewed is stale. `career` must notice that, and the site must never show an old Portuguese sentence as if it were current. A stale or missing field falls back to English, and `corpus:fetch` lists every such field.
 - Metrics are quoted exactly (ADR-0008). In Portuguese the exact string is the reviewed translation of the Metric, never one the agent derives.
 - On a Portuguese page the chat agent answers in Portuguese from the Portuguese slice.
-- The English site at `/en` keeps the remote positioning, because the remote door stays open. The two versions share facts but may differ in emphasis (a Render Target differs in shape, never in facts).
+- ~~The English site at `/en` keeps the remote positioning, because the remote door stays open.~~ Superseded by [ADR-0019](./0019-the-english-site-sells-to-clients-abroad.md): English sells software too. The two versions share facts but may differ in emphasis (a Render Target differs in shape, never in facts).
 - Local reach outside the site, such as a Google Business Profile or ChatGPT's Business Hub, is Daniel's to set up. The site only gives those listings something consistent to point at.

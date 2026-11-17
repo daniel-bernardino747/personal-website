@@ -8,9 +8,20 @@
  * Every promise below restates the contract templates in the `contratos`
  * repository; when they change version, re-read the clauses cited and update.
  */
+import type { Offer } from ".";
+
 export const CONTRACT_TEMPLATE_VERSION = "0.1.0";
 
 export const oferta = {
+  ids: {
+    services: "servicos",
+    process: "como-funciona",
+    elo: "elo",
+    guarantees: "garantias",
+    firstDelivery: "primeira-entrega",
+    contact: "contato",
+  },
+
   /** What a search result and a shared link say about the Portuguese home. */
   seo: {
     title: "Desenvolvedor de software em Criciúma, SC",
@@ -19,16 +30,19 @@ export const oferta = {
   },
 
   hero: {
+    greeting: "Oi, eu sou",
     eyebrow: "Desenvolvedor de software em Criciúma, SC",
     title: "Software sob medida para empresas de Criciúma e região.",
     lede: "Sites, sistemas, aplicativos, automações e agentes de IA, feitos por quem está aqui, atende pessoalmente e mostra o andamento do projeto em tempo real.",
   },
 
-  whatsapp: {
-    cta: "Chamar no WhatsApp",
-    message: "Oi, Daniel! Vi o seu site e quero conversar sobre um projeto.",
+  reach: {
+    whatsapp: {
+      cta: "Chamar no WhatsApp",
+      message: "Oi, Daniel! Vi o seu site e quero conversar sobre um projeto.",
+    },
+    booking: { cta: "Agendar uma conversa", href: "/agendar" },
   },
-  booking: { cta: "Agendar uma conversa", href: "/agendar" },
 
   services: {
     eyebrow: "Serviços",
@@ -117,4 +131,4 @@ export const oferta = {
     inPerson: (area: string) => `Atendimento presencial em ${area}.`,
     company: (name: string, legalName: string, cnpj: string) => `${name} · ${legalName} · CNPJ ${cnpj}`,
   },
-} as const;
+} as const satisfies Offer;

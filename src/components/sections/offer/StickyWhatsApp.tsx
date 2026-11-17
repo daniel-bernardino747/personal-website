@@ -3,7 +3,6 @@
 import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { oferta } from "@/content/oferta/pt";
 import { whatsappHref } from "@/lib/contact";
 
 /**
@@ -11,13 +10,24 @@ import { whatsappHref } from "@/lib/contact";
  * stays at the bottom of the screen. Hidden again over the contact section,
  * which has its own.
  */
-export function StickyWhatsApp({ whatsapp }: { whatsapp: string }) {
+export function StickyWhatsApp({
+  whatsapp,
+  cta,
+  message,
+  contactId,
+}: {
+  whatsapp: string;
+  cta: string;
+  message: string;
+  /** The contact section, over which the button hides. */
+  contactId: string;
+}) {
   const [heroVisible, setHeroVisible] = useState(true);
   const [contactVisible, setContactVisible] = useState(false);
 
   useEffect(() => {
     const hero = document.getElementById("hero");
-    const contact = document.getElementById("contato");
+    const contact = document.getElementById(contactId);
     const observer = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         if (entry.target === hero) setHeroVisible(entry.isIntersecting);
@@ -27,13 +37,13 @@ export function StickyWhatsApp({ whatsapp }: { whatsapp: string }) {
     if (hero) observer.observe(hero);
     if (contact) observer.observe(contact);
     return () => observer.disconnect();
-  }, []);
+  }, [contactId]);
 
   const shown = !heroVisible && !contactVisible;
 
   return (
     <a
-      href={whatsappHref(whatsapp, oferta.whatsapp.message)}
+      href={whatsappHref(whatsapp, message)}
       target="_blank"
       rel="noopener noreferrer"
       aria-hidden={!shown}
@@ -43,7 +53,7 @@ export function StickyWhatsApp({ whatsapp }: { whatsapp: string }) {
       }`}
     >
       <MessageCircle size={18} aria-hidden="true" />
-      {oferta.whatsapp.cta}
+      {cta}
     </a>
   );
 }

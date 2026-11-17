@@ -15,17 +15,16 @@ import { useEffect, useState } from "react";
 // used to point at `/#skills` and `/#other` — anchors no page carries — while
 // /achievements and /chat, the two pages with the proof, had no link at all.
 const navLinks = {
+  // Both homes sell software first (ADR-0015, ADR-0019): the links follow the
+  // offer, then the proof.
   en: [
     { key: "home", href: "/" },
-    { key: "about", href: "/#about" },
+    { key: "services", href: "/#services" },
+    { key: "process", href: "/#how-it-works" },
     { key: "projects", href: "/#projects" },
-    { key: "agents", href: "/#agents" },
-    { key: "labs", href: "/#labs" },
-    { key: "achievements", href: "/achievements" },
     { key: "chat", href: "/chat" },
+    { key: "contact", href: "/#contact" },
   ],
-  // The Portuguese home speaks to a local business first (ADR-0015): its links
-  // follow the offer, then the proof.
   pt: [
     { key: "home", href: "/" },
     { key: "services", href: "/#servicos" },

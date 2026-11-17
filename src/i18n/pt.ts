@@ -30,39 +30,12 @@ export const pt: Dictionary = {
     email: 'Enviar e-mail',
   },
 
-  hero: {
-    greeting: 'Oi, eu sou',
-    scroll: 'Role',
-  },
-
   questions: {
     me: { label: 'Sobre mim', phrase: 'Me fale sobre o Daniel...' },
     projects: { label: 'Projetos', phrase: 'O que ele já entregou de verdade?' },
     skills: { label: 'Stack', phrase: 'Com quais tecnologias ele trabalha?' },
     site: { label: 'Este site', phrase: 'Como este site foi feito?' },
     contact: { label: 'Contato', phrase: 'Ele está disponível para projetos?' },
-  },
-
-  aiInput: {
-    emptyQuestion: 'Oi',
-  },
-
-  bento: {
-    connect: 'Vamos conversar',
-    connectAria: (name) => `Conectar com ${name} no LinkedIn (abre em uma nova aba)`,
-    craftTitle: 'Ofício',
-    craftLead: 'Crio **apps, sites e automações** que crescem junto com o negócio.',
-    craftBody:
-      'Conheço o que a tecnologia moderna pode oferecer, e isso me ajuda a indicar as soluções de que um negócio realmente precisa.',
-    openToCollaboration: 'Aberto a colaborações',
-    fullResume: 'Currículo completo (EN)',
-    now: 'hoje',
-    mindsetTitle: 'Mindset',
-    mindsetLead:
-      '**Construindo mais do que software.** Minhas paixões me dão a **disciplina e o foco** de que preciso para crescer.',
-    mindsetCaption: 'Foco e disciplina',
-    mindsetClose: 'Dominar o corpo e a mente é o meu caminho para a **excelência.**',
-    letsTalk: 'Vamos conversar',
   },
 
   projects: {

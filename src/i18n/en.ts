@@ -35,11 +35,6 @@ export const en = {
     email: 'Send email',
   },
 
-  hero: {
-    greeting: "Hi, I'm",
-    scroll: 'Scroll',
-  },
-
   /** The suggested questions: chips on the home page and in `/chat`, and the
    * phrases the home input types out. Keyed by the chat answer's `id`. */
   questions: {
@@ -48,30 +43,6 @@ export const en = {
     skills: { label: 'Skills', phrase: 'What does he work with?' },
     site: { label: 'This site', phrase: 'How was this site built?' },
     contact: { label: 'Contact', phrase: 'Is he available for hire?' },
-  },
-
-  aiInput: {
-    /** Sent when the visitor submits an empty box. */
-    emptyQuestion: 'Hi',
-  },
-
-  bento: {
-    connect: "Let's Connect",
-    connectAria: (name: string) => `Connect with ${name} on LinkedIn (opens in a new tab)`,
-    craftTitle: 'Craft',
-    craftLead: 'Building scalable **apps, websites, and automations.**',
-    craftBody:
-      'I understand what advantages modern tech can provide, helping me advise on the solutions a business actually needs.',
-    openToCollaboration: 'Open to collaboration',
-    fullResume: 'Full résumé',
-    /** The end of a period still running: "2025–now". */
-    now: 'now',
-    mindsetTitle: 'Mindset',
-    mindsetLead:
-      '**Building more than software.** My passions provide the **discipline and focus** I need to grow.',
-    mindsetCaption: 'Focus & Discipline',
-    mindsetClose: 'Mastering body and mind is my path to **excellence.**',
-    letsTalk: "Let's talk",
   },
 
   projects: {

@@ -8,7 +8,7 @@ import { buildChatAnswers } from "@/lib/chat/answers";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
 import { SITE_URL } from "@/lib/site-url";
 import { localeAlternates, shareImage } from "@/lib/seo";
-import { oferta } from "@/content/oferta/pt";
+import { getOffer } from "@/content/oferta";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDictionary } from "@/i18n/dictionary";
@@ -38,8 +38,8 @@ const geistMono = localFont({
 /**
  * The share preview is drawn from the Identity, like everything else: title,
  * description and the image (`/og/<locale>.png`) all change with a Corpus edit
- * in `career`. In Portuguese the home speaks to a business in Criciúma
- * (ADR-0015), so its title and description name the city and the services.
+ * in `career`. The home sells software in both languages (ADR-0015, ADR-0019),
+ * so its title and description come from the offer.
  * Pages set their own canonical, hreflang and share fields through `pageMetadata`.
  */
 type LocaleParams = { params: Promise<{ locale: string }> };
@@ -54,9 +54,9 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
   const { locale: param } = await params;
   const locale: Locale = isLocale(param) ? param : "pt";
   const identity = getIdentity(locale);
-  const pt = locale === "pt";
-  const title = `${identity.name} — ${pt ? oferta.seo.title : identity.role[0]}`;
-  const description = pt ? oferta.seo.description : identity.bio;
+  const { seo } = getOffer(locale);
+  const title = `${identity.name} — ${seo.title}`;
+  const description = seo.description;
   const image = shareImage(locale, getDictionary(locale).meta.imageAlt(identity.name));
   const alternates = localeAlternates("/", locale);
 

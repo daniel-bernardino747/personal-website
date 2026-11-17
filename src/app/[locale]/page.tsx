@@ -1,16 +1,12 @@
-import { BentoAbout } from "@/components/sections/BentoAbout";
-import { Hero } from "@/components/sections/Hero";
-import { Labs } from "@/components/sections/labs/Labs";
-import { FirstDelivery, LocalContact } from "@/components/sections/local/FirstDeliveryAndContact";
-import { LocalHero } from "@/components/sections/local/LocalHero";
-import { EloPortal, Guarantees, HowItWorks, Services } from "@/components/sections/local/OfferSections";
-import { StickyWhatsApp } from "@/components/sections/local/StickyWhatsApp";
 import { Agents } from "@/components/sections/agents/Agents";
+import { Labs } from "@/components/sections/labs/Labs";
+import { FirstDelivery, OfferContact } from "@/components/sections/offer/FirstDeliveryAndContact";
+import { OfferHero } from "@/components/sections/offer/OfferHero";
+import { EloPortal, Guarantees, HowItWorks, Services } from "@/components/sections/offer/OfferSections";
+import { StickyWhatsApp } from "@/components/sections/offer/StickyWhatsApp";
 import { Projects } from "@/components/sections/Projects";
-import { oferta } from "@/content/oferta/pt";
-import { careerTimeline } from "@/lib/corpus/career";
+import { getOffer } from "@/content/oferta";
 import { getCorpus, getIdentity } from "@/lib/corpus/site";
-import { listMindsetSlides } from "@/lib/mindset";
 import { splitAgents } from "@/lib/projects/agents";
 import { splitLabs } from "@/lib/projects/labs";
 import { isLocale } from "@/i18n/routing";
@@ -24,61 +20,55 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return { alternates: localeAlternates("/", isLocale(locale) ? locale : "pt") };
 }
 
+/**
+ * Both languages sell software: Portuguese to businesses in Criciúma
+ * (ADR-0015), English to founders and small businesses abroad (ADR-0019).
+ * The offer comes first, then the work as proof, then the contact.
+ */
 export default async function Home({ params }: Params) {
   const { locale: param } = await params;
   const locale = isLocale(param) ? param : "pt";
+  const offer = getOffer(locale);
   const corpus = getCorpus(locale);
+  const identity = getIdentity(locale);
   const projects = corpus.byKind("project", { includeDrafts: true });
   // A Labs demo shows once, in the Labs section, and an agent once, in the
   // Agents section; neither also appears among the projects.
   const { labs, rest: notLabs } = splitLabs(projects);
   const { agents, rest } = splitAgents(notLabs);
+  const whatsapp = offer.reach.whatsapp && identity.social.whatsapp;
 
-  const proof = (
+  return (
     <>
+      {/* Schema.org for search: a service-area business in Criciúma, no address. */}
+      {locale === "pt" && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessJsonLd(identity, offer.seo.description)).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
+      <OfferHero offer={offer} identity={identity} />
+      {identity.services && <Services offer={offer} services={identity.services} />}
+      <HowItWorks offer={offer} />
+      <EloPortal offer={offer} />
+      <Guarantees offer={offer} />
+      <FirstDelivery offer={offer} project={projects.find((p) => p.id === offer.firstDelivery.accomplishmentId)} />
       {/* The gallery shows projects without a Metric too — that gate exists so a
           résumé never implies an unmeasured result, not to hide shipped work. */}
       <Projects projects={rest} />
       <Agents agents={agents} />
       <Labs demos={labs} locale={locale} />
-    </>
-  );
-
-  // English stays remote-first, as before (ADR-0015), with the portfolio bento.
-  // Portuguese drops it: the page sells to local clients, not recruiters.
-  if (locale === "en") {
-    return (
-      <>
-        <Hero />
-        <BentoAbout
-          career={careerTimeline(corpus.affiliations, corpus.accomplishments)}
-          mindset={listMindsetSlides()}
+      <OfferContact offer={offer} identity={identity} />
+      {whatsapp && offer.reach.whatsapp && (
+        <StickyWhatsApp
+          whatsapp={whatsapp}
+          cta={offer.reach.whatsapp.cta}
+          message={offer.reach.whatsapp.message}
+          contactId={offer.ids.contact}
         />
-        {proof}
-      </>
-    );
-  }
-
-  // Portuguese speaks to a business in Criciúma first: the offer, then the proof.
-  const identity = getIdentity(locale);
-  return (
-    <>
-      {/* Schema.org for search: a service-area business in Criciúma, no address. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(localBusinessJsonLd(identity, oferta.seo.description)).replace(/</g, "\\u003c"),
-        }}
-      />
-      <LocalHero identity={identity} />
-      {identity.services && <Services services={identity.services} />}
-      <HowItWorks />
-      <EloPortal />
-      <Guarantees />
-      <FirstDelivery project={projects.find((p) => p.id === oferta.firstDelivery.accomplishmentId)} />
-      {proof}
-      <LocalContact identity={identity} />
-      {identity.social.whatsapp && <StickyWhatsApp whatsapp={identity.social.whatsapp} />}
+      )}
     </>
   );
 }
