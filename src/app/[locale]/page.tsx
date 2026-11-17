@@ -36,10 +36,6 @@ export default async function Home({ params }: Params) {
 
   const proof = (
     <>
-      <BentoAbout
-        career={careerTimeline(corpus.affiliations, corpus.accomplishments)}
-        mindset={listMindsetSlides()}
-      />
       {/* The gallery shows projects without a Metric too — that gate exists so a
           résumé never implies an unmeasured result, not to hide shipped work. */}
       <Projects projects={rest} />
@@ -48,11 +44,16 @@ export default async function Home({ params }: Params) {
     </>
   );
 
-  // English stays remote-first, as before (ADR-0015).
+  // English stays remote-first, as before (ADR-0015), with the portfolio bento.
+  // Portuguese drops it: the page sells to local clients, not recruiters.
   if (locale === "en") {
     return (
       <>
         <Hero />
+        <BentoAbout
+          career={careerTimeline(corpus.affiliations, corpus.accomplishments)}
+          mindset={listMindsetSlides()}
+        />
         {proof}
       </>
     );
